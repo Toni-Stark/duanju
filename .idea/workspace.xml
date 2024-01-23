@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="be094f22-292c-4994-952e-667d5f20096b" name="默认变更列表" comment="线上版本">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/app_template.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/prettier.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="tt_mini" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="tt_mini" />
+                    <option name="lastUsedInstant" value="1702983098" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1702983097" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/pages/index/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/index/index.config.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/list/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/info/edit/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/hobby/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/app.config.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/info/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/app.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/store/config.ts" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/index.config.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/pro/index.config.ts" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/user/index.config.ts" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/pro/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/video/index.config.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/hot/index.config.ts" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/hot/index.tsx" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/index.less" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/code/index.less" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/mine/system/user/index.tsx" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <hideBySeverity>
+      <option value="11" />
+      <option value="12" />
+      <option value="13" />
+      <option value="14" />
+      <option value="15" />
+      <option value="16" />
+      <option value="100" />
+      <option value="200" />
+    </hideBySeverity>
+    <option name="selectedTabId" value="CurrentFile" />
+    <option name="showPreview" value="true" />
+    <option name="sortBySeverity" value="false" />
+  </component>
+  <component name="ProjectId" id="2Y71ZKAVSXba0CZCzVMgSaJk3Dx" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/static/source" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Project\app\taro\app_template\src\static\source" />
+      <recent name="E:\Project\app\taro\app_template\src\pages\hot" />
+      <recent name="E:\Project\app\taro\app_template\src\components\indexCard" />
+      <recent name="E:\Project\app\taro\app_template\src\pages\mine\system\pro" />
+      <recent name="E:\Project\app\taro\app_template\src\pages\mine\system\user" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.dev:weapp">
+    <configuration name="build:tt" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build:tt" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="build:weapp" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build:weapp" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev:tt" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev:tt" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev:weapp" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev:weapp" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev:weapp" />
+        <item itemvalue="npm.dev:tt" />
+        <item itemvalue="npm.build:weapp" />
+        <item itemvalue="npm.build:tt" />
+        <item itemvalue="npm.dev:tt" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="be094f22-292c-4994-952e-667d5f20096b" name="默认变更列表" comment="" />
+      <created>1699861857932</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1699861857932</updated>
+      <workItem from="1699861859094" duration="15086000" />
+      <workItem from="1699924655195" duration="658000" />
+      <workItem from="1699928151719" duration="15000" />
+      <workItem from="1699937860531" duration="19559000" />
+      <workItem from="1700010791188" duration="30428000" />
+      <workItem from="1700097106692" duration="30577000" />
+      <workItem from="1700184056783" duration="26685000" />
+      <workItem from="1700442688320" duration="16527000" />
+      <workItem from="1700473214625" duration="16000" />
+      <workItem from="1700533814876" duration="786000" />
+      <workItem from="1700816494554" duration="234000" />
+      <workItem from="1700820367461" duration="2129000" />
+      <workItem from="1700874495502" duration="5917000" />
+      <workItem from="1701047670634" duration="27600000" />
+      <workItem from="1701134365346" duration="33620000" />
+      <workItem from="1701220541281" duration="36100000" />
+      <workItem from="1701306579408" duration="1533000" />
+      <workItem from="1701308142187" duration="35144000" />
+      <workItem from="1701393605225" duration="30360000" />
+      <workItem from="1701480238070" duration="7214000" />
+      <workItem from="1701489022208" duration="2466000" />
+      <workItem from="1701494836181" duration="32000" />
+      <workItem from="1701504384725" duration="1887000" />
+      <workItem from="1701653979881" duration="1141000" />
+      <workItem from="1701656834222" duration="1975000" />
+      <workItem from="1701660586759" duration="8350000" />
+      <workItem from="1701742107987" duration="9173000" />
+      <workItem from="1701769150200" duration="1682000" />
+      <workItem from="1701825110845" duration="1287000" />
+      <workItem from="1701913159190" duration="14558000" />
+      <workItem from="1702000414616" duration="9220000" />
+      <workItem from="1702104822894" duration="286000" />
+      <workItem from="1702105122063" duration="1149000" />
+      <workItem from="1702106332198" duration="121000" />
+      <workItem from="1702106912603" duration="1568000" />
+      <workItem from="1702108780641" duration="11000" />
+      <workItem from="1702108799467" duration="1323000" />
+      <workItem from="1702110130879" duration="1173000" />
+      <workItem from="1702111382280" duration="7000" />
+      <workItem from="1702111416523" duration="149000" />
+      <workItem from="1702111572125" duration="319000" />
+      <workItem from="1702112738832" duration="383000" />
+      <workItem from="1702113126422" duration="2403000" />
+      <workItem from="1702270658865" duration="773000" />
+      <workItem from="1702275448276" duration="10248000" />
+      <workItem from="1702348641505" duration="73000" />
+      <workItem from="1702350488074" duration="26000" />
+      <workItem from="1702605343381" duration="4524000" />
+      <workItem from="1702627686341" duration="2162000" />
+      <workItem from="1702690721109" duration="1078000" />
+      <workItem from="1702693302095" duration="2177000" />
+      <workItem from="1702862582413" duration="15263000" />
+      <workItem from="1702949948205" duration="2448000" />
+      <workItem from="1702970004498" duration="123000" />
+      <workItem from="1702970235525" duration="6111000" />
+      <workItem from="1703034917462" duration="2407000" />
+      <workItem from="1703240431698" duration="97000" />
+      <workItem from="1703494094142" duration="4893000" />
+      <workItem from="1703499007258" duration="8000" />
+      <workItem from="1703748126941" duration="35000" />
+      <workItem from="1703817157337" duration="241000" />
+      <workItem from="1703818952585" duration="545000" />
+      <workItem from="1703820812342" duration="4243000" />
+      <workItem from="1704158566914" duration="1675000" />
+      <workItem from="1704189362537" duration="975000" />
+      <workItem from="1704244490360" duration="1303000" />
+      <workItem from="1704362559044" duration="728000" />
+      <workItem from="1704416677103" duration="9687000" />
+      <workItem from="1705455440209" duration="610000" />
+      <workItem from="1705460096198" duration="5576000" />
+      <workItem from="1705481788516" duration="2199000" />
+      <workItem from="1705540990160" duration="11058000" />
+      <workItem from="1705627058711" duration="5818000" />
+      <workItem from="1705921244495" duration="793000" />
+      <workItem from="1705972441779" duration="98000" />
+      <workItem from="1705974575479" duration="1909000" />
+      <workItem from="1705977214919" duration="3143000" />
+    </task>
+    <task id="LOCAL-00001" summary="init">
+      <created>1699862469971</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1699862469971</updated>
+    </task>
+    <task id="LOCAL-00002" summary="首页样式">
+      <created>1699876503082</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1699876503082</updated>
+    </task>
+    <task id="LOCAL-00003" summary="热播和列表样式">
+      <created>1699960868163</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1699960868163</updated>
+    </task>
+    <task id="LOCAL-00004" summary="当前修改">
+      <created>1700447435863</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1700447435863</updated>
+    </task>
+    <task id="LOCAL-00005" summary="当前修改">
+      <created>1700534588520</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1700534588520</updated>
+    </task>
+    <task id="LOCAL-00006" summary="当前修改">
+      <created>1701171400725</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1701171400725</updated>
+    </task>
+    <task id="LOCAL-00007" summary="当前修改">
+      <created>1701255585953</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1701255585953</updated>
+    </task>
+    <task id="LOCAL-00008" summary="当前修改">
+      <created>1701325423688</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1701325423688</updated>
+    </task>
+    <task id="LOCAL-00009" summary="当前修改">
+      <created>1701337276022</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701337276022</updated>
+    </task>
+    <task id="LOCAL-00010" summary="当前修改">
+      <created>1701344434071</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1701344434071</updated>
+    </task>
+    <task id="LOCAL-00011" summary="当前修改">
+      <created>1701418397543</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1701418397543</updated>
+    </task>
+    <task id="LOCAL-00012" summary="定板">
+      <created>1701654107178</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1701654107178</updated>
+    </task>
+    <task id="LOCAL-00013" summary="定板">
+      <option name="closed" value="true" />
+      <created>1702105818857</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1702105818857</updated>
+    </task>
+    <task id="LOCAL-00014" summary="代码维护，减少空引用">
+      <option name="closed" value="true" />
+      <created>1702113028880</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1702113028880</updated>
+    </task>
+    <task id="LOCAL-00015" summary="wx">
+      <option name="closed" value="true" />
+      <created>1702978720190</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1702978720190</updated>
+    </task>
+    <task id="LOCAL-00016" summary="wx">
+      <option name="closed" value="true" />
+      <created>1702983061375</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1702983061375</updated>
+    </task>
+    <task id="LOCAL-00017" summary="抖音">
+      <created>1703820918633</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1703820918633</updated>
+    </task>
+    <task id="LOCAL-00018" summary="线上版本">
+      <created>1705981059564</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1705981059564</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <MESSAGE value="首页样式" />
+    <MESSAGE value="热播和列表样式" />
+    <MESSAGE value="当前修改" />
+    <MESSAGE value="定板" />
+    <MESSAGE value="代码维护，减少空引用" />
+    <MESSAGE value="wx" />
+    <MESSAGE value="抖音" />
+    <MESSAGE value="线上版本" />
+    <option name="LAST_COMMIT_MESSAGE" value="线上版本" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

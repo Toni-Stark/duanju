@@ -1,0 +1,96 @@
+.index {
+  width: 100%;
+  background: #1e212a;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  &_content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10Px;
+    box-sizing: border-box;
+    &_header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0 0 15Px;
+      .header_view {
+        width: 120Px;
+        height: 120Px;
+        position: relative;
+        display: flex;
+        border-radius: 50%;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        &_img {
+          display: flex;
+          width: 100%;
+          height: 100%;
+        }
+        &_text {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          font-size: 11Px;
+          height: 29Px;
+          display: flex;
+          color: #ffffff;
+          align-items: center;
+          background: rgba(0, 0, 0, 0.63);
+          justify-content: center;
+        }
+      }
+    }
+    &_card {
+      background: #272935;
+      border: 10Px;
+      padding: 0 10Px 8Px;
+      &_item {
+        height: 50Px;
+        font-size: 17Px;
+        color: #ffffff;
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1Px solid #535560;
+        line-height: 50Px;
+        .value {
+          display: flex;
+          align-items: center;
+          &_image {
+            width: 15Px;
+            height: 15Px;
+          }
+        }
+      }
+    }
+  }
+  .float {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-size: 17Px;
+    &_lay {
+      padding: 5Px;
+    }
+    .com {
+      color: #3c6fef;
+    }
+  }
+  .lay_view {
+    height: 50Px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    font-size: 16Px;
+    align-items: center;
+  }
+  .at-float-layout__container {
+    border-radius: 12Px 12Px 0 0;
+  }
+}
+

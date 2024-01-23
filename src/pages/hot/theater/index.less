@@ -1,0 +1,121 @@
+.index {
+  width: 100%;
+  background: #1e212a;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  &_main {
+    display: flex;
+    align-items: center;
+    margin: 0 10Px 10Px;
+    padding: 10Px 0;
+    border-bottom: 1Px solid #585858;
+    &_img {
+      width: 70Px;
+      height: 70Px;
+      border-radius: 50%;
+    }
+    &_text {
+      margin-left: 15PX;
+      color: #ffffff;
+      font-size: 14Px;
+    }
+  }
+  &_zone {
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    &_view {
+      height: 100%;
+      position: relative;
+      &_content {
+        background: #1e212a;
+        .large-content-main {
+          &-title {
+            color: #ffffff;
+            font-size: 13Px;
+          }
+          &-eval {
+            color: #999999;
+            font-size: 11Px;
+            padding-top: 6Px;
+          }
+        }
+        .large-content-count {
+          font-size: 11Px;
+          color: #999999;
+          padding-top: 3Px;
+        }
+        .navi-data {
+          padding: 0 10Px;
+          box-sizing: border-box;
+          &-item {
+            display: flex;
+            margin-bottom: 10Px;
+            &-img {
+              width: 75Px;
+              border-radius: 5Px;
+              margin-right: 8Px;
+            }
+            &-view {
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              padding: 10Px 0;
+              &-content {
+                &-main {
+                  font-size: 13Px;
+                  color: #ffffff;
+                }
+                &-eval {
+                  font-size: 10Px;
+                  color: #999999;
+                  margin-top: 3Px;
+                }
+              }
+              &-eval {
+                font-size: 9Px;
+                color: #999999;
+                display: flex;
+                flex-direction: column;
+              }
+            }
+          }
+        }
+        .index-footer {
+          height: 50Px;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &-view {
+            display: flex;
+            align-items: center;
+            font-size: 11Px;
+            color: #bbbbbb;
+          }
+        }
+      }
+    }
+  }
+}
+.scroll_top {
+  position: fixed;
+  right: 12Px;
+  bottom: 80Px;
+  display: flex;
+  padding: 7Px;
+  border-radius: 50%;
+  background: #00000087;
+  transition: all 1s;
+  &_img {
+    width: 20Px;
+    height: 20Px;
+  }
+}
+
+.button-pad {
+  min-width: 10Px;
+  height: 20Px;
+}

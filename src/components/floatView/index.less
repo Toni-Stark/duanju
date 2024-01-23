@@ -1,0 +1,53 @@
+.float {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &_modal {
+    width: 75%;
+    background: #272936;
+    border-radius: 10Px;
+    padding: 16Px 20Px 25Px 20Px;
+    box-sizing: border-box;
+    &_img {
+      display: flex;
+      justify-content: center;
+      font-size: 26Px;
+      font-style: italic;
+      color: #ffffff;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      .img {
+        width: 43%;
+      }
+    }
+    &_main {
+      padding: 10Px 0;
+      display: flex;
+      justify-content: center;
+      .img {
+        width: 64%;
+      }
+    }
+    &_desc {
+      font-size: 13Px;
+      color: #ffffff;
+      text-align: center;
+    }
+    &_btn {
+      margin-top: 15Px;
+      width: 100%;
+      padding: 12Px;
+      text-align: center;
+      font-size: 13Px;
+      border-radius: 18Px;
+      color: #ffffff;
+      background: linear-gradient(to right, #a829e8, #3c6fef);
+      box-sizing: border-box;
+    }
+  }
+}

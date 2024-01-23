@@ -1,0 +1,35 @@
+.custom-tab {
+  //display: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  height: 65Px;
+  border-radius: 0;
+  box-sizing: border-box;
+  border-top: 1Px solid #282b32;
+  background-color: #1e212a;
+  &-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 50Px;
+    &-text {
+      font-size: 14Px;
+      line-height: 40Px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.show-custom-tab {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}

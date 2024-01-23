@@ -1,0 +1,190 @@
+.index {
+  width: 100%;
+  background: #1e212a;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  &_content {
+    flex: 1;
+    overflow-y: scroll;
+    &_banner {
+      background: linear-gradient(to right, #a829e8, #3c6fef);
+      font-size: 11Px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 55Px;
+    }
+    &_icon {
+      border-radius: 6Px;
+      padding: 0 20Px;
+      &_text {
+        display: flex;
+        .text_main {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          padding: 16Px 0;
+          &_title {
+            font-size: 12Px;
+            color: #b4b5b9;
+          }
+          &_eval {
+            margin-top: 6Px;
+            color: #ffffff;
+            font-size: 20Px;
+            display: flex;
+            height: 25Px;
+            line-height: 25Px;
+            &_text {
+              font-size: 12Px;
+              line-height: 28Px;
+              margin-left: 3Px;
+            }
+          }
+        }
+      }
+    }
+    &_list {
+      margin: 0 10Px 10Px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .item {
+        display: flex;
+        width: 48%;
+        border: 0;
+        padding: 10Px 14Px;
+        margin-bottom: 10Px;
+        box-sizing: border-box;
+        flex-direction: column;
+        position: relative;
+        border-radius: 15Px 5Px 15Px 15Px;
+        height: 80Px;
+        background: linear-gradient(to right, #4d5363, #282a36);
+        color: #ffffff;
+        &_value {
+          height: 25Px;
+          display: flex;
+          line-height: 25Px;
+          font-size: 20Px;
+          &_score {
+            line-height: 33Px;
+            &_text {
+              font-size: 10Px;
+            }
+            &_day {
+              display: flex;
+              align-items: flex-end;
+              .day {
+                font-size: 12Px;
+                margin-left: 4Px;
+                line-height: 20Px;
+              }
+            }
+          }
+        }
+        &_desc {
+          font-size: 11Px;
+          margin-top: 3Px;
+          display: flex;
+          justify-content: space-between;
+          flex: 1;
+          &_price {
+            display: flex;
+            align-items: center;
+            font-size: 20Px;
+          }
+        }
+        &_tips {
+          padding: 0 6Px;
+          background: #fcc547;
+          position: absolute;
+          right: 0;
+          color: #d26141;
+          top: 0;
+          border-radius: 5Px;
+          font-size: 9Px;
+          height: 18Px;
+          line-height: 18Px;
+        }
+      }
+      .active {
+        border: 2Px solid #fcc547;
+        .item_tips {
+          margin-top: -2Px;
+          margin-right: -2Px;
+        }
+      }
+      .super {
+        background: linear-gradient(to right, #a829e8, #3c6fef);
+      }
+    }
+    &_btn {
+      font-size: 12Px;
+      color: #ffffff;
+      height: 38Px;
+      margin: 16Px 10Px 26Px;
+      display: flex;
+      border-radius: 14Px;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to right, #a829e8, #3c6fef);
+      transition: all 1s;
+    }
+    &_active {
+      background: #272935;
+    }
+    &_label {
+      margin: 0 10Px;
+      background: #272935;
+      border-radius: 6Px;
+      padding: 3Px 12Px;
+      .label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 45Px;
+        &_item {
+          display: flex;
+          align-items: center;
+          &_icon {
+            width: 18Px;
+            height: 18Px;
+          }
+          &_text {
+            font-size: 13Px;
+            color: #ffffff;
+            margin-left: 10Px;
+          }
+        }
+        &_btn {
+          width: 20Px;
+          height: 20Px;
+          &_img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      .label:first-child {
+        //border-bottom: 1px solid #505050;
+      }
+    }
+    &_desc {
+      padding: 0 10Px 16Px;
+      border-bottom: 1Px solid #2c2c2d;
+      .title {
+        font-size: 14Px;
+        color: #908f94;
+        padding:  10Px 0;
+      }
+      .desc {
+        color: #908f94;
+        font-size: 10Px;
+      }
+    }
+  }
+}
