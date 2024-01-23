@@ -151,6 +151,10 @@ export default function Code() {
         Taro.showShareImageMenu({
           path: res.tempFilePath,
         });
+        TShow("分享成功");
+      },
+      fail: (res) => {
+        TShow("微信权限申请中，暂时无法使用");
       },
     });
   };
@@ -258,18 +262,18 @@ export default function Code() {
                 <Image className="control_view_img" src={down} />
                 保存图片
               </View>
-              {/*<View className="control_view" onClick={shareImage}>*/}
-              {/*  <Image className="control_view_img" src={share} />*/}
-              {/*  分享好友*/}
-              {/*</View>*/}
-              <Button
-                className="control_view"
-                openType="share"
-                hoverClass="index_label_active"
-              >
+              <View className="control_view" onClick={shareImage}>
                 <Image className="control_view_img" src={share} />
                 分享好友
-              </Button>
+              </View>
+              {/*<Button*/}
+              {/*  className="control_view"*/}
+              {/*  openType="share"*/}
+              {/*  hoverClass="index_label_active"*/}
+              {/*>*/}
+              {/*  <Image className="control_view_img" src={share} />*/}
+              {/*  分享好友*/}
+              {/*</Button>*/}
             </View>
           </View>
           <View className="desc">

@@ -49,7 +49,6 @@ export default function Search() {
     if (params?.is_pay) {
       _option.is_pay = params?.is_pay;
     }
-    console.log(option, 'dev')
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;
     _option.statusBarHeight = rect.height;
@@ -110,7 +109,7 @@ export default function Search() {
         THide();
         TShow("充值成功");
         bool = true;
-        SetStorageSync("nowValPay", 1);
+        SetStorageSync("nowValPay", '1');
         currentMemberInfo(true);
       });
     }, 400);
@@ -137,6 +136,8 @@ export default function Search() {
   };
   const payApiStatus = (params) => {
     getPayOrder(params).then((res) => {
+      let json = GetStorageSync("allJson");
+      console.log(res,json, 'res_data')
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);

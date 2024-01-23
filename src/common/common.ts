@@ -12,7 +12,7 @@ const loginUrl = env.BASE_URL + "member/login";
 
 export const getCheckLogin = () => {
   return new Promise((resolve, reject) => {
-    getSystemInfo().then((res)=>{
+    getSystemInfo().then((resCode)=>{
        Taro.login({
             complete: (loginRes) => {
               if (!loginRes.code) return;
@@ -21,11 +21,12 @@ export const getCheckLogin = () => {
                 url: checkLoginUrl,
                 header: {
                   "Content-Type": "application/x-www-form-urlencoded",
-                  "env": res
+                  "env": resCode
                 },
                 data: { code: loginRes.code, type: "mini", pn: pn },
                 method: "POST",
                 success: function (res) {
+                  console.log(111, res);
                   let { code, data } = res.data;
                   if (res.statusCode === 300)
                     return Taro.showToast({ title: "网络超时",	mask:true, icon: "none" });
@@ -40,7 +41,7 @@ export const getCheckLogin = () => {
                   }
                   if (code === 403) {
                     RemoveStorageSync("token");
-                    getLogin(data).then((result) => {
+                    getLogin(data, resCode).then((result) => {
                       return resolve(result);
                     });
                   }
@@ -52,7 +53,7 @@ export const getCheckLogin = () => {
   });
 };
 
-export const getLogin = (option) => {
+export const getLogin = (option, env) => {
   let iv = GetStorageSync("sn");
   let pn = GetStorageSync("pn");
   let pn_data = GetStorageSync("pn_data");
@@ -72,7 +73,7 @@ export const getLogin = (option) => {
   return new Promise((resolve, reject) => {
     Taro.request({
       url: loginUrl,
-      header: { "Content-Type": "application/x-www-form-urlencoded" },
+      header: { "Content-Type": "application/x-www-form-urlencoded", 'env': env },
       data: params,
       method: "POST",
       success: function (res) {

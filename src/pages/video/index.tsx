@@ -32,8 +32,7 @@ import {
 } from "@/common/interface";
 import {THide, THideT, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
-import {getSystemInfo} from "@/common/tools";
-import {GetStorage, GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
+import { GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -138,7 +137,7 @@ export default function VideoView() {
     };
   }, []);
   const getVideoList = (params) => {
-    TShow("加载中...", "loading", 30000);
+    // TShow("加载中...", "loading", 30000);
     getVideoIndex(params).then((res) => {
       let btnArr: any = [...dataList];
       const { info, list } = res.data;
@@ -155,20 +154,19 @@ export default function VideoView() {
       // let curentList = reverList.find(()=>{item.})
 
       let c_id = params?.current || info?.history_sub_id;
-      console.log(params.current, info.history_sub_id)
       if(GetStorageSync("currentStatus")){
         if(!params.current && info?.history_sub_id) {
           SetStorageSync("currentStatus", "");
+        }else {
+          c_id = list[Object.keys(list)[0]][0].id;
         }
-        c_id = list[Object.keys(list)[0]][0].id;
-        if(GetStorageSync("nowValPay")){
+        if(GetStorageSync("nowValPay") == "1"){
           c_id = GetStorageSync("nowVal");
           SetStorageSync("nowVal", 0)
           SetStorageSync("nowValPay", 0)
         }
       }
-      console.log(params.current, info)
-
+      console.log(c_id , '当前视频id')
       for (let key in list) {
         if(!c_id) {c_id = list[key][0].id};
         arr.push({
@@ -178,12 +176,12 @@ export default function VideoView() {
         for (let i in list[key]) {
           let v_info = list[key][i];
           resData.push(v_info);
-
           if (c_id == v_info.id) {
+            console.log(c_id, v_info, '当前视频id22222')
             if (!v_info.is_pay) {
               TShow("解锁中", "loading", 2000);
               setTimeout(() => {
-                getVideoPay({ v_s_id: info.id }).then((res) => {
+                getVideoPay({ v_s_id: v_info.id }).then((res) => {
                   if (res.code == 101) {
                     naviToHotOne(info);
                     if(!params.current && info?.history_sub_id) {
@@ -193,13 +191,13 @@ export default function VideoView() {
                   } else if (res.code == 200) {
                     THide();
                     TShow("购买成功");
-                    getVideoList({ v_id: dataInfo.id, current: info.id });
+                    getVideoList({ v_id: dataInfo.id, current: v_info.id });
                     return;
                   }
                   THide();
                 });
               }, 1400);
-              return;
+              // return;
             }
             getVideoUpdate({ v_s_id: v_info.id }).then((res)=>{
               setCurrent({
@@ -220,7 +218,7 @@ export default function VideoView() {
       });
       setBtnList(arr);
       setAllList(resData);
-      THideT()
+      // THideT()
       Taro.useShareAppMessage((res) => {
         if (res.from === "button") {
           console.log(res.target);
@@ -322,6 +320,7 @@ export default function VideoView() {
     setCurrent({ ...current, b_list: info.list, page: id, data: list });
   };
   const naviToHotOne = (info?: any) => {
+    console.log(info, 'reg1');
     SetStorageSync("nowVal", info?.id);
     Taro.navigateTo({
       url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
@@ -338,11 +337,13 @@ export default function VideoView() {
       setCurrent({ ...current, v_id: info.id });
     }
     if (!info.is_pay) {
-      TShow("解锁中", "loading", 2000);
+      TShow("解锁中", "loading", 3000);
       setTimeout(() => {
         getVideoPay({ v_s_id: info.id }).then((res) => {
           if (res.code == 101) {
-            naviToHotOne();
+            naviToHotOne(info);
+            console.log(info, '444');
+            SetStorageSync("currentStatus", info?.id);
             return;
           } else if (res.code == 200) {
             THide();
@@ -517,7 +518,6 @@ export default function VideoView() {
                         onEnded={onEnded}
                         showPlayBtn
                         showFullscreenBtn={false}
-
                         autoplay
                         enablePlayGesture
                         showCenterPlayBtn

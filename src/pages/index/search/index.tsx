@@ -67,7 +67,7 @@ export default function Cate() {
   const getCurrentList = () => {
     setLoading(true);
     getCurrentSearch({ kw: value, p: 1 });
-    if (value?.length > 0) {
+    if (value.trim()?.length > 0) {
       let list = GetStorageSync("kw");
       if (!list) {
         list = [];
