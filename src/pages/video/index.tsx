@@ -155,7 +155,6 @@ export default function VideoView() {
       let arr = [];
       let resData = [];
       let c_id = params?.current || info?.history_sub_id;
-      console.log(params?.current, info?.history_sub_id, GetStorageSync("currentStatus"))
       if(GetStorageSync("currentStatus")){
         if(!params.current && info?.history_sub_id) {
           SetStorageSync("currentStatus", "");
@@ -222,14 +221,13 @@ export default function VideoView() {
       setAllList(resData);
       // THideT()
 
-      let userInfo: any = GetStorageSync("allJson");
       Taro.useShareAppMessage((res) => {
         if (res.from === "button") {
           console.log(res.target);
         }
         return {
           title: info.name,
-          path: "/pages/video/index?iv="+userInfo.sn,
+          path: "/pages/video/index",
         };
       });
     });
@@ -324,7 +322,6 @@ export default function VideoView() {
     setCurrent({ ...current, b_list: info.list, page: id, data: list });
   };
   const naviToHotOne = (info?: any) => {
-    console.log(info, 'reg1');
     SetStorageSync("nowVal", info?.id);
     Taro.navigateTo({
       url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
