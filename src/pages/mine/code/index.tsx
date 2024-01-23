@@ -3,7 +3,7 @@ import {
   ScrollView,
   Image,
   Swiper,
-  SwiperItem,
+  SwiperItem, Button,
 } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
@@ -126,18 +126,25 @@ export default function Code() {
     return data;
   };
   const saveImage = () => {
-    Taro.saveImageToPhotosAlbum({
+    Taro.downloadFile({
       url: info.spread_qrcode,
-      success: (res) => {
-        TShow("保存成功");
-      },
-      fail: (res) => {
-        TShow("保存失败");
-      },
+      success: function (res) {
+        if (res.statusCode === 200) {
+          console.log(res);
+          Taro.saveImageToPhotosAlbum({
+            url: res.tempFilePath,
+            success: (res) => {
+              TShow("保存成功");
+            },
+            fail: (res) => {
+              TShow("微信权限申请中，暂时无法使用");
+            },
+          });
+        }
+      }
     });
   };
   const shareImage = () => {
-    console.log(info);
     Taro.downloadFile({
       url: info.spread_qrcode,
       success: (res) => {
@@ -251,24 +258,32 @@ export default function Code() {
                 <Image className="control_view_img" src={down} />
                 保存图片
               </View>
-              <View className="control_view" onClick={shareImage}>
+              {/*<View className="control_view" onClick={shareImage}>*/}
+              {/*  <Image className="control_view_img" src={share} />*/}
+              {/*  分享好友*/}
+              {/*</View>*/}
+              <Button
+                className="control_view"
+                openType="share"
+                hoverClass="index_label_active"
+              >
                 <Image className="control_view_img" src={share} />
                 分享好友
-              </View>
+              </Button>
             </View>
           </View>
           <View className="desc">
             <View className="title">剧推官权益说明</View>
             <View className="desc">
-              <View>
-                1、用户等级分为普通会员、普通剧推官、金牌剧推官、钻石剧推官四个等级，注册登录后自动成为普通会员；
-              </View>
-              <View>
-                2、分享剧推码给好友，好友扫码下载APP并注册后，即成功邀请好友，达到一定数量等级将自动升级；
-              </View>
-              <View>
-                3、被邀请人在平台消费，你将获得一定奖励，不同等级剧推官获得奖励不同，等级越高奖励越多。
-              </View>
+              {/*<View>*/}
+              {/*  1、用户等级分为普通会员、普通剧推官、金牌剧推官、钻石剧推官四个等级，注册登录后自动成为普通会员；*/}
+              {/*</View>*/}
+              {/*<View>*/}
+              {/*  2、分享剧推码给好友，好友进入小程序后，即成功邀请好友，达到一定数量等级将自动升级；*/}
+              {/*</View>*/}
+              {/*<View>*/}
+              {/*  3、被邀请人在平台消费，你将获得一定奖励，不同等级剧推官获得奖励不同，等级越高奖励越多。*/}
+              {/*</View>*/}
               {desc.map((item) => {
                   return (
                     <View>

@@ -8,16 +8,13 @@ import con from "../../../../static/icon/_con.png";
 import dis from "../../../../static/icon/_dis.png";
 import {
   getMemberInfo,
-  getPayHandle,
   getPayOrder,
   getPayStatus,
-  getPayViOrder,
   getWalletProducts,
 } from "@/common/interface";
-import { GetStorageSync } from "@/store/storage";
+import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
 import { THide, TShow } from "@/common/common";
-import { getSystemInfo } from "@/common/tools";
 
 let timer = null;
 let times = 0;
@@ -31,6 +28,7 @@ export default function Search() {
     active: 1,
     bar: 1,
     type: 1,
+    is_pay: 0
   });
   const [list, setList] = useState([
     {
@@ -48,6 +46,10 @@ export default function Search() {
     if (params?.type) {
       _option.type = params?.type;
     }
+    if (params?.is_pay) {
+      _option.is_pay = params?.is_pay;
+    }
+    console.log(option, 'dev')
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;
     _option.statusBarHeight = rect.height;
@@ -57,8 +59,8 @@ export default function Search() {
         _option.screenHeight = res.screenHeight;
       },
     });
-    getProList();
     setOption({ ..._option });
+    getProList();
   });
 
   const currentMemberInfo = (bool) => {
@@ -108,11 +110,15 @@ export default function Search() {
         THide();
         TShow("充值成功");
         bool = true;
+        SetStorageSync("nowValPay", 1);
         currentMemberInfo(true);
       });
     }, 400);
   };
   const payOrder = () => {
+    if(!inList||inList?.length<=0){
+      return;
+    }
     TShow("", "loading", 10000);
     let allJson = GetStorageSync("allJson");
     let params = {};
@@ -244,7 +250,10 @@ export default function Search() {
         text="充值"
       />
       <View className="index_content">
-        <View className="index_content_banner">创作不易，感谢您的支持</View>
+        <View className="index_content_banner">
+          <View>创作不易，感谢您的支持</View>
+          {option.is_pay?<View>解锁当前剧集需要{option.is_pay}积分</View>:null}
+        </View>
         <View className="index_content_icon">
           <View className="index_content_icon_text">
             <View className="text_main">
@@ -340,8 +349,7 @@ export default function Search() {
           </View>
         </View>
         <View
-          className="index_content_btn"
-          hoverClass="index_content_active"
+          className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
           onClick={payOrder}
         >
           确认支付

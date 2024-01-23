@@ -106,7 +106,7 @@ export default function List() {
   };
 
   const getDefaultList = async () => {
-    let arr = [...btnList];
+    let arr:any = [...btnList];
     arr[0] = { ...arr[0], ...(await videoHistory({ p: 1 })) };
     arr[1] = { ...arr[1], ...(await videoFavorite({ p: 1, type: 2 })) };
     arr[2] = { ...arr[2], ...(await videoFavorite({ p: 1, type: 1 })) };
@@ -200,6 +200,7 @@ export default function List() {
               initialTime={0}
               controls={false}
               autoplay
+              enable-progress-gesture={false}
               muted
               showPlayBtn
               showFullscreenBtn={false}

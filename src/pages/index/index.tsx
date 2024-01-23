@@ -4,7 +4,7 @@ import {
   ScrollView,
   Image,
   Video,
-  CoverView, Swiper, SwiperItem,
+  Swiper, SwiperItem,
 } from "@tarojs/components";
 import Taro, { useDidShow, useLoad, useRouter } from "@tarojs/taro";
 import "taro-ui/dist/style/components/button.scss";
@@ -30,10 +30,8 @@ import { IndexCard } from "@/components/indexCard";
 import { IndexVideo } from "@/components/IndexVideo";
 import { setInterFun, setTimerFun } from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
-import { HeaderView } from "@/components/headerView";
 import {FloatView} from "@/components/floatView";
 import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
-import setStorage = apis.setStorage;
 
 export default function Index() {
   const router = useRouter();
@@ -66,6 +64,13 @@ export default function Index() {
     setScrollTop(scrollTop ? 0 : 1);
   };
   useLoad(() => {
+    Taro.getPrivacySetting({
+      success: (res)=>{
+        if(res.needAuthorization){
+
+        }
+      }
+    })
     const params = router.params;
     if (params?.scene) {
       let sn = decodeURIComponent(params.scene);
@@ -241,10 +246,12 @@ export default function Index() {
       url: "../video/index?id=" + id,
     });
   };
-  const hideShowFun = () => {
 
-  }
-
+  const naviToVideoDetail = (id) => {
+    Taro.navigateTo({
+      url: "../video/index?id=" + id,
+    });
+  };
   const currentSwiper = useMemo(() => {
     if (bannerList.length <= 0) {
       return null;
@@ -262,7 +269,6 @@ export default function Index() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  console.log(item)
                   naviToVideoDetail(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
@@ -282,7 +288,7 @@ export default function Index() {
           <Loading size={80} />
         </View>
       );
-    } else {
+    } else if (headerVideo?.url) {
       return (
         <>
           <Video
@@ -293,6 +299,7 @@ export default function Index() {
             initialTime={0}
             controls={false}
             autoplay
+            enable-progress-gesture={false}
             muted
             loop
             onClick={() => naviToVideo(headerVideo?.id)}
@@ -328,7 +335,6 @@ export default function Index() {
         </View>
       );
     } else {
-      console.log('88', option.active)
       return (
         <>
           <View className="components-video-buttons">

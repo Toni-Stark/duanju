@@ -31,7 +31,7 @@ function cloudRequest(paramsList) {
         success: function (res) {
           var {code} = res.data;
           if (res.statusCode != 200)
-            return Taro.showToast({title: "title", icon: "网络超时"});
+            return Taro.showToast({title: "title",	mask:true, icon: "网络超时"});
           if (code == 200) {
             isRefreshing = false;
             return resolve(res.data);

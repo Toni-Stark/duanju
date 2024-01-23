@@ -35,13 +35,17 @@ export default function Edit() {
     Taro.navigateBack();
   };
   const editNickName = () => {
-    setMember({ nickname: option.value }).then((res) => {
-      if (res.code !== 200) {
-        TShow(res.msg);
-        return;
-      }
-      Taro.navigateBack();
-    });
+    if(option.value?.trim().length>0){
+      setMember({ nickname: option.value }).then((res) => {
+        if (res.code !== 200) {
+          TShow(res.msg);
+          return;
+        }
+        Taro.navigateBack();
+      });
+      return;
+    }
+    TShow("请输入昵称")
   };
   const changeValue = (e) => {
     setOption({ ...option, value: e.detail.value });

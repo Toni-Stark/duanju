@@ -62,7 +62,7 @@ export default function Cate() {
   };
   const refreshChange = () => {
     setOption({ ...option, refresh: true });
-    getCurrentList({ kw: value, p: 1 });
+    getCurrentList();
   };
   const getCurrentList = () => {
     setLoading(true);

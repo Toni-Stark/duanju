@@ -28,7 +28,7 @@ export const getCheckLogin = () => {
                 success: function (res) {
                   let { code, data } = res.data;
                   if (res.statusCode === 300)
-                    return Taro.showToast({ title: "网络超时", icon: "none" });
+                    return Taro.showToast({ title: "网络超时",	mask:true, icon: "none" });
                   if (code === 200) return resolve(data);
                   if (code === 401) {
                     let params = {
@@ -78,7 +78,7 @@ export const getLogin = (option) => {
       success: function (res) {
         let { code, data } = res.data;
         if (res.statusCode === 300)
-          return Taro.showToast({ title: "网络超时", icon: "none" });
+          return Taro.showToast({ title: "网络超时",	mask:true, icon: "none" });
         if (code === 200) {
           RemoveStorageSync("pn_data");
           return resolve(data);
@@ -93,6 +93,7 @@ export const TShow = (text, icon = "none", duration = 1500) => {
   return new Promise((resolve) => {
     Taro.showToast({
       title: text,
+      mask:true,
       icon,
       duration,
     }).then(() => {

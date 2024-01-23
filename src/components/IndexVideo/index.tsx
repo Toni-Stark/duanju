@@ -25,6 +25,8 @@ export const IndexVideo = (props: Props) => {
         poster={data.img}
         initialTime={0}
         controls={false}
+        enable-progress-gesture={false}
+
         autoplay
         loop
         muted

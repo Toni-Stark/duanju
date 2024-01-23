@@ -33,7 +33,7 @@ import {
 import {THide, THideT, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {getSystemInfo} from "@/common/tools";
-import {SetStorage, SetStorageSync} from "@/store/storage";
+import {GetStorage, GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -151,8 +151,26 @@ export default function VideoView() {
       setDataList([...btnArr]);
       let arr = [];
       let resData = [];
+      // let reverList = [...list].reverse();
+      // let curentList = reverList.find(()=>{item.})
+
+      let c_id = params?.current || info?.history_sub_id;
+      console.log(params.current, info.history_sub_id)
+      if(GetStorageSync("currentStatus")){
+        if(!params.current && info?.history_sub_id) {
+          SetStorageSync("currentStatus", "");
+        }
+        c_id = list[Object.keys(list)[0]][0].id;
+        if(GetStorageSync("nowValPay")){
+          c_id = GetStorageSync("nowVal");
+          SetStorageSync("nowVal", 0)
+          SetStorageSync("nowValPay", 0)
+        }
+      }
+      console.log(params.current, info)
+
       for (let key in list) {
-        let c_id = params?.current || info?.history_sub_id || list[key][0].id;
+        if(!c_id) {c_id = list[key][0].id};
         arr.push({
           title: key,
           list: list[key],
@@ -160,9 +178,30 @@ export default function VideoView() {
         for (let i in list[key]) {
           let v_info = list[key][i];
           resData.push(v_info);
+
           if (c_id == v_info.id) {
+            if (!v_info.is_pay) {
+              TShow("解锁中", "loading", 2000);
+              setTimeout(() => {
+                getVideoPay({ v_s_id: info.id }).then((res) => {
+                  if (res.code == 101) {
+                    naviToHotOne(info);
+                    if(!params.current && info?.history_sub_id) {
+                      SetStorageSync("currentStatus", info?.history_sub_id);
+                    }
+                    return;
+                  } else if (res.code == 200) {
+                    THide();
+                    TShow("购买成功");
+                    getVideoList({ v_id: dataInfo.id, current: info.id });
+                    return;
+                  }
+                  THide();
+                });
+              }, 1400);
+              return;
+            }
             getVideoUpdate({ v_s_id: v_info.id }).then((res)=>{
-              console.log(res.data, '222');
               setCurrent({
                 ...current,
                 b_list: list[key],
@@ -282,9 +321,10 @@ export default function VideoView() {
     let info = btnList.find((item) => item.title === id);
     setCurrent({ ...current, b_list: info.list, page: id, data: list });
   };
-  const naviToHotOne = () => {
+  const naviToHotOne = (info?: any) => {
+    SetStorageSync("nowVal", info?.id);
     Taro.navigateTo({
-      url: "../mine/wallet/recharge/index",
+      url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
     });
   };
 
@@ -477,6 +517,7 @@ export default function VideoView() {
                         onEnded={onEnded}
                         showPlayBtn
                         showFullscreenBtn={false}
+
                         autoplay
                         enablePlayGesture
                         showCenterPlayBtn

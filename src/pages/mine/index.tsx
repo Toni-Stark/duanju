@@ -112,6 +112,13 @@ export default function Mine() {
           ...option,
           is_signed: 1,
         });
+        getMemberInfo().then((res) => {
+          setOption({
+            ...option,
+            ...res.data,
+            loading: true,
+          });
+        });
       }
     });
   };
