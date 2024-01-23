@@ -2,8 +2,8 @@ import {
   View,
   ScrollView,
   Image,
-  Swiper,
-  SwiperItem, Button,
+
+   Button,
 } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
@@ -18,6 +18,7 @@ import share from "../../../static/icon/share.png";
 import { getMemberInfo, getMemberSpread } from "@/common/interface";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Code() {
   const [option, setOption] = useState({
@@ -27,6 +28,18 @@ export default function Code() {
     screenHeight: 0,
     more: false,
   });
+  let userInfo: any = GetStorageSync("allJson");
+  Taro.useShareAppMessage(res => {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+      console.log(res.target)
+    }
+    return {
+      title: '长城传奇影视数字文化',
+      path: '/pages/index/index?iv='+userInfo.sn,
+      // imageUrl: 'http://video.cdn.hbcyszw.cn/20240123/0aada7a269758c846213e7aa39bab378.png?e=1706022079&token=W39vzYy5lPdtMqdtoaJT3AFpFvtbh15PfHxDbRwG:eptnk3yxRjbx5GHTOdIAt9pGsgs='
+    }
+  })
   const [refresh, setRefresh] = useState(false);
   const [current, setCurrent] = useState(0);
   const [info, setInfo] = useState(undefined);
@@ -90,8 +103,10 @@ export default function Code() {
         _option.screenHeight = res.screenHeight;
       },
     });
+
     getMemberInfo().then((res) => {
       setInfo(res.data);
+
       currentMemberSpread();
     });
     setOption({ ..._option });
@@ -262,18 +277,18 @@ export default function Code() {
                 <Image className="control_view_img" src={down} />
                 保存图片
               </View>
-              <View className="control_view" onClick={shareImage}>
-                <Image className="control_view_img" src={share} />
-                分享好友
-              </View>
-              {/*<Button*/}
-              {/*  className="control_view"*/}
-              {/*  openType="share"*/}
-              {/*  hoverClass="index_label_active"*/}
-              {/*>*/}
+              {/*<View className="control_view" onClick={shareImage}>*/}
               {/*  <Image className="control_view_img" src={share} />*/}
               {/*  分享好友*/}
-              {/*</Button>*/}
+              {/*</View>*/}
+              <Button
+                className="control_view"
+                openType="share"
+                hoverClass="index_label_active"
+              >
+                <Image className="control_view_img" src={share} />
+                分享好友
+              </Button>
             </View>
           </View>
           <View className="desc">

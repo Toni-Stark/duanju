@@ -63,6 +63,7 @@ export const getLogin = (option, env) => {
   };
   if (iv) {
     params.iv = iv;
+    SetStorageSync("sn", "");
   }
   if (pn) {
     params.pn = pn;

@@ -77,10 +77,10 @@ export default function Wallet() {
             去充值
           </View>
         </View>
-        <View className="index_content_bug">
-          <View className="title">余额</View>
-          <View className="value">0.00</View>
-        </View>
+        {/*<View className="index_content_bug">*/}
+        {/*  <View className="title">余额</View>*/}
+        {/*  <View className="value">0.00</View>*/}
+        {/*</View>*/}
         <View className="index_content_list">
           <View className="index_item" onClick={() => naviToList(0)}>
             充值记录

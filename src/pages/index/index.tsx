@@ -31,7 +31,6 @@ import { IndexVideo } from "@/components/IndexVideo";
 import { setInterFun, setTimerFun } from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
-import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
 
 export default function Index() {
   const router = useRouter();
@@ -75,6 +74,10 @@ export default function Index() {
     if (params?.scene) {
       let sn = decodeURIComponent(params.scene);
       SetStorageSync("sn", sn.split("=")[1]);
+    }
+    if (params?.iv) {
+      let sn = decodeURIComponent(params.iv);
+      SetStorageSync("sn", sn);
     }
     Taro.getSystemInfoAsync({
       success: (res) => {
@@ -433,8 +436,9 @@ export default function Index() {
           <View
             className="index_zone_view_header"
             style={{
-              marginTop: pch + option.statusBarHeight,
-              height: option.barHeight,
+              marginTop: pch + option.barHeight,
+              height: option.statusBarHeight,
+              paddingLeft: 20
             }}
           >
             <Image

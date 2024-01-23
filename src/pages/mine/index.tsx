@@ -148,10 +148,10 @@ export default function Mine() {
               </View>
               <View className="content-wel-main-list">
                 <View className="content-wel-main-list-title">
-                  ID:{option.id}
+                  ID：{option.id}
                 </View>
                 <View className="content-wel-main-list-title">
-                  {option.spread_level_desc}
+                   {option.spread_level_desc}
                 </View>
               </View>
             </View>

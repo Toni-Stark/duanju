@@ -89,6 +89,10 @@ export default function VideoView() {
 
   useDidShow(() => {
     const params: any = router.params;
+    if (params?.iv) {
+      let sn = decodeURIComponent(params.iv);
+      SetStorageSync("sn", sn);
+    }
     if (params?.pn) {
       SetStorage('pn', params?.pn).then(()=>{
         SetStorage('pn_data', params).then(()=>{
@@ -150,23 +154,22 @@ export default function VideoView() {
       setDataList([...btnArr]);
       let arr = [];
       let resData = [];
-      // let reverList = [...list].reverse();
-      // let curentList = reverList.find(()=>{item.})
-
       let c_id = params?.current || info?.history_sub_id;
+      console.log(params?.current, info?.history_sub_id, GetStorageSync("currentStatus"))
       if(GetStorageSync("currentStatus")){
         if(!params.current && info?.history_sub_id) {
           SetStorageSync("currentStatus", "");
-        }else {
           c_id = list[Object.keys(list)[0]][0].id;
         }
-        if(GetStorageSync("nowValPay") == "1"){
+      }
+      if(GetStorageSync("currentHand")) {
+        SetStorageSync("currentHand", "");
+        if (GetStorageSync("nowValPay") == "1") {
           c_id = GetStorageSync("nowVal");
           SetStorageSync("nowVal", 0)
           SetStorageSync("nowValPay", 0)
         }
       }
-      console.log(c_id , '当前视频id')
       for (let key in list) {
         if(!c_id) {c_id = list[key][0].id};
         arr.push({
@@ -177,7 +180,6 @@ export default function VideoView() {
           let v_info = list[key][i];
           resData.push(v_info);
           if (c_id == v_info.id) {
-            console.log(c_id, v_info, '当前视频id22222')
             if (!v_info.is_pay) {
               TShow("解锁中", "loading", 2000);
               setTimeout(() => {
@@ -191,7 +193,7 @@ export default function VideoView() {
                   } else if (res.code == 200) {
                     THide();
                     TShow("购买成功");
-                    getVideoList({ v_id: dataInfo.id, current: v_info.id });
+                    getVideoList({ v_id: info.id, current: v_info.id });
                     return;
                   }
                   THide();
@@ -219,13 +221,15 @@ export default function VideoView() {
       setBtnList(arr);
       setAllList(resData);
       // THideT()
+
+      let userInfo: any = GetStorageSync("allJson");
       Taro.useShareAppMessage((res) => {
         if (res.from === "button") {
           console.log(res.target);
         }
         return {
           title: info.name,
-          path: "/pages/video/index",
+          path: "/pages/video/index?iv="+userInfo.sn,
         };
       });
     });
@@ -342,8 +346,7 @@ export default function VideoView() {
         getVideoPay({ v_s_id: info.id }).then((res) => {
           if (res.code == 101) {
             naviToHotOne(info);
-            console.log(info, '444');
-            SetStorageSync("currentStatus", info?.id);
+            SetStorageSync("currentHand", info?.id);
             return;
           } else if (res.code == 200) {
             THide();
