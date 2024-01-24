@@ -31,6 +31,7 @@ import { IndexVideo } from "@/components/IndexVideo";
 import { setInterFun } from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
+import {NoneView} from "@/components/noneView";
 
 export default function Index() {
   const router = useRouter();
@@ -459,6 +460,12 @@ export default function Index() {
             </View>
           </>
         );
+      } else {
+        return (
+          <View className="components-video-scroll center">
+            <NoneView />
+          </View>
+        )
       }
     }
   }, [reComm, loading2]);
