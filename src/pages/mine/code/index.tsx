@@ -144,9 +144,10 @@ export default function Code() {
     Taro.downloadFile({
       url: info.spread_qrcode,
       success: function (res) {
+        console.log(res.tempFilePath)
         if (res.statusCode === 200) {
           Taro.saveImageToPhotosAlbum({
-            url: res.tempFilePath,
+            filePath: res.tempFilePath,
             success: (res) => {
               TShow("保存成功");
             },

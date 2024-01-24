@@ -6,7 +6,7 @@ import {
   MovableArea,
   MovableView,
 } from "@tarojs/components";
-import Taro, { useDidShow, useLoad, useRouter } from "@tarojs/taro";
+import Taro, { useDidShow, useRouter } from "@tarojs/taro";
 import { AtButton, AtFloatLayout } from "taro-ui";
 import "taro-ui/dist/style/components/loading.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
@@ -30,7 +30,7 @@ import {
   getVideoPay,
   getVideoUpdate,
 } from "@/common/interface";
-import {THide, THideT, TShow} from "@/common/common";
+import {THide, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import { GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 

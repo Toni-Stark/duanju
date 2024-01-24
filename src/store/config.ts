@@ -1,5 +1,3 @@
-import Taro from "@tarojs/taro";
-
 const config = {
   wx: {
     dev: {
@@ -37,7 +35,5 @@ const config = {
     },
   },
 };
-// 微信小程序
-// export const env = envConf[Taro.getAccountInfoSync().miniProgram.envVersion];
 // 抖音小程序
 export const env = config["wx"]["dev"];

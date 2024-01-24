@@ -11,7 +11,6 @@ function App({ children }: PropsWithChildren<any>) {
     const updateManager = Taro.getUpdateManager();
     // 请求完新版本信息的回调
     updateManager.onCheckForUpdate((res) => {
-      console.log(res);
       if (res.hasUpdate) {
         // 新版本下载成功
         updateManager.onUpdateReady(() => {
