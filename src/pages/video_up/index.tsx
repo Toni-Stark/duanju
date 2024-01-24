@@ -76,9 +76,19 @@ export default function VideoView() {
   const [currentInfo, setCurrentInfo] = useState(undefined);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  let userInfo: any = GetStorageSync("allJson");
+  Taro.useShareAppMessage((res) => {
+    if (res.from === "button") {
+      console.log(res.target);
+    }
+    return {
+      title: dataInfo.name,
+      path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
+    };
+  });
   useDidShow(() => {
     const params: any = router.params;
+
     if (params?.iv) {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
@@ -253,7 +263,6 @@ export default function VideoView() {
   };
 
   const naviToHotOne = (info?: any) => {
-    SetStorageSync("nowVal", info?.id);
     Taro.navigateTo({
       url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
     });
@@ -278,7 +287,6 @@ export default function VideoView() {
         getVideoPay({ v_s_id: info.id }).then((res) => {
           if (res.code == 101) {
             naviToHotOne(info);
-            SetStorageSync("currentHand", info?.id);
             return;
           } else if (res.code == 200) {
             THide();
@@ -347,56 +355,63 @@ export default function VideoView() {
     )
   }, [pages])
 
-  const currentSwiper = useMemo(()=>{
-
+  const currentViewVideo = (ind, index) => {
+    if (index === ind) {
       return (
-        <Swiper
-          className='swiper_view'
-          indicatorColor='#999'
-          indicatorActiveColor='#333'
-          current={index}
-          duration={loading?0:500}
-          scrollWithAnimation={false}
-          skipHiddenItemLayout={true}
-          onChange={swiperChange}
-          vertical>
-          {
-            allList?.map((item, ind)=>{
-              return (
-                <SwiperItem>
-                  <View className='swiper_item'>
-                    <View className="center_video">
-                      {index === ind ? (
-                        <Video
-                          className="center_video_large"
-                          src={currentInfo?.url}
-                          poster={dataInfo?.img}
-                          initialTime={0}
-                          controls
-                          onPlay={startPlay}
-                          onPause={stopPlay}
-                          onEnded={onEnded}
-                          showPlayBtn
-                          showFullscreenBtn={false}
-                          autoplay
-                          enablePlayGesture
-                          showCenterPlayBtn
-                          playBtnPosition="center"
-                          loop={false}
-                          objectFit="fill"
-                        />
-                      ) : (
-                        <Image className="center_video_img" src={dataInfo?.img} />
-                      )}
-                    </View>
-                    <View className='swiper_item_footer' />
-                  </View>
-                </SwiperItem>
-              )
-            })
-          }
-        </Swiper>
+        <Video
+          className="center_video_large"
+          src={currentInfo?.url}
+          poster={dataInfo?.img}
+          initialTime={0}
+          controls
+          onPlay={startPlay}
+          onPause={stopPlay}
+          onEnded={onEnded}
+          showPlayBtn
+          showFullscreenBtn={false}
+          autoplay
+          enablePlayGesture
+          showCenterPlayBtn
+          playBtnPosition="center"
+          loop={false}
+          objectFit="fill"
+        />
       )
+    }
+    return (
+      <Image className="center_video_img" src={dataInfo?.img}/>
+    )
+  }
+
+  const currentSwiper = useMemo(()=>{
+    console.log(loading)
+    return (
+      <Swiper
+        className='swiper_view'
+        indicatorColor='#999'
+        indicatorActiveColor='#333'
+        current={index}
+        duration={loading?0:500}
+        scrollWithAnimation={false}
+        skipHiddenItemLayout={true}
+        onChange={swiperChange}
+        vertical>
+        {
+          allList?.map((item, ind)=>{
+            return (
+              <SwiperItem>
+                <View className='swiper_item'>
+                  <View className="center_video">
+                    {currentViewVideo(ind, index)}
+                  </View>
+                  <View className='swiper_item_footer' />
+                </View>
+              </SwiperItem>
+            )
+          })
+        }
+      </Swiper>
+    )
   }, [index,loading, allList, dataInfo, currentInfo])
 
   // 弹窗视频列表

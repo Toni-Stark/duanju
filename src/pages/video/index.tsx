@@ -223,15 +223,7 @@ export default function VideoView() {
       setBtnList(arr);
       setAllList(resData);
       // THideT()
-      Taro.useShareAppMessage((res) => {
-        if (res.from === "button") {
-          console.log(res.target);
-        }
-        return {
-          title: info.name,
-          path: "/pages/video/index",
-        };
-      });
+
     });
   };
 
