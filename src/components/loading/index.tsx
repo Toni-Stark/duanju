@@ -1,6 +1,4 @@
-import { Image, Text, View } from "@tarojs/components";
-
-import img from "../../static/source/none.png";
+import { View } from "@tarojs/components";
 
 import "./index.less";
 

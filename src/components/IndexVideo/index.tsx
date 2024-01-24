@@ -17,9 +17,9 @@ export const IndexVideo = (props: Props) => {
     });
   };
   return (
-    <View className="vvview-large" onClick={() => naviToVideo(data.id)}>
+    <View className="mini-view-large" onClick={() => naviToVideo(data.id)}>
       <Video
-        className="vvview-large-video"
+        className="mini-view-large-video"
         style={{ height: height + "px" }}
         src={data.url}
         poster={data.img}
@@ -32,7 +32,7 @@ export const IndexVideo = (props: Props) => {
         objectFit="cover"
         id={id}
       />
-      <text className="vvview-large-desc">{data.describe}</text>
+      <text className="mini-view-large-desc">{data.describe}</text>
     </View>
   );
 };

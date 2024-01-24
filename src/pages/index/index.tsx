@@ -428,7 +428,8 @@ export default function Index() {
         return (
           <>
             <View className="components-video-scroll">
-              <ScrollView scrollX>
+              {/*<ScrollView scrollX enhanced showScrollbar={false}>*/}
+              <View className="scroll_view_style">
                 <View className="scroll-list">
                   {reComm.map((item, index) => {
                     return (
@@ -454,7 +455,7 @@ export default function Index() {
                   })}
                   <View className="button-pad" />
                 </View>
-              </ScrollView>
+              </View>
             </View>
           </>
         );

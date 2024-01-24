@@ -60,6 +60,7 @@ export default function Code() {
     });
   };
   const saveImage = () => {
+    TShow('保存中', 'loading')
     Taro.downloadFile({
       url: info.spread_qrcode,
       success: function (res) {

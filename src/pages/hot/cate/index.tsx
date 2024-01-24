@@ -2,7 +2,7 @@ import { View, ScrollView, Image } from "@tarojs/components";
 import Taro, { useLoad, useRouter } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import top from "../../../static/icon/top.png";
 import { AtButton } from "taro-ui";
 import { getIndexTagsVideo} from "@/common/interface";
@@ -88,6 +88,89 @@ export default function Search() {
       url: "../../video/index?id=" + id,
     });
   };
+
+  const currentNoneView = useMemo(()=>{
+    if(dataList.length > 0) {
+      return (
+        <View className="index-footer">
+          {option.more ? (
+            <View className="index-footer-view">加载中...</View>
+          ) : (
+            <View className="index-footer-view">暂无更多</View>
+          )}
+        </View>
+      )
+    } else {
+      return (
+        <View
+          style={{
+            height: "35Vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <NoneView />
+        </View>
+      )
+    }
+  }, [dataList, option])
+  const currentContext = useMemo(()=>{
+    return (
+      <View className="navi-data">
+        {dataList.map((item) => {
+          return (
+            <View
+              className="navi-data-item"
+              onClick={() => {
+                naviToVideo(item.id);
+              }}
+            >
+              <Image src={item.img} mode="aspectFill" className="navi-data-item-img" />
+              <View className="navi-data-item-view">
+                <View className="navi-data-item-view-content">
+                  <View className="navi-data-item-view-content-main">
+                    {item.name}
+                  </View>
+                  <View className="navi-data-item-view-content-eval">
+                    {item.describe}
+                  </View>
+                </View>
+                <View className="navi-data-item-view-eval">
+                  <View>{item.watching}人正在看</View>
+                  <View>更新至第{item.episode}集</View>
+                </View>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    )
+  }, [dataList])
+  const currentSearchTag = useMemo(()=>{
+      if(option.type == "1") {
+        return (
+          <View className="index_buttons">
+            {btnList.map((item, index) => {
+              return (
+                <AtButton
+                  className={item.id === option.active ? "active" : ""}
+                  key={index}
+                  type="primary"
+                  size="normal"
+                  onClick={() => {
+                    setActive(item.id);
+                  }}
+                >
+                  {item.name}
+                </AtButton>
+              );
+            })}
+            <View className="button-pad"/>
+          </View>
+        )
+      }
+  }, [option, btnList])
   return (
     <View className="index">
       <HeaderView
@@ -95,27 +178,8 @@ export default function Search() {
         height={option.statusBarHeight}
         text={option?.title || "更多分类"}
       />
-      {option.type == "1" ? (
-        <View className="index_buttons">
-          {btnList.map((item, index) => {
-            return (
-              <AtButton
-                className={item.id === option.active ? "active" : ""}
-                key={index}
-                type="primary"
-                size="normal"
-                onClick={() => {
-                  setActive(item.id);
-                }}
-              >
-                {item.name}
-              </AtButton>
-            );
-          })}
-          <View className="button-pad" />
-        </View>
-      ) : null}
-
+      {/* 分类按钮 */}
+      {currentSearchTag}
       <View className="index_zone">
         <ScrollView
           className="index_zone_view"
@@ -135,54 +199,8 @@ export default function Search() {
           <View id="top" />
           {loading ? (
             <View className="index_zone_view_content">
-              <View className="navi-data">
-                {dataList.map((item) => {
-                  return (
-                    <View
-                      className="navi-data-item"
-                      onClick={() => {
-                        naviToVideo(item.id);
-                      }}
-                    >
-                      <Image src={item.img} mode="aspectFill" className="navi-data-item-img" />
-                      <View className="navi-data-item-view">
-                        <View className="navi-data-item-view-content">
-                          <View className="navi-data-item-view-content-main">
-                            {item.name}
-                          </View>
-                          <View className="navi-data-item-view-content-eval">
-                            {item.describe}
-                          </View>
-                        </View>
-                        <View className="navi-data-item-view-eval">
-                          <View>{item.watching}人正在看</View>
-                          <View>更新至第{item.episode}集</View>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-              {dataList.length > 0 ? (
-                <View className="index-footer">
-                  {option.more ? (
-                    <View className="index-footer-view">加载中...</View>
-                  ) : (
-                    <View className="index-footer-view">暂无更多</View>
-                  )}
-                </View>
-              ) : (
-                <View
-                  style={{
-                    height: "35Vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <NoneView />
-                </View>
-              )}
+              {currentContext}
+              {currentNoneView}
             </View>
           ) : (
             <View className="loading_pla">

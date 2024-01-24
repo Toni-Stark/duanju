@@ -315,6 +315,7 @@ export default function VideoView() {
   };
   const startPlay = async (e) => {
     clearInterval(timerPlay);
+    // 15秒发送一次请求更新观看次数
     timerPlay = null;
     timerPlay = setInterval(async () => {
       timePlay += 1;

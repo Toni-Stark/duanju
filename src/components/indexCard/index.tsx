@@ -30,43 +30,42 @@ export const IndexCard = (props: Props) => {
         <Loading size={40} />
       </View>
     );
-  } else {
-    if (data?.video_list <= 0) {
-      return null;
-    }
-    return (
-      <>
-        <View className="ssview-lar">
-          <Text className="ssview-lar-text">{data.intro}</Text>
-          <View
-            className="ssview-lar-link"
-            onClick={() => {
-              naviToList(data.name, data.id);
-            }}
-          >
-            热门独播
-            <Image
-              mode="widthFix"
-              className="ssview-lar-link-icon"
-              src={right}
-            />
-          </View>
-        </View>
-        <View className="ssview-list">
-          {data?.video_list.map((item) => {
-            return (
-              <View
-                className="ssview-list-item"
-                onClick={() => naviToVideo(item.id)}
-              >
-                <Image className="image" src={item.img} />
-                <Text className="text">{item.name}</Text>
-                <Text className="eval">{item.describe}</Text>
-              </View>
-            );
-          })}
-        </View>
-      </>
-    );
   }
+  if (data?.video_list <= 0) {
+    return null;
+  }
+  return (
+    <>
+      <View className="ssview-lar">
+        <Text className="ssview-lar-text">{data.intro}</Text>
+        <View
+          className="ssview-lar-link"
+          onClick={() => {
+            naviToList(data.name, data.id);
+          }}
+        >
+          热门独播
+          <Image
+            mode="widthFix"
+            className="ssview-lar-link-icon"
+            src={right}
+          />
+        </View>
+      </View>
+      <View className="ssview-list">
+        {data?.video_list.map((item) => {
+          return (
+            <View
+              className="ssview-list-item"
+              onClick={() => naviToVideo(item.id)}
+            >
+              <Image className="image" src={item.img} />
+              <Text className="text">{item.name}</Text>
+              <Text className="eval">{item.describe}</Text>
+            </View>
+          );
+        })}
+      </View>
+    </>
+  );
 };
