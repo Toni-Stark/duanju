@@ -28,7 +28,7 @@ import {
 import { Loading } from "@/components/loading";
 import { IndexCard } from "@/components/indexCard";
 import { IndexVideo } from "@/components/IndexVideo";
-import { setInterFun, setTimerFun } from "@/common/tools";
+import { setInterFun } from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
 
@@ -58,6 +58,10 @@ export default function Index() {
 
   const [message, setMessage] = useState<any>(undefined);
   const [showNew, setShowNew] = useState(false);
+  const [videoElement, setVideoElement] = useState<any>(["#video", true]);
+  const [video1Element, setVideo1Element] = useState<any>(["#video_1", false]);
+  const [video2Element, setVideo2Element] = useState<any>(["#video_2", false]);
+
 
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
@@ -66,7 +70,6 @@ export default function Index() {
     Taro.getPrivacySetting({
       success: (res)=>{
         if(res.needAuthorization){
-
         }
       }
     })
@@ -79,6 +82,7 @@ export default function Index() {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
     }
+    // 屏幕尺寸基础数据
     Taro.getSystemInfoAsync({
       success: (res) => {
         let _option = option;
@@ -90,6 +94,7 @@ export default function Index() {
         setOption({ ..._option });
       },
     });
+    // ios兼容
     Taro.getSystemInfo({
       success: function (result) {
         const rect = Taro.getMenuButtonBoundingClientRect();
@@ -108,6 +113,7 @@ export default function Index() {
     setInterFun(() => {
       refreshReList();
     });
+    // 新剧推荐接口
     getVideoMessage().then((res)=>{
       let time = GetStorageSync("time");
       let bool = true;
@@ -117,7 +123,7 @@ export default function Index() {
       if(bool){
         SetStorageSync("time", new Date().getTime());
         setMessage(res.data);
-        setShowNew(res.data?.video_id?true:false);
+        setShowNew(!!res.data?.video_id);
       }
     })
   });
@@ -188,7 +194,7 @@ export default function Index() {
     });
     currentRecommendList(88).then(() => {
       getIndexClassifyList().then((res) => {
-        setBtnList([...res.data]);
+        setBtnList(res.data);
         setTimeout(() => {
           setLoading2(true);
         }, 300);
@@ -224,13 +230,42 @@ export default function Index() {
     }
   };
   const onScroll = (e) => {
-    if (scrollOpacity === 0 && e.detail.scrollTop >= option.screenHeight) {
+    let top = e.detail.scrollTop;
+    if (scrollOpacity === 0 && top >= option.screenHeight) {
       setScrollOpacity(1);
     }
-    if (scrollOpacity > 0 && e.detail.scrollTop < option.screenHeight) {
+    if (scrollOpacity > 0 && top < option.screenHeight) {
       setScrollOpacity(0);
     }
+    let screenHeight = option.screenHeight-option.barHeight-option.statusBarHeight;
+
+    listenScrollVideo(videoElement,-500, 100, (res)=>{
+      setVideoElement(res)
+    });
+    listenScrollVideo(video1Element,-350, screenHeight, (res)=>{
+      setVideo1Element(res)
+    });
+    listenScrollVideo(video2Element,-350, screenHeight, (res)=>{
+      setVideo2Element(res)
+    });
   };
+  // 监听页面滚动位置控制视频播放暂停
+  const listenScrollVideo = (element,top, height=0, callback) => {
+    const query = wx.createSelectorQuery();
+    query.selectAll(element[0]).boundingClientRect()
+    query.exec((res) => {
+      let num = res[0][0].top;
+      if((num-height > -30  ||num<top) && element[1]){
+        Taro.createVideoContext(element[0].split('#')[1]).pause();
+        element[1] = false;
+        callback(element)
+      }else if((num-height <= -30 && num>=top) && !element[1]){
+        Taro.createVideoContext(element[0].split('#')[1]).play();
+        element[1] = true;
+        callback(element)
+      }
+    })
+  }
 
   const naviToCateOne = (type, title) => {
     Taro.navigateTo({
@@ -247,6 +282,12 @@ export default function Index() {
     if(!id) return;
     Taro.navigateTo({
       url: "../video/index?id=" + id,
+    });
+  };
+  const naviToVideoUp = (id) => {
+    if(!id) return;
+    Taro.navigateTo({
+      url: "../video_up/index?id=" + id,
     });
   };
 
@@ -284,8 +325,9 @@ export default function Index() {
     );
   }, [bannerList]);
 
+  // 新剧内容
   const currentHeader = useMemo(() => {
-    if (!loading1) {
+    if (!headerVideo && !loading1) {
       return (
         <View className="loading_pla">
           <Loading size={80} />
@@ -301,7 +343,7 @@ export default function Index() {
             poster={headerVideo?.img}
             initialTime={0}
             controls={false}
-            autoplay
+            autoplay={true}
             enable-progress-gesture={false}
             muted
             loop
@@ -315,7 +357,7 @@ export default function Index() {
           <View className="components-video-shadow" />
           <View
             className="components-video-card"
-            onClick={() => naviToVideo(headerVideo?.id)}
+            onClick={() => naviToVideoUp(headerVideo?.id)}
           >
             <Image
               className="components-video-card-image"
@@ -330,6 +372,7 @@ export default function Index() {
       );
     }
   }, [headerVideo, loading1]);
+  // 推荐按钮列表
   const currentLarContent = useMemo(() => {
     if (!loading2) {
       return (
@@ -372,6 +415,7 @@ export default function Index() {
       );
     }
   }, [btnList, loading2, option.active]);
+  // 推荐和其他内容列表
   const currentTeTContent = useMemo(() => {
     if (!loading2) {
       return (
@@ -472,14 +516,14 @@ export default function Index() {
               <IndexCard data={tagsData[0]} loading={loading3} />
             ) : null}
             {recommend.length >= 2 ? (
-              <IndexVideo height={option.screenWidth} data={recommend[1]} />
+              <IndexVideo height={option.screenWidth} data={recommend[1]} id="video_1" />
             ) : null}
             {tagsData.length > 1 ? (
               <IndexCard data={tagsData[1]} loading={loading3} />
             ) : null}
             {currentSwiper}
             {recommend.length >= 3 ? (
-              <IndexVideo height={option.screenWidth} data={recommend[2]} />
+              <IndexVideo height={option.screenWidth} data={recommend[2]} id="video_2" />
             ) : null}
             {tagsData.map((item, index) => {
               if (index > 1) {

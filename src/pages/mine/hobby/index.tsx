@@ -1,9 +1,8 @@
-import { View, ScrollView, Image } from "@tarojs/components";
+import { View } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useState } from "react";
-import left from "../../../static/icon/left.png";
 import { HeaderView } from "@/components/headerView";
 
 export default function Hobby() {

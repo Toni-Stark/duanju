@@ -1,8 +1,8 @@
-import { View, ScrollView, Image } from "@tarojs/components";
-import Taro, { useDidShow, useLoad } from "@tarojs/taro";
+import { View, Image } from "@tarojs/components";
+import Taro, { useDidShow } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import right from "../../../static/icon/right.png";
 import { getMemberInfo } from "@/common/interface";
 import { HeaderView } from "@/components/headerView";
@@ -48,6 +48,45 @@ export default function Wallet() {
     });
   };
 
+  const currentContext = useMemo(()=>{
+    return (
+      <View className="index_content_icon">
+        <View className="index_content_icon_text">
+          <View className="text_main">
+            <View className="text_main_title">积分余额</View>
+            <View className="text_main_eval">
+              {info?.score}
+              <View className="text_main_eval_text">积分</View>
+            </View>
+          </View>
+          <View className="text_main">
+            <View className="text_main_title">会员时长</View>
+            <View className="text_main_eval">
+              {info?.expire_days}{" "}
+              <View className="text_main_eval_text">天</View>
+            </View>
+          </View>
+        </View>
+        <View className="index_content_icon_btn" onClick={naviToDetail}>
+          去充值
+        </View>
+      </View>
+    )
+  }, [info])
+  const currentList = useMemo(()=>{
+    return (
+      <View className="index_content_list">
+        <View className="index_item" onClick={() => naviToList(0)}>
+          充值记录
+          <Image className="index_item_image" src={right} />
+        </View>
+        <View className="index_item" onClick={() => naviToList(1)}>
+          积分记录
+          <Image className="index_item_image" src={right} />
+        </View>
+      </View>
+    )
+  }, [])
   return (
     <View className="index">
       <HeaderView
@@ -56,41 +95,12 @@ export default function Wallet() {
         text="我的钱包"
       />
       <View className="index_content">
-        <View className="index_content_icon">
-          <View className="index_content_icon_text">
-            <View className="text_main">
-              <View className="text_main_title">积分余额</View>
-              <View className="text_main_eval">
-                {info?.score}
-                <View className="text_main_eval_text">积分</View>
-              </View>
-            </View>
-            <View className="text_main">
-              <View className="text_main_title">会员时长</View>
-              <View className="text_main_eval">
-                {info?.expire_days}{" "}
-                <View className="text_main_eval_text">天</View>
-              </View>
-            </View>
-          </View>
-          <View className="index_content_icon_btn" onClick={naviToDetail}>
-            去充值
-          </View>
-        </View>
+        {currentContext}
         {/*<View className="index_content_bug">*/}
         {/*  <View className="title">余额</View>*/}
         {/*  <View className="value">0.00</View>*/}
         {/*</View>*/}
-        <View className="index_content_list">
-          <View className="index_item" onClick={() => naviToList(0)}>
-            充值记录
-            <Image className="index_item_image" src={right} />
-          </View>
-          <View className="index_item" onClick={() => naviToList(1)}>
-            积分记录
-            <Image className="index_item_image" src={right} />
-          </View>
-        </View>
+        {currentList}
       </View>
     </View>
   );

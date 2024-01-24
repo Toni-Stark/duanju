@@ -2,7 +2,7 @@ import { View, Image } from "@tarojs/components";
 import Taro, { useLoad, useRouter } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import wxPay from "../../../../static/icon/wx_pay.png";
 import con from "../../../../static/icon/_con.png";
 import dis from "../../../../static/icon/_dis.png";
@@ -241,7 +241,101 @@ export default function Search() {
 
     return 0;
   };
-
+  const currentContext = useMemo(() => {
+    return (
+      <View className="index_content_icon">
+        <View className="index_content_icon_text">
+          <View className="text_main">
+            <View className="text_main_title">积分</View>
+            <View className="text_main_eval">{info?.score}</View>
+          </View>
+          <View className="text_main">
+            <View className="text_main_title">会员时长</View>
+            <View className="text_main_eval">
+              {info?.expire_days}
+              <View className="text_main_eval_text">天</View>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }, [info])
+  const coinContext = useMemo(() => {
+    return (
+      <View className="index_content_list">
+        {inList.map((res) => {
+          let item: any = { ...res };
+          let cName = "item";
+          if (item.intro) {
+            cName = cName + " super";
+          }
+          if (item.id === option.bar) {
+            cName = cName + " active";
+          }
+          return (
+            <View className={cName} onClick={() => checkTab(item.id)}>
+              {item?.intro ? (
+                <View className="item_tips">{item.intro}</View>
+              ) : null}
+              <View className="item_value">
+                <View>
+                  {item.expire_days > 0 ? (
+                    <View className="item_value_score_day">
+                      {item.expire_days}
+                      <View className="day">天</View>
+                    </View>
+                  ) : null}
+                  {item.type == 2 ? (
+                    <View className="item_value_score_day">
+                      {item.score}
+                      <View className="day">积分</View>
+                    </View>
+                  ) : null}
+                </View>
+                <View className="item_value_score">
+                  {item.gift_score > 0 ? (
+                    <View className="item_value_score_text">
+                      （送{item.gift_score}积分）
+                    </View>
+                  ) : null}
+                </View>
+              </View>
+              <View className="item_desc">
+                {item.name}
+                <View className="item_desc_price">{item.price}</View>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    )
+  }, [inList, option])
+  const payContext = useMemo(()=>{
+    return (
+      <View className="index_content_label">
+        {list.map((item) => {
+          return (
+            <View className="label" onClick={() => checkType(item.checked)}>
+              <View className="label_item">
+                <Image
+                  mode="widthFix"
+                  className="label_item_icon"
+                  src={item.icon}
+                />
+                <View className="label_item_text">{item.title}</View>
+              </View>
+              <View className="label_btn">
+                <Image
+                  className="label_btn_img"
+                  src={item.checked == option.active ? con : dis}
+                />
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    )
+  }, [list, option])
   return (
     <View className="index">
       <HeaderView
@@ -254,89 +348,12 @@ export default function Search() {
           <View>创作不易，感谢您的支持</View>
           {option.is_pay?<View>解锁当前剧集需要{option.is_pay}积分</View>:null}
         </View>
-        <View className="index_content_icon">
-          <View className="index_content_icon_text">
-            <View className="text_main">
-              <View className="text_main_title">积分</View>
-              <View className="text_main_eval">{info?.score}</View>
-            </View>
-            <View className="text_main">
-              <View className="text_main_title">会员时长</View>
-              <View className="text_main_eval">
-                {info?.expire_days}
-                <View className="text_main_eval_text">天</View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="index_content_list">
-          {inList.map((res) => {
-            let item: any = { ...res };
-            let cName = "item";
-            if (item.intro) {
-              cName = cName + " super";
-            }
-            if (item.id === option.bar) {
-              cName = cName + " active";
-            }
-            return (
-              <View className={cName} onClick={() => checkTab(item.id)}>
-                {item?.intro ? (
-                  <View className="item_tips">{item.intro}</View>
-                ) : null}
-                <View className="item_value">
-                  <View>
-                    {item.expire_days > 0 ? (
-                      <View className="item_value_score_day">
-                        {item.expire_days}
-                        <View className="day">天</View>
-                      </View>
-                    ) : null}
-                    {item.type == 2 ? (
-                      <View className="item_value_score_day">
-                        {item.score}
-                        <View className="day">积分</View>
-                      </View>
-                    ) : null}
-                  </View>
-                  <View className="item_value_score">
-                    {item.gift_score > 0 ? (
-                      <View className="item_value_score_text">
-                        （送{item.gift_score}积分）
-                      </View>
-                    ) : null}
-                  </View>
-                </View>
-                <View className="item_desc">
-                  {item.name}
-                  <View className="item_desc_price">{item.price}</View>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-        <View className="index_content_label">
-          {list.map((item) => {
-            return (
-              <View className="label" onClick={() => checkType(item.checked)}>
-                <View className="label_item">
-                  <Image
-                    mode="widthFix"
-                    className="label_item_icon"
-                    src={item.icon}
-                  />
-                  <View className="label_item_text">{item.title}</View>
-                </View>
-                <View className="label_btn">
-                  <Image
-                    className="label_btn_img"
-                    src={item.checked == option.active ? con : dis}
-                  />
-                </View>
-              </View>
-            );
-          })}
-        </View>
+        {/*用户账户*/}
+        {currentContext}
+        {/*积分列表*/}
+        {coinContext}
+        {/*支付方式列表*/}
+        {payContext}
         <View className="index_content_desc">
           <View className="title">充值须知</View>
           <View className="desc">

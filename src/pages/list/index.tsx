@@ -1,5 +1,5 @@
-import { Image, ScrollView, Text, Video, View } from "@tarojs/components";
-import Taro, { useDidShow, useLoad } from "@tarojs/taro";
+import { Image, ScrollView, Video, View } from "@tarojs/components";
+import Taro, { useDidShow } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useMemo, useState } from "react";
@@ -153,13 +153,13 @@ export default function List() {
       setScrollOpacity(0);
     }
   };
-  const currentTab = (id, list) => {
+  const currentTab = (id, list?: any) => {
     let arr = [...btnList];
     if (list) {
       arr = list;
     }
     let data = arr.find((item) => item.id === id);
-    setNewData([...data.list]);
+    setNewData(data.list);
     setOption({ ...option, habit: id });
   };
   const addScrollList = () => {

@@ -38,10 +38,8 @@ export const HeaderView = (props: Partial<Props>) => {
         // 判断设备类型
         if (res.platform === "mac" || res.platform === "windows") {
           // 电脑端
-          console.log("当前为电脑端");
           setUA(false);
         } else {
-          // 判断 User Agent 是否包含关键字 'Macintosh'
           setUA(true);
         }
       },

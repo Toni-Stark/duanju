@@ -37,6 +37,14 @@ export const setTimerFun = (callback) => {
     callback();
   }, 420000);
 };
+let tim = null;
+export const setTimFun = (callback, time=500) => {
+  clearTimeout(tim);
+  tim = null;
+  tim = setTimeout(() => {
+    callback();
+  }, time);
+};
 
 let inter = null;
 export const setInterFun = (callback) => {

@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const IndexVideo = (props: Props) => {
-  const { data, height } = props;
+  const { data, height, id } = props;
 
   const naviToVideo = (id) => {
     Taro.navigateTo({
@@ -26,11 +26,11 @@ export const IndexVideo = (props: Props) => {
         initialTime={0}
         controls={false}
         enable-progress-gesture={false}
-
-        autoplay
+        autoplay={false}
         loop
         muted
         objectFit="cover"
+        id={id}
       />
       <text className="vvview-large-desc">{data.describe}</text>
     </View>
