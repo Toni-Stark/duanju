@@ -42,7 +42,6 @@ export default function Info() {
 
   useDidShow(() => {
     getMemberInfo().then((res) => {
-      console.log(res);
       setOption({
         ...option,
         nick: res.data.nickname,
@@ -72,7 +71,6 @@ export default function Info() {
     });
   };
   const changeVal = (e) => {
-    console.log(e.detail.value[0]);
     setOption({
       ...option,
       current: e.detail.value,

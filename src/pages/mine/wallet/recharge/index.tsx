@@ -137,7 +137,6 @@ export default function Search() {
   const payApiStatus = (params) => {
     getPayOrder(params).then((res) => {
       let json = GetStorageSync("allJson");
-      console.log(res,json, 'res_data')
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);

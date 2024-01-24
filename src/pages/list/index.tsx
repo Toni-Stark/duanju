@@ -83,9 +83,9 @@ export default function List() {
           if (res.data?.history_list.length > 0) {
             resolve({
               list: res.data.history_list,
-              count: res.data.count || 1,
+              count: res.data.count,
             });
-          } else {
+          } else if (params.p == 1) {
             getIndexRecommend().then((result) => {
               let arr = [];
               let data = result.data[0];

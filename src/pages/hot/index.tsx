@@ -198,7 +198,6 @@ export default function Hot() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  console.log(item)
                   naviToVideoDetail(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
@@ -331,7 +330,7 @@ export default function Hot() {
                       >
                         查看全部
                         <Image
-                          mode="widthFix"
+                          mode="aspectFill"
                           className="card-title-catch-img"
                           src={right}
                         />
@@ -348,7 +347,7 @@ export default function Hot() {
                                   naviToVideo(it.id);
                                 }}
                               >
-                                <Image src={it.img} className="card-item-img" />
+                                <Image src={it.img} mode="aspectFill" className="card-item-img" />
                                 <View className="card-item-view">
                                   <View className="card-item-view-content">
                                     <View className="card-item-view-content-main">

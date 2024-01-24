@@ -152,7 +152,7 @@ export default function Search() {
                         naviToVideo(item.id);
                       }}
                     >
-                      <Image src={item.img} className="navi-data-item-img" />
+                      <Image src={item.img}  mode="aspectFill" className="navi-data-item-img" />
                       <View className="navi-data-item-view">
                         <View className="navi-data-item-view-content">
                           <View className="navi-data-item-view-content-main">

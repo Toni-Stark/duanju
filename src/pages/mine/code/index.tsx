@@ -145,7 +145,6 @@ export default function Code() {
       url: info.spread_qrcode,
       success: function (res) {
         if (res.statusCode === 200) {
-          console.log(res);
           Taro.saveImageToPhotosAlbum({
             url: res.tempFilePath,
             success: (res) => {

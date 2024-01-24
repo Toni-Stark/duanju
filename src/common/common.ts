@@ -26,7 +26,6 @@ export const getCheckLogin = () => {
                 data: { code: loginRes.code, type: "mini", pn: pn },
                 method: "POST",
                 success: function (res) {
-                  console.log(111, res);
                   let { code, data } = res.data;
                   if (res.statusCode === 300)
                     return Taro.showToast({ title: "网络超时",	mask:true, icon: "none" });

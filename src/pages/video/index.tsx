@@ -169,8 +169,8 @@ export default function VideoView() {
           SetStorageSync("nowValPay", 0)
         }
       }
+      if(!c_id) {c_id = list[Object.keys(list)[0]][0].id};
       for (let key in list) {
-        if(!c_id) {c_id = list[key][0].id};
         arr.push({
           title: key,
           list: list[key],
@@ -207,7 +207,10 @@ export default function VideoView() {
                 page: key,
                 v_id: v_info.id,
               });
-              v_info.url = res.data.url;
+              v_info.url = res.data?.url;
+              // if(!v_info?.url){
+              //   TShow("请联系");
+              // }
               setCurrentInfo(v_info);
             });
           }

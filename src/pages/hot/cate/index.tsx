@@ -5,7 +5,7 @@ import "./index.less";
 import { useState } from "react";
 import top from "../../../static/icon/top.png";
 import { AtButton } from "taro-ui";
-import {getIndexClassify, getIndexClassifyList, getIndexTagsVideo} from "@/common/interface";
+import { getIndexTagsVideo} from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
@@ -144,7 +144,7 @@ export default function Search() {
                         naviToVideo(item.id);
                       }}
                     >
-                      <Image src={item.img} className="navi-data-item-img" />
+                      <Image src={item.img} mode="aspectFill" className="navi-data-item-img" />
                       <View className="navi-data-item-view">
                         <View className="navi-data-item-view-content">
                           <View className="navi-data-item-view-content-main">
