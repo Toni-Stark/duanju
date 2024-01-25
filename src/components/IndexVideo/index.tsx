@@ -16,8 +16,13 @@ export const IndexVideo = (props: Props) => {
       url: "../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../video_up/index?id=" + id,
+    });
+  };
   return (
-    <View className="mini-view-large" onClick={() => naviToVideo(data.id)}>
+    <View className="mini-view-large" onClick={() => naviToVideoUp(data.id)}>
       <Video
         className="mini-view-large-video"
         style={{ height: height + "px" }}

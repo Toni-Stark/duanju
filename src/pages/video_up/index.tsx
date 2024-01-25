@@ -30,9 +30,9 @@ import {
   getVideoPay,
   getVideoUpdate,
 } from "@/common/interface";
-import {THide, TShow} from "@/common/common";
+import {THide, THideT, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
-import { GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
+import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
 
 let timePlay = 0;
@@ -88,7 +88,7 @@ export default function VideoView() {
   });
   useDidShow(() => {
     const params: any = router.params;
-
+    console.log(params, 'log');
     if (params?.iv) {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
@@ -125,8 +125,6 @@ export default function VideoView() {
     };
   }, []);
   const getVideoList = (params) => {
-    // TShow("加载中...", "loading", 30000);
-
     getVideoIndex(params).then((res) => {
       const {info, list} = res.data;
 
@@ -173,21 +171,39 @@ export default function VideoView() {
           c_id = list[Object.keys(list)[0]][0].id;
         }
       }
-      if (!obj?.is_pay) {
+      if(GetStorageSync("currentHand")) {
+        RemoveStorageSync("currentHand");
+        if (GetStorageSync("nowValPay") == "1") {
+          c_id = GetStorageSync("nowVal");
+          RemoveStorageSync("nowVal")
+          RemoveStorageSync("nowValPay")
+        }
+      } else {
+        RemoveStorageSync("currentHand");
+      }
+      RemoveStorageSync("nowVal")
+
+      let ind: any = r_data.findIndex((item) => {
+        return item.id == c_id
+      });
+      let currInfo = r_data[ind];
+
+      if(currInfo.id != c_id) return;
+      if(!currInfo?.is_pay) {
         TShow("解锁中", "loading", 2000);
         setTimFun(() => {
-          getVideoPay({v_s_id: obj.id}).then((res) => {
+          getVideoPay({v_s_id: currInfo.id}).then((res) => {
             if (res.code == 101) {
+              THideT()
               naviToHotOne(info);
-              console.log(params, info);
               if (!params.current && info?.history_sub_id) {
                 SetStorageSync("currentStatus", info?.history_sub_id);
               }
               return;
             } else if (res.code == 200) {
-              THide();
+              THideT();
               TShow("购买成功");
-              getVideoList({v_id: info.id, current: obj.id, index:params.index});
+              getVideoList({v_id: info.id, current: currInfo.id, index: params.index});
               return;
             }
             THide();
@@ -195,24 +211,22 @@ export default function VideoView() {
         }, 400)
         return;
       }
-      getVideoUpdate({v_s_id: obj.id}).then((res) => {
+      getVideoUpdate({v_s_id: currInfo.id}).then((res) => {
         setCurrent({
           ...current,
           b_list: list[page],
           page: page,
-          v_id: obj.id,
+          v_id: currInfo.id,
         });
-        obj.url = res.data?.url;
-        setCurrentInfo(obj);
-        let ind: any = r_data.findIndex((item) => {
-          return item.id === obj.id
-        });
+        currInfo.url = res.data?.url;
+        setCurrentInfo(currInfo);
         setIndex(params?.index||0);
         setTimFun(() => {
           setIndex(ind);
           setLoading(false)
-        },500)
+        },200)
       });
+      return;
     })
   }
 
@@ -263,6 +277,7 @@ export default function VideoView() {
   };
 
   const naviToHotOne = (info?: any) => {
+    SetStorageSync("nowVal", info?.id);
     Taro.navigateTo({
       url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
     });
@@ -274,29 +289,37 @@ export default function VideoView() {
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
+    let ind = allList.findIndex((item) => item.id === val);
+    if(ind-index>=2||ind-index<=-2){
+      setLoading(true)
+    }
     if (info) {
       getVideoUpdate({ v_s_id: info.id }).then((res) => {
         info.url = res.data?.url;
         setCurrentInfo(info);
+        setIndex(ind);
+        setLoading(false)
       });
       setCurrent({ ...current, v_id: info.id });
     }
     if (!info.is_pay) {
+      setLoading(true)
       TShow("解锁中", "loading", 3000);
       setTimeout(() => {
         getVideoPay({ v_s_id: info.id }).then((res) => {
           if (res.code == 101) {
             naviToHotOne(info);
+            SetStorageSync("currentHand", info?.id);
             return;
           } else if (res.code == 200) {
             THide();
             TShow("购买成功");
-            getVideoList({ v_id: dataInfo.id, current: info.id });
+            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind });
             return;
           }
           THide();
         });
-      }, 1400);
+      }, 500);
       return;
     }
     setShow(false);
@@ -337,7 +360,8 @@ export default function VideoView() {
     let val = e.detail.current;
     let info = allList[val];
     if(info.id == currentInfo.id || loading) return;
-    getVideoList({ v_id: dataInfo.id, current: info.id, index: val });
+    // getVideoList({ v_id: dataInfo.id, current: info.id, index: val });
+    chooseCurrent(info.id)
   }
   const currentChange = (id) => {
     let list = [];
@@ -357,35 +381,35 @@ export default function VideoView() {
   }, [pages])
 
   const currentViewVideo = (ind, index) => {
-    if (index === ind) {
-      return (
-        <Video
-          className="center_video_large"
-          src={currentInfo?.url}
-          poster={dataInfo?.img}
-          initialTime={0}
-          controls
-          onPlay={startPlay}
-          onPause={stopPlay}
-          onEnded={onEnded}
-          showPlayBtn
-          showFullscreenBtn={false}
-          autoplay
-          enablePlayGesture
-          showCenterPlayBtn
-          playBtnPosition="center"
-          loop={false}
-          objectFit="fill"
-        />
-      )
-    }
+    let bool = index === ind && currentInfo?.url;
     return (
-      <Image className="center_video_img" src={dataInfo?.img}/>
+      <>
+        {bool ?
+          <Video
+            className="center_video_large"
+            src={currentInfo?.url}
+            poster={dataInfo?.img}
+            style={{opacity: bool ? 1 : 0}}
+            initialTime={0}
+            controls
+            onPlay={startPlay}
+            onPause={stopPlay}
+            onEnded={onEnded}
+            showPlayBtn
+            showFullscreenBtn={false}
+            autoplay={true}
+            enablePlayGesture
+            showCenterPlayBtn
+            playBtnPosition="center"
+            loop={false}
+            objectFit="fill"
+          /> : null}
+        <Image className="center_video_img" src={dataInfo?.img} style={{opacity: bool ? 0 : 1}}/>
+      </>
     )
   }
 
   const currentSwiper = useMemo(()=>{
-    console.log(loading)
     return (
       <Swiper
         className='swiper_view'
@@ -395,6 +419,7 @@ export default function VideoView() {
         duration={loading?0:500}
         scrollWithAnimation={false}
         skipHiddenItemLayout={true}
+        enablePassive={true}
         onChange={swiperChange}
         vertical>
         {
@@ -413,7 +438,7 @@ export default function VideoView() {
         }
       </Swiper>
     )
-  }, [index,loading, allList, dataInfo, currentInfo])
+  }, [index,loading, allList, currentInfo, dataInfo])
 
   // 弹窗视频列表
   const currentListContext = useMemo(()=>{

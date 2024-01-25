@@ -24,6 +24,11 @@ export const IndexCard = (props: Props) => {
       url: "../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../video_up/index?id=" + id,
+    });
+  };
   if (!loading) {
     return (
       <View className="loading_lar">
@@ -57,7 +62,7 @@ export const IndexCard = (props: Props) => {
           return (
             <View
               className="ssview-list-item"
-              onClick={() => naviToVideo(item.id)}
+              onClick={() => naviToVideoUp(item.id)}
             >
               <Image className="image" src={item.img} />
               <Text className="text">{item.name}</Text>

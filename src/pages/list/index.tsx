@@ -175,6 +175,11 @@ export default function List() {
       url: "../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../video_up/index?id=" + id,
+    });
+  };
 
   const currentHeader = useMemo(() => {
     if (!loading) {
@@ -189,7 +194,7 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
-              naviToVideo(videoDefault?.video_id);
+              naviToVideoUp(videoDefault?.video_id);
             }}
           >
             <Video
@@ -243,7 +248,7 @@ export default function List() {
               <View
                 className="components-video-list-item"
                 onClick={() => {
-                  naviToVideo(item.video_id);
+                  naviToVideoUp(item.video_id);
                 }}
               >
                 <Image className="image" src={item.video_img} />

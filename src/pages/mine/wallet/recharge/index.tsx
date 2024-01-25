@@ -136,12 +136,11 @@ export default function Search() {
   };
   const payApiStatus = (params) => {
     getPayOrder(params).then((res) => {
-      let json = GetStorageSync("allJson");
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);
       }
-      if (params.is_vir) {
+      if (res.data.is_vir) {
         let data = res.data;
         let sData = res.data.signData;
         const SDKVersion = Taro.getSystemInfoSync().SDKVersion;

@@ -83,6 +83,11 @@ export default function Hot() {
       url: "../../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../../video_up/index?id=" + id,
+    });
+  };
   return (
     <View className="index">
       <HeaderView
@@ -114,7 +119,7 @@ export default function Hot() {
                   <View
                     className="navi-data-item"
                     onClick={() => {
-                      naviToVideo(item.id);
+                      naviToVideoUp(item.id);
                     }}
                   >
                     <Image src={item.img}  mode="aspectFill" className="navi-data-item-img" />

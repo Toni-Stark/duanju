@@ -72,7 +72,7 @@ export default function Code() {
               TShow("保存成功");
             },
             fail: (res) => {
-              TShow("微信权限申请中，暂时无法使用");
+              // TShow("微信权限申请中，暂时无法使用");
             },
           });
         }

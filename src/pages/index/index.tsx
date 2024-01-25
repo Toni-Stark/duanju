@@ -63,7 +63,6 @@ export default function Index() {
   const [video1Element, setVideo1Element] = useState<any>(["#video_1", false]);
   const [video2Element, setVideo2Element] = useState<any>(["#video_2", false]);
 
-
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
@@ -110,37 +109,25 @@ export default function Index() {
         }
       },
     });
-    refreshReList();
+    currentRecommendInfo()
     setInterFun(() => {
-      refreshReList();
+      currentRecommendInfo()
     });
-    // 新剧推荐接口
-    getVideoMessage().then((res)=>{
-      let time = GetStorageSync("time");
-      let bool = true;
-      if(time && new Date().getTime()-time<=28800000){
-        bool = false;
-      }
-      if(bool){
-        SetStorageSync("time", new Date().getTime());
-        setMessage(res.data);
-        setShowNew(!!res.data?.video_id);
-      }
-    })
-  });
 
-  const refreshReList = () => {
-    getIndexRecommend().then((res) => {
-      let arr = res.data;
-      setRecommend(arr);
-      if (arr.length > 0) {
-        setHeaderVideo(arr[0]);
-      }
-      setTimeout(() => {
-        setLoading1(true);
-      }, 300);
-    });
-  };
+    // 新剧推荐接口
+    let time = GetStorageSync("time");
+    let bool = true;
+    if(time && new Date().getTime()-time<=28800000){
+      bool = false;
+    }
+    if(bool){
+      getVideoMessage().then((res)=>{
+          SetStorageSync("time", new Date().getTime());
+          setMessage(res.data);
+          setShowNew(!!res.data?.video_id);
+      })
+    }
+  });
 
   const currentFraList = async (list, callback) => {
     let arr = [];
@@ -157,32 +144,8 @@ export default function Index() {
     await getInfo(list, 0);
   };
 
-  useDidShow(() => {
-    currentRecommendList(88).then(() => {
-      getIndexClassifyList().then((res) => {
-        setBtnList([...res.data]);
-        setTimeout(() => {
-          setLoading2(true);
-        }, 300);
-      });
-    });
-    getIndexTags({ is_main: "1" }).then(async (res) => {
-      let arr = res.data.tag_list;
-      currentFraList(arr, (data) => {
-        setTagsData(data);
-        setTimeout(() => {
-          setLoading3(true);
-        }, 300);
-      });
-    });
-    getIndexBanner().then((res) => {
-      if (res.code === 200) {
-        setBannerList(res.data);
-      }
-    });
-  });
-  const refreshChange = () => {
-    setOption({ ...option, refresh: true });
+  // 刷新Recommend列表
+  const currentRecommendInfo = () => {
     getIndexRecommend().then((res) => {
       let arr = res.data;
       setRecommend(arr);
@@ -193,24 +156,53 @@ export default function Index() {
         setLoading1(true);
       }, 300);
     });
-    currentRecommendList(88).then(() => {
-      getIndexClassifyList().then((res) => {
-        setBtnList(res.data);
-        setTimeout(() => {
-          setLoading2(true);
-        }, 300);
-      });
-    });
+  }
+  // 刷新Tag列表
+  const currentTagListInfo = (refresh) => {
     getIndexTags({ is_main: "1" }).then(async (res) => {
       let arr = res.data.tag_list;
       currentFraList(arr, (data) => {
         setTagsData(data);
         setTimeout(() => {
           setLoading3(true);
-          setOption({ ...option, refresh: false });
+          if(refresh){
+            setOption({ ...option, refresh: false });
+          }
         }, 300);
       });
     });
+  }
+  // 刷新RecommendList列表
+  const currentRecommendListInfo = () => {
+    currentRecommendList(88).then(() => {
+      getIndexClassifyList().then((res) => {
+        setBtnList([...res.data]);
+        setTimeout(() => {
+          setLoading2(true);
+        }, 300);
+      });
+    });
+  }
+  // 刷新轮播列表
+  const currentBannerListInfo = () => {
+    getIndexBanner().then((res) => {
+      if (res.code === 200) {
+        setBannerList(res.data);
+      }
+    });
+  }
+
+  useDidShow(() => {
+    currentRecommendListInfo();
+    currentTagListInfo(false);
+    currentBannerListInfo()
+  });
+  const refreshChange = () => {
+    setOption({ ...option, refresh: true });
+    currentRecommendInfo()
+    currentRecommendListInfo()
+    currentBannerListInfo()
+    currentTagListInfo(true)
   };
   const currentRecommendList = async (id) => {
     let result = await getIndexRecommendList();
@@ -249,10 +241,11 @@ export default function Index() {
     listenScrollVideo(video2Element,-350, screenHeight, (res)=>{
       setVideo2Element(res)
     });
+
   };
   // 监听页面滚动位置控制视频播放暂停
   const listenScrollVideo = (element,top, height=0, callback) => {
-    const query = wx.createSelectorQuery();
+    const query = Taro.createSelectorQuery();
     query.selectAll(element[0]).boundingClientRect()
     query.exec((res) => {
       let num = res[0][0].top;
@@ -284,19 +277,16 @@ export default function Index() {
     Taro.navigateTo({
       url: "../video/index?id=" + id,
     });
+    setShowNew(false)
   };
   const naviToVideoUp = (id) => {
     if(!id) return;
     Taro.navigateTo({
       url: "../video_up/index?id=" + id,
     });
+    setShowNew(false)
   };
 
-  const naviToVideoDetail = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
-  };
   const currentSwiper = useMemo(() => {
     if (bannerList.length <= 0) {
       return null;
@@ -314,7 +304,7 @@ export default function Index() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  naviToVideoDetail(item.video_id)
+                  naviToVideoUp(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
                 </View>
@@ -348,7 +338,7 @@ export default function Index() {
             enable-progress-gesture={false}
             muted
             loop
-            onClick={() => naviToVideo(headerVideo?.id)}
+            onClick={() => naviToVideoUp(headerVideo?.id)}
             objectFit="cover"
             showFullscreenBtn={false}
             enablePlayGesture
@@ -383,36 +373,34 @@ export default function Index() {
       );
     } else {
       return (
-        <>
-          <View className="components-video-buttons">
-            <AtButton
-              className={88 === option.active ? "active" : ""}
-              type="primary"
-              size="normal"
-              onClick={() => {
-                setActive(88);
-              }}
-            >
-              推荐
-            </AtButton>
-            {btnList.map((item, index) => {
-              return (
-                <AtButton
-                  className={item.id === option.active ? "active" : ""}
-                  key={index}
-                  type="primary"
-                  size="normal"
-                  onClick={() => {
-                    setActive(item.id);
-                  }}
-                >
-                  {item.name}
-                </AtButton>
-              );
-            })}
-            <View className="button-pad" />
-          </View>
-        </>
+        <View className="components-video-buttons">
+          <AtButton
+            className={88 === option.active ? "active" : ""}
+            type="primary"
+            size="normal"
+            onClick={() => {
+              setActive(88);
+            }}
+          >
+            推荐
+          </AtButton>
+          {btnList.map((item, index) => {
+            return (
+              <AtButton
+                className={item.id === option.active ? "active" : ""}
+                key={index}
+                type="primary"
+                size="normal"
+                onClick={() => {
+                  setActive(item.id);
+                }}
+              >
+                {item.name}
+              </AtButton>
+            );
+          })}
+          <View className="button-pad" />
+        </View>
       );
     }
   }, [btnList, loading2, option.active]);
@@ -427,38 +415,36 @@ export default function Index() {
     } else {
       if (reComm.length > 0) {
         return (
-          <>
-            <View className="components-video-scroll">
-              {/*<ScrollView scrollX enhanced showScrollbar={false}>*/}
-              <View className="scroll_view_style">
-                <View className="scroll-list">
-                  {reComm.map((item, index) => {
-                    return (
-                      <View
-                        key={index}
-                        className="scroll-list-item"
-                        onClick={() => {
-                          naviToVideo(item.id);
-                        }}
+          <View className="components-video-scroll">
+            <View className="scroll_view_style">
+              <View className="scroll-list">
+                {reComm.map((item, index) => {
+                  return (
+                    <View
+                      key={index}
+                      className="scroll-list-item"
+                      onClick={() => {
+                        // naviToVideo(item.id);
+                        naviToVideoUp(item?.id)
+                      }}
+                    >
+                      <Image
+                        src={item.img}
+                        className="scroll-list-item-img"
+                      />
+                      <Text
+                        numberOfLines={1}
+                        className="scroll-list-item-text"
                       >
-                        <Image
-                          src={item.img}
-                          className="scroll-list-item-img"
-                        />
-                        <Text
-                          numberOfLines={1}
-                          className="scroll-list-item-text"
-                        >
-                          {item.name}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                  <View className="button-pad" />
-                </View>
+                        {item.name}
+                      </Text>
+                    </View>
+                  );
+                })}
+                <View className="button-pad" />
               </View>
             </View>
-          </>
+          </View>
         );
       } else {
         return (
@@ -550,7 +536,7 @@ export default function Index() {
         </View>
         <FloatView
           show={showNew}
-          naviVideo={(id)=>{naviToVideo(id)}}
+          naviVideo={(id)=>{naviToVideoUp(id)}}
           clickFun={()=>{setShowNew(false)}}
           img={message?.img}
           text={message?.video_name}
@@ -558,7 +544,6 @@ export default function Index() {
           id={message?.video_id}
         />
       </View>
-      {/*<View className="index_footer" />*/}
     </View>
   );
 }

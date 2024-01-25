@@ -22,51 +22,48 @@ function cloudRequest(paramsList) {
   }
   header["Content-Type"] = "application/x-www-form-urlencoded";
   return new Promise((resolve, reject) => {
-    getSystemInfo().then((systemEnv) => {
-      header["env"] = systemEnv;
-      Taro.request({
-        ...params,
-        header: header,
-        method: params.method || "GET",
-        success: function (res) {
-          var {code} = res.data;
-          if (res.statusCode != 200)
-            return TShow(res.msg);
-          if (code == 200) {
-            isRefreshing = false;
-            return resolve(res.data);
-          }
-          if (code != 403) return resolve(res.data);
-          new Promise((resolve2) => {
-            requests.push((token) => {
-              if (!paramsList.data) paramsList.data = {token};
-              resolve(cloudRequest(paramsList));
-            });
+    Taro.request({
+      ...params,
+      header: header,
+      method: params.method || "GET",
+      success: function (res) {
+        var {code} = res.data;
+        if (res.statusCode != 200)
+          return TShow(res.msg);
+        if (code == 200) {
+          isRefreshing = false;
+          return resolve(res.data);
+        }
+        if (code != 403) return resolve(res.data);
+        new Promise((resolve2) => {
+          requests.push((token) => {
+            if (!paramsList.data) paramsList.data = {token};
+            resolve(cloudRequest(paramsList));
           });
-          if (!isRefreshing) {
-            isRefreshing = true;
-            getCheckLogin().then((result) => {
-              let {token} = result;
-              SetStorageSync("allJson", result);
-              SetStorage("token", token).then((res) => {
-                requests.forEach((run) => run(token));
-                requests = [];
-              });
-              return;
+        });
+        if (!isRefreshing) {
+          isRefreshing = true;
+          getCheckLogin().then((result) => {
+            let {token} = result;
+            SetStorageSync("allJson", result);
+            SetStorage("token", token).then((res) => {
+              requests.forEach((run) => run(token));
+              requests = [];
             });
-          }
-        },
-        fail: function (err) {
-          reject(err);
-        },
-        complete: function () {
-          ajaxtimes--;
-          if (ajaxtimes === 0) {
-            Taro.hideNavigationBarLoading();
-            Taro.stopPullDownRefresh();
-          }
-        },
-      });
+            return;
+          });
+        }
+      },
+      fail: function (err) {
+        reject(err);
+      },
+      complete: function () {
+        ajaxtimes--;
+        if (ajaxtimes === 0) {
+          Taro.hideNavigationBarLoading();
+          Taro.stopPullDownRefresh();
+        }
+      },
     });
   })
 }

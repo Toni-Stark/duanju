@@ -88,6 +88,11 @@ export default function Search() {
       url: "../../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../../video_up/index?id=" + id,
+    });
+  };
 
   const currentNoneView = useMemo(()=>{
     if(dataList.length > 0) {
@@ -123,7 +128,7 @@ export default function Search() {
             <View
               className="navi-data-item"
               onClick={() => {
-                naviToVideo(item.id);
+                naviToVideoUp(item.id);
               }}
             >
               <Image src={item.img} mode="aspectFill" className="navi-data-item-img" />

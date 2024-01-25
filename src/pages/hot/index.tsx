@@ -25,11 +25,12 @@ import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import { Loading } from "@/components/loading";
 
+let defaultActive = -999
 export default function Hot() {
   const [option, setOption] = useState({
     statusBarHeight: 0,
     barHeight: 0,
-    active: 999,
+    active: defaultActive,
     screenWidth: 0,
     screenHeight: 0,
     p: 1,
@@ -62,7 +63,7 @@ export default function Hot() {
         setBannerList(res.data);
       }
     });
-    currentRecommendList({ classify: 999, p: 1 }).then(() => {
+    currentRecommendList({ classify: defaultActive, p: 1 }).then(() => {
       getIndexClassifyList().then((res) => {
         setBtnList(res.data);
         // if (res.data.length > 0) {
@@ -101,8 +102,8 @@ export default function Hot() {
     setLoading(true);
   };
   const setActive = (id) => {
-    if (id == 999) {
-      currentRecommendList({ classify: 999, p: 1 });
+    if (id == defaultActive) {
+      currentRecommendList({ classify: defaultActive, p: 1 });
     } else {
       currentList({ classify: id, p: 1 });
     }
@@ -136,6 +137,11 @@ export default function Hot() {
       url: "../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../video_up/index?id=" + id,
+    });
+  };
   const naviToCateOne = (type, title) => {
     Taro.navigateTo({
       url: "./cate/index?type=" + type + "&title=" + title,
@@ -163,23 +169,18 @@ export default function Hot() {
     setLoading(true);
   };
   const addScrollList = () => {
-    if (option.active == 999) {
-      currentRecommendList({ classify: 999, p: option.p + 1 });
+    if (option.active == defaultActive) {
+      currentRecommendList({ classify: defaultActive, p: option.p + 1 });
     } else {
       currentList({ classify: option.active, p: option.p + 1 });
     }
   };
   const refreshList = () => {
-    if (option.active == 999) {
-      currentRecommendList({ classify: 999, p: 1, refresh: 1 });
+    if (option.active == defaultActive) {
+      currentRecommendList({ classify: defaultActive, p: 1, refresh: 1 });
     } else {
       currentList({ classify: option.active, p: 1, refresh: 1 });
     }
-  };
-  const naviToVideoDetail = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
   };
   const currentSwiper = useMemo(() => {
     if (bannerList.length <= 0) {
@@ -189,7 +190,7 @@ export default function Hot() {
       <View className="swiper-view">
         <Swiper
           className="swiper-view-views"
-          indicatorColor="#999"
+          indicatorColor="#999999"
           indicatorActiveColor="#333"
           circular
           autoplay
@@ -198,7 +199,7 @@ export default function Hot() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  naviToVideoDetail(item.video_id)
+                  naviToVideoUp(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
                 </View>
@@ -225,11 +226,11 @@ export default function Hot() {
         </View>
         <View className="navi-buttons">
           <AtButton
-            className={999 === option.active ? "active" : ""}
+            className={defaultActive === option.active ? "active" : ""}
             type="primary"
             size="normal"
             onClick={() => {
-              setActive(999);
+              setActive(defaultActive);
             }}
           >
             推荐
@@ -258,7 +259,7 @@ export default function Hot() {
                 <View
                   className="navi-data-item"
                   onClick={() => {
-                    naviToVideo(item.id);
+                    naviToVideoUp(item.id);
                   }}
                 >
                   <Image src={item.img} className="navi-data-item-img" />
@@ -311,7 +312,7 @@ export default function Hot() {
         <View className="hot-res-swiper">
           <Swiper
             className="hot-res-swiper-data"
-            indicatorColor="#999"
+            indicatorColor="#999999"
             indicatorActiveColor="#333"
             circular
             nextMargin="80px"
@@ -344,7 +345,7 @@ export default function Hot() {
                               <View
                                 className="card-item"
                                 onClick={() => {
-                                  naviToVideo(it.id);
+                                  naviToVideoUp(it.id);
                                 }}
                               >
                                 <Image src={it.img} mode="aspectFill" className="card-item-img" />

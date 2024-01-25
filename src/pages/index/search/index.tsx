@@ -108,6 +108,11 @@ export default function Cate() {
       url: "../../video/index?id=" + id,
     });
   };
+  const naviToVideoUp = (id) => {
+    Taro.navigateTo({
+      url: "../../video_up/index?id=" + id,
+    });
+  };
   const currentContext = useMemo(() => {
     if (loading) {
       return (
@@ -142,7 +147,7 @@ export default function Cate() {
                     <View
                       className="navi-data-item"
                       onClick={() => {
-                        naviToVideo(item.id);
+                        naviToVideoUp(item.id);
                       }}
                     >
                       <Image src={item.img} mode="aspectFill" className="navi-data-item-img" />
