@@ -12,12 +12,10 @@ import {
   getPayStatus,
   getWalletProducts,
 } from "@/common/interface";
-import {GetStorageSync, SetStorageSync} from "@/store/storage";
+import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
-import { THide, TShow } from "@/common/common";
+import {getCheckLogin, THide, TShow} from "@/common/common";
 
-let timer = null;
-let times = 0;
 export default function Search() {
   const router = useRouter();
   const [option, setOption] = useState({
@@ -90,11 +88,8 @@ export default function Search() {
   };
 
   const payStatus = (id) => {
-    let bool = false;
-    clearInterval(timer);
-    timer = null;
-    timer = setInterval(() => {
-      if (bool == true) return;
+    let times = 0;
+    let timer = setInterval(() => {
       getPayStatus({ order_id: id }).then((res) => {
         if (res.code !== 1) {
           THide();
@@ -108,9 +103,10 @@ export default function Search() {
         }
         THide();
         TShow("充值成功");
-        bool = true;
         SetStorageSync("nowValPay", '1');
         currentMemberInfo(true);
+        times = 0;
+        clearInterval(timer)
       });
     }, 400);
   };
@@ -119,20 +115,28 @@ export default function Search() {
       return;
     }
     TShow("", "loading", 10000);
-    let allJson = GetStorageSync("allJson");
-    let params = {};
-    if (!allJson.is_vir) {
-      params = { openid: allJson.openid, product_id: option.bar, is_vir: 0 };
-      payApiStatus(params);
-    } else {
-      Taro.login({
-        complete: (loginRes) => {
-          if (!loginRes.code) return;
-          params = { code: loginRes.code, product_id: option.bar, is_vir: 1 };
-          payApiStatus(params);
-        },
+    // let allJson = GetStorageSync("allJson");
+    // let params = {};
+    // if (!allJson.is_vir) {
+    //   params = { openid: allJson.openid, product_id: option.bar };
+    //   payApiStatus(params);
+    // } else {
+    //   Taro.login({
+    //     complete: (loginRes) => {
+    //       if (!loginRes.code) return;
+    //       params = { code: loginRes.code, product_id: option.bar };
+    //
+    //     },
+    //   });
+    // }
+
+    getCheckLogin().then((result) => {
+      let {token} = result;
+      SetStorageSync("allJson", result);
+      SetStorage("token", token).then(() => {
+        payApiStatus({ product_id: option.bar });
       });
-    }
+    });
   };
   const payApiStatus = (params) => {
     getPayOrder(params).then((res) => {

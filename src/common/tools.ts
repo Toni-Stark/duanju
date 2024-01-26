@@ -45,6 +45,13 @@ export const setTimFun = (callback, time=500) => {
     callback();
   }, time);
 };
+export const setTimFunReverse = (callback, time=500) => {
+  let tim = setTimeout(() => {
+    callback();
+    tim = null;
+    clearTimeout(tim);
+  }, time);
+};
 
 let inter = null;
 export const setInterFun = (callback) => {

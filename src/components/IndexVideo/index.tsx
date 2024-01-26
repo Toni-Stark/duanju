@@ -11,11 +11,6 @@ type Props = {
 export const IndexVideo = (props: Props) => {
   const { data, height, id } = props;
 
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
-  };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({
       url: "../video_up/index?id=" + id,

@@ -22,8 +22,8 @@ import {
   getIndexClassifyList,
   getIndexRecommend,
   getIndexRecommendList,
-  getIndexTags,
-  getIndexTagsVideo, getVideoMessage,
+  getIndexTags, getIndexTagsVideo,
+  getVideoMessage,
 } from "@/common/interface";
 import { Loading } from "@/components/loading";
 import { IndexCard } from "@/components/indexCard";
@@ -38,15 +38,15 @@ export default function Index() {
   const [option, setOption] = useState({
     statusBarHeight: 0,
     barHeight: 0,
-    active: 1,
+    active: 88,
     screenWidth: 0,
     screenHeight: 0,
     refresh: false,
+    p: 1
   });
   const [pch, setPch] = useState(0);
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
-  const [loading3, setLoading3] = useState(false);
 
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
@@ -116,11 +116,7 @@ export default function Index() {
 
     // 新剧推荐接口
     let time = GetStorageSync("time");
-    let bool = true;
-    if(time && new Date().getTime()-time<=28800000){
-      bool = false;
-    }
-    if(bool){
+    if(time && new Date().getTime()-time>=28800000){
       getVideoMessage().then((res)=>{
           SetStorageSync("time", new Date().getTime());
           setMessage(res.data);
@@ -158,18 +154,17 @@ export default function Index() {
     });
   }
   // 刷新Tag列表
-  const currentTagListInfo = (refresh) => {
-    getIndexTags({ is_main: "1" }).then(async (res) => {
-      let arr = res.data.tag_list;
-      currentFraList(arr, (data) => {
-        setTagsData(data);
-        setTimeout(() => {
-          setLoading3(true);
-          if(refresh){
-            setOption({ ...option, refresh: false });
-          }
-        }, 300);
-      });
+  const currentTagListInfo = (param) => {
+    getIndexTags({ is_main: "1", p: param.p }).then(async (res) => {
+      let arr = tagsData;
+      let data = res.data.tag_list
+      if(option.p<param.p){
+        arr = arr.concat(data);
+      } else {
+        arr = data;
+      }
+      setTagsData(arr)
+      setOption({...option, p: param.p});
     });
   }
   // 刷新RecommendList列表
@@ -194,7 +189,7 @@ export default function Index() {
 
   useDidShow(() => {
     currentRecommendListInfo();
-    currentTagListInfo(false);
+    currentTagListInfo({p: 1});
     currentBannerListInfo()
   });
   const refreshChange = () => {
@@ -202,8 +197,11 @@ export default function Index() {
     currentRecommendInfo()
     currentRecommendListInfo()
     currentBannerListInfo()
-    currentTagListInfo(true)
+    currentTagListInfo({p: 1})
   };
+  const addScrollList = () => {
+    currentTagListInfo({p: option.p+1});
+  }
   const currentRecommendList = async (id) => {
     let result = await getIndexRecommendList();
     setReCmm(result.data.video_list);
@@ -412,47 +410,45 @@ export default function Index() {
           <Loading size={40} />
         </View>
       );
-    } else {
-      if (reComm.length > 0) {
-        return (
-          <View className="components-video-scroll">
-            <View className="scroll_view_style">
-              <View className="scroll-list">
-                {reComm.map((item, index) => {
-                  return (
-                    <View
-                      key={index}
-                      className="scroll-list-item"
-                      onClick={() => {
-                        // naviToVideo(item.id);
-                        naviToVideoUp(item?.id)
-                      }}
+    } else if (reComm.length > 0) {
+      return (
+        <View className="components-video-scroll">
+          <View className="scroll_view_style">
+            <View className="scroll-list">
+              {reComm.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    className="scroll-list-item"
+                    onClick={() => {
+                      // naviToVideo(item.id);
+                      naviToVideoUp(item?.id)
+                    }}
+                  >
+                    <Image
+                      src={item.img}
+                      className="scroll-list-item-img"
+                    />
+                    <Text
+                      numberOfLines={1}
+                      className="scroll-list-item-text"
                     >
-                      <Image
-                        src={item.img}
-                        className="scroll-list-item-img"
-                      />
-                      <Text
-                        numberOfLines={1}
-                        className="scroll-list-item-text"
-                      >
-                        {item.name}
-                      </Text>
-                    </View>
-                  );
-                })}
-                <View className="button-pad" />
-              </View>
+                      {item.name}
+                    </Text>
+                  </View>
+                );
+              })}
+              <View className="button-pad" />
             </View>
           </View>
-        );
-      } else {
-        return (
-          <View className="components-video-scroll center">
-            <NoneView />
-          </View>
-        )
-      }
+        </View>
+      );
+    } else {
+      return (
+        <View className="components-video-scroll center">
+          <NoneView />
+        </View>
+      )
     }
   }, [reComm, loading2]);
 
@@ -469,7 +465,9 @@ export default function Index() {
           refresherEnabled
           refresherTriggered={option.refresh}
           refresherBackground="#1e212a"
+          lowerThreshold={60}
           onRefresherRefresh={refreshChange}
+          onScrollToLower={addScrollList}
         >
           <View
             className="index_zone_view_header"
@@ -507,13 +505,13 @@ export default function Index() {
             {currentLarContent}
             {currentTeTContent}
             {tagsData.length > 0 ? (
-              <IndexCard data={tagsData[0]} loading={loading3} />
+              <IndexCard data={tagsData[0]} />
             ) : null}
             {recommend.length >= 2 ? (
               <IndexVideo height={option.screenWidth} data={recommend[1]} id="video_1" />
             ) : null}
             {tagsData.length > 1 ? (
-              <IndexCard data={tagsData[1]} loading={loading3} />
+              <IndexCard data={tagsData[1]} />
             ) : null}
             {currentSwiper}
             {recommend.length >= 3 ? (
@@ -521,7 +519,7 @@ export default function Index() {
             ) : null}
             {tagsData.map((item, index) => {
               if (index > 1) {
-                return <IndexCard data={item} loading={loading3} />;
+                return <IndexCard data={item} />;
               }
             })}
             <View className="zone_footer" />

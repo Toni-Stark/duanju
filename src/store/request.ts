@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
 import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {getCheckLogin, TShow} from "@/common/common";
-import {getFormUrl, getSystemInfo} from "@/common/tools";
+import {getFormUrl} from "@/common/tools";
 import {env} from "@/store/config";
 
 let isRefreshing = false;

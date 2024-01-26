@@ -1,11 +1,11 @@
 import { Image, ScrollView, Video, View } from "@tarojs/components";
-import Taro, { useDidShow } from "@tarojs/taro";
+import Taro, {useDidShow, useLoad} from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useMemo, useState } from "react";
 import top from "../../static/icon/top.png";
 import {
-  getFavorite,
+  getFavorite, getIndexChasingCount,
   getIndexRecommend,
   getVideoHistory,
 } from "@/common/interface";
@@ -18,9 +18,9 @@ export default function List() {
     statusBarHeight: 0,
     barHeight: 0,
     videoHeight: 0,
-    active: 1,
     screenWidth: 0,
     screenHeight: 0,
+
     habit: 1,
     refresh: false,
   });
@@ -29,30 +29,30 @@ export default function List() {
   const [btnList, setBtnList] = useState([
     {
       title: "历史",
-      id: 1,
-      list: [],
-      p: 1,
+      type: 1,
       count: 0,
     },
     {
       title: "点赞",
-      id: 2,
-      list: [],
-      p: 1,
+      type: 2,
       count: 0,
     },
     {
       title: "收藏",
-      id: 3,
-      list: [],
-      p: 1,
+      type: 3,
       count: 0,
     },
   ]);
   const [newData, setNewData] = useState<any>([]);
-  const [videoDefault, setVideoDefault] = useState(undefined);
 
-  useDidShow(async () => {
+  const [staticInfo, setStaticInfo] = useState({
+    list: [],
+    p: 1,
+    count: 0
+  });
+  const [headerInfo, setHeaderInfo] = useState(undefined);
+
+  useLoad(async () => {
     let _option = option;
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;
@@ -65,84 +65,84 @@ export default function List() {
       },
     });
     setOption({ ..._option });
-    await getDefaultList();
+
+    // await getDefaultList();
+
+    // await historyList({p: 1});
   });
-  const videoFavorite = (params) => {
-    return new Promise((resolve) => {
-      getFavorite(params).then((res) => {
-        if (res.code === 200) {
-          resolve({ list: res.data.favorite_list, count: res.data.count });
-        }
-      });
-    });
-  };
-  const videoHistory = (params) => {
-    return new Promise((resolve) => {
-      getVideoHistory(params).then((res) => {
-        if (res.code === 200) {
-          if (res.data?.history_list.length > 0) {
-            resolve({
-              list: res.data.history_list,
-              count: res.data.count,
-            });
-          } else if (params.p == 1) {
-            getIndexRecommend().then((result) => {
-              let arr = [];
-              let data = result.data[0];
-              arr.push({
-                video_url: data.url,
-                video_img: data.img,
-                video_id: data.id,
-                class_name: data.describe,
-                video_name: data.name,
-                watching: data.view,
-              });
-              resolve({ list: arr, count: arr.length });
-            });
+  useDidShow(()=>{
+    if(staticInfo.p<=1){
+      currentTab(option.habit, staticInfo.p);
+    }
+    getTabList()
+  })
+
+  const historyList = (params) => {
+    getVideoHistory(params).then((res) => {
+      if (res.code !== 200) return;
+        let list = staticInfo.list;
+        let data = res.data;
+        if (data?.count > 0) {
+          if(staticInfo.p<params.p){
+            list = list.concat(data.history_list);
+          } else {
+            list = data.history_list;
           }
+          setStaticInfo({p: params.p, list: list, count: list.length});
+          setNewData(list);
+          if(!headerInfo){
+            setHeaderInfo({
+              video_url: list[0].video_url,
+              video_img: list[0].video_img,
+              video_id: list[0].video_id,
+              class_name: list[0].video_name,
+              video_name: list[0].class_name,
+              watching: list[0].watching,
+            })
+          }
+          setOption({
+            ...option,
+            habit: 1,
+            refresh: false,
+          })
+          setLoading(true);
+        } else if (params.p == 1) {
+          getRecommendList()
         }
-      });
     });
   };
 
-  const getDefaultList = async () => {
-    let arr:any = [...btnList];
-    arr[0] = { ...arr[0], ...(await videoHistory({ p: 1 })) };
-    arr[1] = { ...arr[1], ...(await videoFavorite({ p: 1, type: 2 })) };
-    arr[2] = { ...arr[2], ...(await videoFavorite({ p: 1, type: 1 })) };
-    setBtnList([...arr]);
-    await currentTab(option.habit, arr);
-    if (arr[0].list.length > 0) {
-      setVideoDefault(arr[0].list[0]);
-    }
-    setLoading(true);
-    setOption({ ...option, loading: true, refresh: false });
-  };
+  const getRecommendList = () => {
+    getIndexRecommend().then((result) => {
+      let data = result.data[0];
+      if(!headerInfo){
+        setHeaderInfo({
+          video_url: data.url,
+          video_img: data.img,
+          video_id: data.video_id,
+          class_name: data.describe,
+          video_name: data.name,
+          watching: data.view,
+        })
+      }
+      setLoading(true);
+    });
+  }
 
-  const currentList = async (params) => {
-    const { id } = params;
-    let arr: any = [...btnList];
-    if (id === 1) {
-      let page = arr[0].p + 1;
-      let result = await videoHistory({ p: page });
-      arr[0].list.concat(result.list);
-      arr[0].count = result.count;
-      arr[0].p = page;
-    } else if (id === 1) {
-      let page = arr[1].p + 1;
-      let result = await videoFavorite({ p: arr[1].p + 1, type: 2 });
-      arr[1].list.concat(result.list);
-      arr[1].count = result.count;
-      arr[1].p = page;
-    } else {
-      let page = arr[2].p + 1;
-      let result = await videoFavorite({ p: arr[2].p + 1, type: 1 });
-      arr[2].list.concat(result.list);
-      arr[2].count = result.count;
-      arr[2].p = page;
-    }
-    setBtnList([...arr]);
-    await currentTab(option.habit, arr);
+  const favoriteList = (params, habit) => {
+      getFavorite(params).then((res) => {
+        if (res.code !== 200) return;
+          let list = newData;
+        let data = res.data;
+        if(staticInfo.p<params.p){
+            list = list.concat(data.favorite_list);
+          } else {
+            list = data.favorite_list;
+          }
+          setStaticInfo({p: params.p, list: list, count: list.length});
+          setNewData(list);
+          setOption({...option, refresh: false, habit})
+      });
   };
 
   const onScroll = (e) => {
@@ -153,21 +153,34 @@ export default function List() {
       setScrollOpacity(0);
     }
   };
-  const currentTab = (id, list?: any) => {
-    let arr = [...btnList];
-    if (list) {
-      arr = list;
+
+  const getTabList = () => {
+    getIndexChasingCount().then((res)=>{
+      let list = btnList;
+      let data = res.data;
+      list[0].count = data.history_count;
+      list[1].count = data.like_count;
+      list[2].count = data.favorite_count;
+      setBtnList(list)
+    })
+  }
+
+  const currentTab = (type, p= 0) => {
+    if(type == 1) {
+      historyList({p: p||1})
+    } else if (type == 2) {
+      favoriteList({p: p||1, type: 2}, type)
+    } else if (type == 3) {
+      favoriteList({p: p||1, type: 1}, type)
     }
-    let data = arr.find((item) => item.id === id);
-    setNewData(data.list);
-    setOption({ ...option, habit: id });
   };
   const addScrollList = () => {
-    currentList({ id: option.habit });
+    currentTab(option.habit, staticInfo.p+1)
   };
   const refreshChange = () => {
     setOption({ ...option, refresh: true });
-    getDefaultList();
+    currentTab(option.habit)
+    getTabList()
   };
 
   const naviToVideo = (id) => {
@@ -194,14 +207,14 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
-              naviToVideoUp(videoDefault?.video_id);
+              naviToVideoUp(headerInfo?.video_id);
             }}
           >
             <Video
               className="components-video-large-video"
               style={{ height: option.screenWidth + "px" }}
-              src={videoDefault?.video_url}
-              poster={videoDefault?.video_img}
+              src={headerInfo?.video_url}
+              poster={headerInfo?.video_img}
               initialTime={0}
               controls={false}
               autoplay
@@ -218,21 +231,21 @@ export default function List() {
             <View className="components-video-large-content">
               <View className="large-content-main">
                 <View className="large-content-main-title">
-                  {videoDefault?.class_name}
+                  {headerInfo?.class_name}
                 </View>
                 <View className="large-content-main-eval">
-                  {videoDefault?.video_name}
+                  {headerInfo?.video_name}
                 </View>
               </View>
               <text className="large-content-count">
-                {videoDefault?.watching || 0}人正在看
+                {headerInfo?.watching || 0}人正在看
               </text>
             </View>
           </View>
         </>
       );
     }
-  }, [videoDefault, loading]);
+  }, [headerInfo, loading]);
   const currentContent = useMemo(() => {
     if (!loading) {
       return (
@@ -296,13 +309,13 @@ export default function List() {
                         className="components-video-list-tabs-tab"
                         style={{
                           color:
-                            option.habit === item.id ? "#ffffff" : "#888888",
+                            option.habit === item.type ? "#ffffff" : "#888888",
                         }}
-                        onClick={() => currentTab(item.id)}
+                        onClick={() => currentTab(item.type)}
                       >
                         {item.title}
                         {item?.count || ""}
-                        {option.habit === item.id ? (
+                        {option.habit === item.type ? (
                           <View className="components-video-list-tabs-tab-line" />
                         ) : null}
                       </View>

@@ -2,26 +2,19 @@ import { Image, Text, View } from "@tarojs/components";
 
 import "./index.less";
 import Taro from "@tarojs/taro";
-import { Loading } from "@/components/loading";
 import right from "@/static/icon/right.png";
 import {getIndexActRecord} from "@/common/interface";
 
 type Props = {
   data: any;
-  loading: boolean;
 };
 
 export const IndexCard = (props: Props) => {
-  const { loading, data } = props;
+  const { data } = props;
   const naviToList = (title, id) => {
     getIndexActRecord({frame: '1', act: '2', target_id: id});
     Taro.navigateTo({
       url: "./hot/index?title=" + title + "&id=" + id,
-    });
-  };
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
     });
   };
   const naviToVideoUp = (id) => {
@@ -29,13 +22,6 @@ export const IndexCard = (props: Props) => {
       url: "../video_up/index?id=" + id,
     });
   };
-  if (!loading) {
-    return (
-      <View className="loading_lar">
-        <Loading size={40} />
-      </View>
-    );
-  }
   if (data?.video_list <= 0) {
     return null;
   }

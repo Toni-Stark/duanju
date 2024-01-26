@@ -389,7 +389,7 @@ export default function VideoView() {
             className="center_video_large"
             src={currentInfo?.url}
             poster={dataInfo?.img}
-            style={{opacity: bool ? 1 : 0}}
+            style={{opacity: bool ? 1 : 0, zIndex:500}}
             initialTime={0}
             controls
             onPlay={startPlay}
@@ -397,6 +397,7 @@ export default function VideoView() {
             onEnded={onEnded}
             showPlayBtn
             showFullscreenBtn={false}
+            enableProgressGesture={true}
             autoplay={true}
             enablePlayGesture
             showCenterPlayBtn
@@ -404,7 +405,7 @@ export default function VideoView() {
             loop={false}
             objectFit="fill"
           /> : null}
-        <Image className="center_video_img" src={dataInfo?.img} style={{opacity: bool ? 0 : 1}}/>
+        <Image className="center_video_img" src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
       </>
     )
   }

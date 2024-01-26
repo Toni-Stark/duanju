@@ -63,7 +63,7 @@ export default function Hot() {
       });
     } else if (id == 2) {
       getScore(p).then((res) => {
-        let list = [...dataList];
+        let list:any = [...dataList];
         if (p == 1) {
           list = res;
         } else {
