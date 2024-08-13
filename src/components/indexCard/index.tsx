@@ -22,7 +22,7 @@ export const IndexCard = (props: Props) => {
       url: "../video_up/index?id=" + id,
     });
   };
-  if (data?.video_list <= 0) {
+  if (!data?.video_list || data?.video_list <= 0) {
     return null;
   }
   return (

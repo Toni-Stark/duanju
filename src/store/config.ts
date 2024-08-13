@@ -4,18 +4,18 @@ const config = {
   wx: {
     dev: {
       appid: "wx4fa1b29d25262470",
-      BASE_URL: "http://www.dev.videoshare.cn/api/7jj5DfGG/",
-      WEB_VIEW: "http://www.dev.videoshare.cn/api/"
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
       appid: "wx4fa1b29d25262470",
-      BASE_URL: "http://www.dev.videoshare.cn/api/7jj5DfGG/",
-      WEB_VIEW: "http://www.dev.videoshare.cn/api/"
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
       appid: "wx4fa1b29d25262470",
-      BASE_URL: "http://www.dev.videoshare.cn/api/7jj5DfGG/",
-      WEB_VIEW: "http://www.dev.videoshare.cn/api/"
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },
   tt: {
