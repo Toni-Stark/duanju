@@ -6,7 +6,7 @@ export default function System() {
 
   return (
     <View className="index">
-      <WebView src={env+"default/term"} />
+      <WebView src={env.WEB_VIEW+"default/term"} />
     </View>
   );
 }

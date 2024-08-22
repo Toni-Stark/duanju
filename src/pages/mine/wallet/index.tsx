@@ -6,6 +6,7 @@ import {useMemo, useState} from "react";
 import right from "../../../static/icon/right.png";
 import { getMemberInfo } from "@/common/interface";
 import { HeaderView } from "@/components/headerView";
+import {commonSetting} from "@/store/config";
 
 export default function Wallet() {
   const [option, setOption] = useState({
@@ -38,7 +39,7 @@ export default function Wallet() {
         id: 1,
       },
       {
-        title: "积分记录",
+        title: commonSetting.coinName+"记录",
         id: 2,
       },
     ];
@@ -53,10 +54,10 @@ export default function Wallet() {
       <View className="index_content_icon">
         <View className="index_content_icon_text">
           <View className="text_main">
-            <View className="text_main_title">积分余额</View>
+            <View className="text_main_title">{commonSetting.coinName+'余额'}</View>
             <View className="text_main_eval">
               {info?.score}
-              <View className="text_main_eval_text">积分</View>
+              <View className="text_main_eval_text">{commonSetting.coinName}</View>
             </View>
           </View>
           <View className="text_main">
@@ -81,7 +82,7 @@ export default function Wallet() {
           <Image className="index_item_image" src={right} />
         </View>
         <View className="index_item" onClick={() => naviToList(1)}>
-          积分记录
+          {commonSetting.coinName+'记录'}
           <Image className="index_item_image" src={right} />
         </View>
       </View>

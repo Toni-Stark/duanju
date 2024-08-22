@@ -5,7 +5,7 @@ import {env} from "@/store/config";
 export default function System() {
   return (
     <View className="index">
-      <WebView src={env+"default/server"} />
+      <WebView src={env.WEB_VIEW+"default/server"} />
     </View>
   );
 }

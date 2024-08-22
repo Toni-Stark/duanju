@@ -8,6 +8,7 @@ import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import top from "../../../../static/icon/top.png";
 import { Loading } from "@/components/loading";
+import {commonSetting} from "@/store/config";
 
 export default function Hot() {
   const router = useRouter();
@@ -154,7 +155,7 @@ export default function Hot() {
                                 <View className="eva">{item.score}</View>
                               ) : (<View>{item.gift_score}</View>)
                             }
-                            <View className="eva">积分</View>
+                            <View className="eva">{commonSetting.coinName}</View>
                           </View>
                         </View>
                       </View>

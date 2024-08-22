@@ -89,7 +89,7 @@ export const getLogin = (option) => {
 export const TShow = (text, icon = "none", duration = 1500) => {
   return new Promise((resolve) => {
     Taro.showToast({
-      title: text,
+      title: typeof text == 'string' ? text : '',
       mask:true,
       icon,
       duration,

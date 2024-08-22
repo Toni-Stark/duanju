@@ -10,6 +10,7 @@ import kefu from "../../static/icon/kefu.png";
 import menu from "../../static/icon/meun.png";
 import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
+import {commonSetting} from "@/store/config";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -104,7 +105,7 @@ export default function Mine() {
     });
   };
   const naviToWallet = () => {
-    let val = "./wallet/wllt/index?id=" + 2 + "&title=积分记录";
+    let val = "./wallet/wllt/index?id=" + 2 + "&title="+commonSetting.coinName+"记录";
     Taro.navigateTo({
       url: val,
     });
@@ -153,7 +154,7 @@ export default function Mine() {
           >
             {option.score}
             <View className="content-wel-mon-coin-content-value-text">
-              积分
+              {commonSetting.coinName}
             </View>
           </View>
           <View className="content-wel-mon-people-value">
@@ -170,7 +171,7 @@ export default function Mine() {
     return (
       <View className="content-wel-integral">
         <View className="e_text">
-          签到领积分
+          签到领{commonSetting.coinName}
           <Image className="e_come" src={emo} />
         </View>
         {!option.is_signed ? (

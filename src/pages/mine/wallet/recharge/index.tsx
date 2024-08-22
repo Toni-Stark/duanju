@@ -15,6 +15,7 @@ import {
 import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
 import {getCheckLogin, THide, TShow} from "@/common/common";
+import {commonSetting} from "@/store/config";
 
 export default function Search() {
   const router = useRouter();
@@ -114,7 +115,7 @@ export default function Search() {
     if(!inList||inList?.length<=0){
       return;
     }
-    TShow("", "loading", 10000);
+    TShow("支付中", "loading", 10000);
     // let allJson = GetStorageSync("allJson");
     // let params = {};
     // if (!allJson.is_vir) {
@@ -131,6 +132,7 @@ export default function Search() {
     // }
 
     getCheckLogin().then((result) => {
+      console.log(result, '获取登录状态')
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
@@ -139,7 +141,9 @@ export default function Search() {
     });
   };
   const payApiStatus = (params) => {
+    console.log(params, '创建订单1')
     getPayOrder(params).then((res) => {
+      console.log(res, '创建订单2')
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);
@@ -165,7 +169,7 @@ export default function Search() {
             }),
             paySig: data.paySig,
             signature: data.signature,
-            mode: "short_series_goods",
+            mode: res.data.mode,
             success(res) {
               payStatus(data.signData.outTradeNo);
             },
@@ -249,7 +253,7 @@ export default function Search() {
       <View className="index_content_icon">
         <View className="index_content_icon_text">
           <View className="text_main">
-            <View className="text_main_title">积分</View>
+            <View className="text_main_title">{commonSetting.coinName}</View>
             <View className="text_main_eval">{info?.score}</View>
           </View>
           <View className="text_main">
@@ -291,14 +295,14 @@ export default function Search() {
                   {item.type == 2 ? (
                     <View className="item_value_score_day">
                       {item.score}
-                      <View className="day">积分</View>
+                      <View className="day">{commonSetting.coinName}</View>
                     </View>
                   ) : null}
                 </View>
                 <View className="item_value_score">
                   {item.gift_score > 0 ? (
                     <View className="item_value_score_text">
-                      （送{item.gift_score}积分）
+                      （送{item.gift_score}{commonSetting.coinName}）
                     </View>
                   ) : null}
                 </View>
@@ -349,11 +353,11 @@ export default function Search() {
       <View className="index_content">
         <View className="index_content_banner">
           <View>创作不易，感谢您的支持</View>
-          {option.is_pay?<View>解锁当前剧集需要{option.is_pay}积分</View>:null}
+          {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
         </View>
         {/*用户账户*/}
         {currentContext}
-        {/*积分列表*/}
+        {/*列表*/}
         {coinContext}
         {/*支付方式列表*/}
         {payContext}
@@ -364,8 +368,8 @@ export default function Search() {
             <View>
               2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；
             </View>
-            <View>3、赠送为平台同等金额兑换比例的积分，不是现金；</View>
-            <View>4、遇到问题可在“我的”页面联系客服</View>
+            <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
+            {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
           </View>
         </View>
         <View

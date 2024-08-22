@@ -350,7 +350,7 @@ export default function Index() {
           >
             <Image
               className="components-video-card-image"
-              mode="scaleToFill"
+              mode="aspectFill"
               src={headerVideo?.img}
             />
             <View className="components-video-card-content">
