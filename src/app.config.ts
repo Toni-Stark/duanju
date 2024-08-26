@@ -1,11 +1,12 @@
+import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
+import makePhoneCall = apis.makePhoneCall;
+
 export default defineAppConfig({
   __usePrivacyCheck__: true,
   pages: [
     "pages/index/index",
     "pages/index/cate/index",
     "pages/index/hot/index",
-    "pages/index/new/index",
-    "pages/index/popular/index",
     "pages/index/search/index",
     "pages/list/index",
     "pages/mine/index",
@@ -31,6 +32,11 @@ export default defineAppConfig({
     backgroundTextStyle: "light",
     navigationBarTitleText: "WeChat",
     navigationBarTextStyle: "black",
+  },
+  permission: {
+    makePhoneCall: {
+       desc: "你的电话将用于拨打客服电话"
+    }
   },
   tabBar: {
     custom: false,

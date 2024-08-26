@@ -403,7 +403,7 @@ export default function VideoView() {
             showCenterPlayBtn
             playBtnPosition="center"
             loop={false}
-            objectFit="fill"
+            objectFit="cover"
           /> : null}
         <Image className="center_video_img" src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
       </>

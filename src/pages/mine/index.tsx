@@ -56,21 +56,20 @@ export default function Mine() {
 
   useDidShow(() => {
     getMemberInfo().then((res) => {
-      setOption({
-        ...option,
+      let obj = {
         ...res.data,
         loading: true,
-      });
+      }
+      setOption({...obj});
+      console.log(obj, option)
     });
   });
   const naviTo = (item) => {
     if (item.url == "ke") {
+      console.log(option)
       Taro.makePhoneCall({
         phoneNumber: option.my_kf,
-        phoneNucompleteber: function (res) {
-          console.log(res);
-        },
-      });
+      })
       return;
     }
     Taro.navigateTo({
@@ -115,7 +114,7 @@ export default function Mine() {
       <View className="content-wel-main">
         <View className="content-wel-main-title">
           <View className="coin">欢迎回来，{option.nickname}</View>
-          <view className="val">{option.sn}</view>
+          {/*<view className="val">{option.sn}</view>*/}
         </View>
         <View className="content-wel-main-list">
           <View className="content-wel-main-list-title">
@@ -210,7 +209,7 @@ export default function Mine() {
         })}
       </View>
     )
-  }, [list])
+  }, [list, option])
 
   return (
     <View className="index">

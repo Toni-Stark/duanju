@@ -29,7 +29,7 @@ export const IndexVideo = (props: Props) => {
         autoplay={false}
         loop
         muted
-        objectFit="cover"
+        objectFit="contain"
         id={id}
       />
       <text className="mini-view-large-desc">{data.describe}</text>

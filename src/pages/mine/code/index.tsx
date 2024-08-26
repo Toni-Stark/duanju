@@ -32,7 +32,7 @@ export default function Code() {
       console.log(res.target)
     }
     return {
-      title: '长城传奇影视数字文化',
+      title: '放牛娃短剧',
       path: '/pages/index/index?iv='+userInfo.sn,
     }
   })
@@ -72,7 +72,7 @@ export default function Code() {
               TShow("保存成功");
             },
             fail: (res) => {
-              // TShow("微信权限申请中，暂时无法使用");
+              TShow("微信权限申请中，暂时无法使用");
             },
           });
         }
