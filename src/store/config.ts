@@ -4,17 +4,17 @@ const config = {
   wx: {
     dev: {
       appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/7bSEjdA13/",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
       WEB_VIEW: "https://niubojc.com/api/"
     },
     test: {
       appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/7bSEjdA13/",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
       WEB_VIEW: "https://niubojc.com/api/"
     },
     prod: {
       appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/7bSEjdA13/",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
       WEB_VIEW: "https://niubojc.com/api/"
     },
   },

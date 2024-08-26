@@ -365,11 +365,9 @@ export default function Search() {
           <View className="title">充值须知</View>
           <View className="desc">
             <View>1、一经充值不予退换；</View>
-            <View>
-              2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；
-            </View>
+            <View>2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；</View>
             <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
-            {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
+            <View>4、付费内容购买使用后不支持退款；</View>
           </View>
         </View>
         <View
