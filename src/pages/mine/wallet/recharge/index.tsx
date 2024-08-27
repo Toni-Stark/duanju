@@ -116,20 +116,6 @@ export default function Search() {
       return;
     }
     TShow("支付中", "loading", 10000);
-    // let allJson = GetStorageSync("allJson");
-    // let params = {};
-    // if (!allJson.is_vir) {
-    //   params = { openid: allJson.openid, product_id: option.bar };
-    //   payApiStatus(params);
-    // } else {
-    //   Taro.login({
-    //     complete: (loginRes) => {
-    //       if (!loginRes.code) return;
-    //       params = { code: loginRes.code, product_id: option.bar };
-    //
-    //     },
-    //   });
-    // }
 
     getCheckLogin().then((result) => {
       console.log(result, '获取登录状态')
@@ -249,6 +235,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
+    if(inList.length<=0) return null;
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -266,7 +253,7 @@ export default function Search() {
         </View>
       </View>
     )
-  }, [info])
+  }, [info,inList])
   const coinContext = useMemo(() => {
     return (
       <View className="index_content_list">
@@ -318,6 +305,7 @@ export default function Search() {
     )
   }, [inList, option])
   const payContext = useMemo(()=>{
+    if(inList.length<=0) return null;
     return (
       <View className="index_content_label">
         {list.map((item) => {
@@ -342,13 +330,13 @@ export default function Search() {
         })}
       </View>
     )
-  }, [list, option])
+  }, [list, option, inList])
   return (
     <View className="index">
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
-        text="充值"
+        text={inList.length>0?"充值":"信息"}
       />
       <View className="index_content">
         <View className="index_content_banner">
@@ -361,20 +349,24 @@ export default function Search() {
         {coinContext}
         {/*支付方式列表*/}
         {payContext}
-        <View className="index_content_desc">
-          <View className="title">充值须知</View>
-          <View className="desc">
-            <View>1、一经充值不予退换；</View>
-            <View>2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；</View>
-            <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
-            <View>4、付费内容购买使用后不支持退款；</View>
-          </View>
-        </View>
-        <View
-          className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
+        {inList.length>0?
+            <View className="index_content_desc">
+              <View className="title">充值须知</View>
+              <View className="desc">
+                <View>1、一经充值不予退换；</View>
+                <View>
+                  2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；
+                </View>
+                <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
+                {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
+              </View>
+            </View>
+        :null}
+        <View className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
           onClick={payOrder}
         >
-          确认支付
+          {inList.length>0?'确认支付':'暂不支持'}
+
         </View>
       </View>
     </View>
