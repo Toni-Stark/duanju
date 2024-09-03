@@ -52,7 +52,7 @@ export default function Hot() {
   const getDataList = (p, id) => {
     if (id == 1) {
       getPayList(p).then((res) => {
-        let list = [...dataList];
+        let list: any = [...dataList];
         if (p == 1) {
           list = res;
         } else {
@@ -124,8 +124,8 @@ export default function Hot() {
           <View className="index_zone_view_content">
             <View className="navi-data">
               {dataList?.map((item) => {
-                let count = 0;
-                let score = 0;
+                let count: number;
+                let score: number;
                 if (item.flow_type == 1) {
                   count = Number(item.after_score) + Number(item.score);
                   score = Number(item.score);

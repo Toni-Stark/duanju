@@ -22,7 +22,7 @@ import {
   getIndexClassifyList,
   getIndexRecommend,
   getIndexRecommendList,
-  getIndexTags, getIndexTagsVideo,
+  getIndexTags,
   getVideoMessage,
 } from "@/common/interface";
 import { Loading } from "@/components/loading";
@@ -125,20 +125,6 @@ export default function Index() {
     }
   });
 
-  const currentFraList = async (list, callback) => {
-    let arr = [];
-    async function getInfo(li, nu) {
-      if (nu >= li.length) {
-        callback(arr);
-        return;
-      }
-      let result = await getIndexTagsVideo({ tag_id: li[nu].id });
-      li[nu].video_list = result.data.video_list;
-      arr.push(li[nu]);
-      await getInfo(li, nu + 1);
-    }
-    await getInfo(list, 0);
-  };
 
   // 刷新Recommend列表
   const currentRecommendInfo = () => {
@@ -270,13 +256,6 @@ export default function Index() {
       url: "./search/index?type=" + type,
     });
   };
-  const naviToVideo = (id) => {
-    if(!id) return;
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
-    setShowNew(false)
-  };
   const naviToVideoUp = (id) => {
     if(!id) return;
     Taro.navigateTo({
@@ -298,7 +277,7 @@ export default function Index() {
           circular
           autoplay
         >
-          {bannerList.map((item, index) => {
+          {bannerList.map((item) => {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{

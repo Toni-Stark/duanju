@@ -12,7 +12,7 @@ export default function System() {
     barHeight: 0,
     count: 0,
   });
-  const [dataList, setDataList] = useState([
+  const [dataList] = useState([
     {
       title: "服务协议",
       url: "./user/index",

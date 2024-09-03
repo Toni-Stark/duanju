@@ -5,7 +5,7 @@ import {
   Swiper,
   SwiperItem,
 } from "@tarojs/components";
-import Taro, { useDidShow, useLoad } from "@tarojs/taro";
+import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useMemo, useState } from "react";
@@ -82,7 +82,7 @@ export default function Hot() {
     });
   });
 
-  const currentRecommendList = async ({ classify, p, refresh }) => {
+  const currentRecommendList = async ({ classify, p, refresh }:{classify?: any, p?:any, refresh?: any}) => {
     let arr: any;
     if (p !== 1) {
       arr = [...currentData];
@@ -132,11 +132,6 @@ export default function Hot() {
     }
   };
 
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
-  };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({
       url: "../video_up/index?id=" + id,
@@ -147,7 +142,7 @@ export default function Hot() {
       url: "./cate/index?type=" + type + "&title=" + title,
     });
   };
-  const currentList = async ({ classify, p, refresh }) => {
+  const currentList = async ({ classify, p, refresh }:{classify?: any, p?:any, refresh?: any}) => {
     let arr: any;
     if (option.active === classify && p !== 1) {
       arr = [...currentData];
@@ -195,7 +190,7 @@ export default function Hot() {
           circular
           autoplay
         >
-          {bannerList.map((item, index) => {
+          {bannerList.map((item) => {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{

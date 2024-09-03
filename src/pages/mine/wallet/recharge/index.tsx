@@ -339,10 +339,10 @@ export default function Search() {
         text={inList.length>0?"充值":"信息"}
       />
       <View className="index_content">
-        <View className="index_content_banner">
+        {inList.length>0?<View className="index_content_banner">
           <View>创作不易，感谢您的支持</View>
           {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
-        </View>
+        </View>:null}
         {/*用户账户*/}
         {currentContext}
         {/*列表*/}

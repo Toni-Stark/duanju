@@ -183,11 +183,6 @@ export default function List() {
     getTabList()
   };
 
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../video/index?id=" + id,
-    });
-  };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({
       url: "../video_up/index?id=" + id,

@@ -14,7 +14,7 @@ export default function Hobby() {
     screenHeight: 0,
     count: 0,
   });
-  const [dataList, setDataList] = useState([
+  const [dataList] = useState([
     {
       title: "男频",
       list: [
@@ -111,9 +111,6 @@ export default function Hobby() {
 
     setOption({ ..._option });
   });
-  const naviBack = () => {
-    Taro.navigateBack();
-  };
 
   const chooseItem = (id) => {
     let index = current.findIndex((item) => {

@@ -4,7 +4,7 @@ import {
   Video,
   Button,
   Swiper,
-  SwiperItem,
+  SwiperItem, Text,
 } from "@tarojs/components";
 import Taro, { useDidShow, useRouter } from "@tarojs/taro";
 import { AtButton, AtFloatLayout } from "taro-ui";
@@ -24,7 +24,7 @@ import down from "../../static/icon/down.png";
 import yuan from "../../static/icon/yuan.png";
 import {
   getMemberShare,
-  getMemberView,
+  getMemberView, getPayOrder, getPayStatus,
   getVideoFavorite,
   getVideoIndex,
   getVideoPay,
@@ -76,6 +76,8 @@ export default function VideoView() {
   const [currentInfo, setCurrentInfo] = useState(undefined);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isShowModal, setIsShowModal] = useState(false);
+
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
     if (res.from === "button") {
@@ -135,7 +137,7 @@ export default function VideoView() {
       let c_id = params?.current || info?.history_sub_id;
       if (!c_id) {
         c_id = list[Object.keys(list)[0]][0].id
-      };
+      }
       let b_list = [];
       let page = undefined
       for (let item in list) {
@@ -268,7 +270,7 @@ export default function VideoView() {
     getMemberShare({
       v_id: dataInfo.id,
       v_s_id: currentInfo.id,
-    }).then((res) => {});
+    }).then(() => {});
 
   };
 
@@ -283,6 +285,8 @@ export default function VideoView() {
     });
   };
   const openLayout = () => {
+    setIsShowModal(true);
+    return;
     let info = pageList.find((item) => item.title === current.page);
     setCurrent({ ...current, b_list: info.list });
     setShow(true);
@@ -334,9 +338,9 @@ export default function VideoView() {
       act: act[val],
       v_id: dataInfo.id,
       v_s_id: currentInfo.id,
-    }).then((res) => {});
+    }).then(() => {});
   };
-  const startPlay = async (e) => {
+  const startPlay = async () => {
     clearInterval(timerPlay);
     // 15秒发送一次请求更新观看次数
     timerPlay = null;
@@ -368,6 +372,11 @@ export default function VideoView() {
     let info = pageList?.find((item) => item.title === id);
     setCurrent({ ...current, b_list: info.list, page: id, data: list });
   }
+
+  const closeModal = () => {
+    setIsShowModal(false);
+  }
+
   // 返回按钮
   const backBtnView = useMemo(() => {
     return (
@@ -441,6 +450,137 @@ export default function VideoView() {
     )
   }, [index,loading, allList, currentInfo, dataInfo])
 
+
+  const payStatus = (id) => {
+    let times = 0;
+    let timer = setInterval(() => {
+      getPayStatus({ order_id: id }).then((res) => {
+        if (res.code !== 1) {
+          THide();
+          times = times + 1;
+          if (times >= 3) {
+            clearInterval(timer);
+            timer = null;
+            TShow(res.msg);
+          }
+          return;
+        }
+        THide();
+        TShow("充值成功");
+        SetStorageSync("nowValPay", '1');
+        // 在这里实现后续操作
+        times = 0;
+        clearInterval(timer)
+      });
+    }, 400);
+  };
+  const compareVersion = (_v1, _v2) => {
+    if (typeof _v1 !== "string" || typeof _v2 !== "string") return 0;
+
+    const v1 = _v1.split(".");
+    const v2 = _v2.split(".");
+    const len = Math.max(v1.length, v2.length);
+
+    while (v1.length < len) {
+      v1.push("0");
+    }
+    while (v2.length < len) {
+      v2.push("0");
+    }
+
+    for (let i = 0; i < len; i++) {
+      const num1 = parseInt(v1[i], 10);
+      const num2 = parseInt(v2[i], 10);
+
+      if (num1 > num2) {
+        return 1;
+      } else if (num1 < num2) {
+        return -1;
+      }
+    }
+
+    return 0;
+  };
+  const payApiStatus = (params) => {
+    console.log(params, '创建订单1')
+    getPayOrder(params).then((res) => {
+      console.log(res, '创建订单2')
+      if (res.code !== 200) {
+        THide();
+        return TShow(res.msg);
+      }
+      if (res.data.is_vir) {
+        let data = res.data;
+        let sData = res.data.signData;
+        const SDKVersion = Taro.getSystemInfoSync().SDKVersion;
+        if (
+          compareVersion(SDKVersion, "2.19.2") >= 0 ||
+          wx.canIUse("requestVirtualPayment")
+        ) {
+          wx.requestVirtualPayment({
+            signData: JSON.stringify({
+              offerId: sData.offerId,
+              buyQuantity: sData.buyQuantity,
+              env: sData.env,
+              currencyType: sData.currencyType,
+              productId: sData.productId,
+              goodsPrice: sData.goodsPrice,
+              outTradeNo: sData.outTradeNo,
+              attach: sData.attach,
+            }),
+            paySig: data.paySig,
+            signature: data.signature,
+            mode: res.data.mode,
+            success() {
+              payStatus(data.signData.outTradeNo);
+            },
+            fail({ errMsg, errCode }) {
+              console.error(errMsg, errCode);
+              THide();
+              if (errCode == -1) {
+                TShow("支付失败");
+              }
+              if (errCode == -2) {
+                TShow("支付取消");
+              }
+            },
+          });
+        } else {
+          console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
+        }
+      } else {
+        let data = res.data.json_params;
+        Taro.requestPayment({
+          timeStamp: data.time.toString(),
+          nonceStr: data.nonce_str,
+          package: data.package,
+          signType: "RSA",
+          paySign: data.sign,
+          success: function () {
+            THide();
+            payStatus(data.order_id);
+          },
+          fail: function (err) {
+            console.log(err);
+            THide();
+            let str = "fail";
+            if (err.errMsg.indexOf("cancel") >= 0) {
+              str = "cancel";
+            }
+            if (str == "cancel") {
+              TShow("取消支付");
+            }
+            if (str == "fail") {
+              TShow("支付失败");
+              // TShow(err.errMsg);
+            }
+            // });
+            return;
+          },
+        });
+      }
+    });
+  };
   // 弹窗视频列表
   const currentListContext = useMemo(()=>{
     return (
@@ -499,6 +639,93 @@ export default function VideoView() {
       </AtFloatLayout>
     )
   }, [show, dataInfo, pageList, current, currentInfo]);
+  const currentPayList = useMemo(()=>{
+    return (
+      <AtFloatLayout className="pay_modal" isOpened={isShowModal} onClose={closeModal}>
+        <View className="pay_modal_view">
+          <View className="pay_modal_view_header">
+            <View className="pay_modal_view_header_title">感谢你支持作者，购买后继续观看</View>
+            <View className="pay_modal_view_header_desc">账户余额：0K币（100K币/集）</View>
+          </View>
+          <View className="pay_modal_view_list">
+            <View className="pay_modal_view_list_item all_shop">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">11</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">解锁整剧全集</View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                整剧永久免费看
+              </View>
+            </View>
+            <View className="pay_modal_view_list_item">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">2</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">
+                  200K币
+                  <Text className="pay_modal_view_list_item_title_text_price">+100K币</Text>
+                </View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                整剧永久免费看
+              </View>
+            </View>
+            <View className="pay_modal_view_list_item vip_shop">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">12.9</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">解锁整剧全集</View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                仅需1.8元/天
+              </View>
+            </View>
+            <View className="pay_modal_view_list_item">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">5.9</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">
+                  590K币
+                  <Text className="pay_modal_view_list_item_title_text_price">+600K币</Text>
+                </View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                多送6元
+              </View>
+            </View>
+            <View className="pay_modal_view_list_item vip_shop">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">14.9</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">全场剧免费看30天</View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                仅需0.5元/天
+              </View>
+            </View>
+            <View className="pay_modal_view_list_item vip_shop">
+              <View className="pay_modal_view_list_item_title">
+                <View className="pay_modal_view_list_item_title_main">
+                  <Text className="pay_modal_view_list_item_title_main_price">29.9</Text>元
+                </View>
+                <View className="pay_modal_view_list_item_title_text">全场剧免费看180天</View>
+              </View>
+              <View className="pay_modal_view_list_item_desc">
+                仅需0.2元/天
+              </View>
+            </View>
+          </View>
+          <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link">《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link">《会员服务协议》</Text></View>
+        </View>
+      </AtFloatLayout>
+    )
+  }, [isShowModal])
   return (
     <View className="index">
       {/* 返回按钮和标题 */}
@@ -565,6 +792,7 @@ export default function VideoView() {
         {currentSwiper}
       </View>
       {currentListContext}
+      {currentPayList}
     </View>
   );
 }

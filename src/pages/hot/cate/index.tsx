@@ -27,7 +27,7 @@ export default function Search() {
   const [loading, setLoading] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
-  const [btnList, setBtnList] = useState([]);
+  const [btnList] = useState([]);
   const [dataList, setDataList] = useState([]);
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
@@ -82,11 +82,6 @@ export default function Search() {
   const refreshChange = () => {
     setOption({ ...option, refresh: true });
     getDataList(option.active, 1);
-  };
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../../video/index?id=" + id,
-    });
   };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({

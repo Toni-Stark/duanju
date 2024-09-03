@@ -52,7 +52,7 @@ export default function Info() {
       show: true,
     });
   };
-  const handleCancel = (val) => {
+  const handleCancel = () => {
     setOption({
       ...option,
       show: false,

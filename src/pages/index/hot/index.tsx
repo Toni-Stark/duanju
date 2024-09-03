@@ -4,7 +4,7 @@ import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useState } from "react";
 import top from "../../../static/icon/top.png";
-import { getIndexHot, getIndexTagsVideo } from "@/common/interface";
+import { getIndexTagsVideo } from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
@@ -80,11 +80,6 @@ export default function Hot() {
   const refreshChange = () => {
     setOption({ ...option, refresh: true });
     getDataList(1);
-  };
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../../video/index?id=" + id,
-    });
   };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({

@@ -103,11 +103,6 @@ export default function Cate() {
     setLoading(true);
     getCurrentSearch({ kw: title, p: 1 });
   };
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../../video/index?id=" + id,
-    });
-  };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({
       url: "../../video_up/index?id=" + id,

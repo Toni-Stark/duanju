@@ -1,5 +1,5 @@
 import { View, ScrollView, Image } from "@tarojs/components";
-import Taro, { useLoad, useRouter } from "@tarojs/taro";
+import Taro, { useLoad} from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useState } from "react";
@@ -18,8 +18,7 @@ import { HeaderView } from "@/components/headerView";
 //   { title: "巨星团剧场", icon: card },
 // ];
 export default function Theater() {
-  const router = useRouter();
-  const [rouOption, setRouOption] = useState<any>({});
+  const [rouOption] = useState<any>({});
   const [option, setOption] = useState({
     statusBarHeight: 0,
     barHeight: 0,
@@ -35,8 +34,6 @@ export default function Theater() {
     setScrollTop(scrollTop ? 0 : 1);
   };
   useLoad(() => {
-    const params = router.params;
-    // setRouOption(routerList[params.type]);
     let _option = option;
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;

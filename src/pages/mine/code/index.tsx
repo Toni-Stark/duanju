@@ -1,18 +1,12 @@
 import {
   View,
   ScrollView,
-  Image,
-
-   Button,
+  Image
 } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useState } from "react";
-import one from "../../../static/icon/one.png";
-import two from "../../../static/icon/two.png";
-import three from "../../../static/icon/three.png";
-import four from "../../../static/icon/four.png";
 import down from "../../../static/icon/down_load.png";
 import share from "../../../static/icon/share.png";
 import { getMemberInfo, getMemberSpread } from "@/common/interface";
@@ -68,10 +62,10 @@ export default function Code() {
         if (res.statusCode === 200) {
           Taro.saveImageToPhotosAlbum({
             filePath: res.tempFilePath,
-            success: (res) => {
+            success: () => {
               TShow("保存成功");
             },
-            fail: (res) => {
+            fail: () => {
               TShow("微信权限申请中，暂时无法使用");
             },
           });
@@ -87,7 +81,7 @@ export default function Code() {
           path: res.tempFilePath,
         });
       },
-      fail: (res) => {
+      fail: () => {
         TShow("微信权限申请中，暂时无法使用");
       },
     });

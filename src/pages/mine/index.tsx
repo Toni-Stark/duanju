@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, Image, Video } from "@tarojs/components";
-import Taro, { useDidShow, useLoad } from "@tarojs/taro";
+import { View, Image } from "@tarojs/components";
+import Taro, { useDidShow } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import {useMemo, useState} from "react";
@@ -26,7 +26,7 @@ export default function Mine() {
     my_kf: "",
   });
 
-  const [list, setList] = useState([
+  const [list] = useState([
     {
       title: "我的钱包",
       icon: mon,
@@ -114,7 +114,6 @@ export default function Mine() {
       <View className="content-wel-main">
         <View className="content-wel-main-title">
           <View className="coin">欢迎回来，{option.nickname}</View>
-          {/*<view className="val">{option.sn}</view>*/}
         </View>
         <View className="content-wel-main-list">
           <View className="content-wel-main-list-title">

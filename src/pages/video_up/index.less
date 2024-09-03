@@ -181,6 +181,101 @@
     }
     &_bar {width: 100%; height: 20Px}
   }
+  .pay_modal {
+    .at-float-layout__container {
+      background: #ffffff;
+    }
+    &_view {
+      &_header {
+        &_title {
+          color: #000000;
+          font-size: 16Px;
+        }
+        &_desc {
+          color: #666666;
+          font-size: 12Px;
+          padding: 5px 0;
+        }
+      }
+      &_list {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        &_item {
+          width: 49%;
+          border-radius: 4Px;
+          overflow: hidden;
+          padding: 5Px 0;
+          &_title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #101010;
+            font-size: 14Px;
+            height: 90Px;
+            border-radius: 4Px 4Px 0 0;
+            background-color: rgba(222, 188, 46, 0.1);
+            &_main {
+              display: flex;
+              align-items: flex-end;
+              &_price {
+                font-size: 24Px;
+                line-height: 1;
+                margin-right: 2Px;
+              }
+            }
+            &_text {
+              color: #505559;
+              font-size: 12Px;
+              &_price {
+                color: #8C7411;
+              }
+            }
+          }
+          &_desc {
+            color: #8C7411;
+            font-size: 14Px;
+            height: 30Px;
+            line-height: 30Px;
+            text-align: center;
+            border-radius: 0 0 4Px 4Px;
+            background-color: rgba(240, 204, 53, 0.25);
+          }
+        }
+        .all_shop {
+          .pay_modal_view_list_item_title {
+            background-color: rgba(240, 204, 53, 0.21);
+          }
+          .pay_modal_view_list_item_desc {
+            background-color: rgba(228, 188, 26, 0.36);
+            color: rgba(140, 116, 17, 0.8);
+          }
+        }
+        .vip_shop {
+          .pay_modal_view_list_item_title {
+            background: url("../../static/icon/vip.png") no-repeat;
+            background-size: cover;
+          }
+          .pay_modal_view_list_item_desc {
+            background: #605e54;
+            color: rgba(255, 255, 255, 0.83);
+          }
+        }
+      }
+      &_desc {
+        padding: 3Px 0 10Px;
+        &_link {
+          color: #0737F5;
+        }
+      }
+    }
+    .layout {
+      height: unset;
+    }
+  }
 }
 
 .at-float-layout--active .at-float-layout__container {

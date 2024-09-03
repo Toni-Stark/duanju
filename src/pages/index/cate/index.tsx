@@ -91,11 +91,6 @@ export default function Search() {
     setOption({ ...option, refresh: true });
     getDataList(option.active, 1);
   };
-  const naviToVideo = (id) => {
-    Taro.navigateTo({
-      url: "../../video/index?id=" + id,
-    });
-  };
   const naviToVideoUp = (id) => {
     Taro.navigateTo({
       url: "../../video_up/index?id=" + id,

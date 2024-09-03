@@ -85,7 +85,7 @@ export default function VideoView() {
   });
   const [currentInfo, setCurrentInfo] = useState(undefined);
   const [allList, setAllList] = useState([]);
-  const [recording, setRecording] = useState(false);
+  const [recording] = useState(false);
 
   useDidShow(() => {
     const params: any = router.params;
@@ -208,9 +208,6 @@ export default function VideoView() {
                 v_id: v_info.id,
               });
               v_info.url = res.data?.url;
-              // if(!v_info?.url){
-              //   TShow("请联系");
-              // }
               setCurrentInfo(v_info);
             });
           }
@@ -222,8 +219,6 @@ export default function VideoView() {
       });
       setBtnList(arr);
       setAllList(resData);
-      // THideT()
-
     });
   };
 
@@ -300,7 +295,7 @@ export default function VideoView() {
     getMemberShare({
       v_id: dataInfo.id,
       v_s_id: currentInfo.id,
-    }).then((res) => {});
+    }).then(() => {});
 
   };
   const openLayout = () => {
@@ -363,9 +358,9 @@ export default function VideoView() {
       act: act[val],
       v_id: dataInfo.id,
       v_s_id: currentInfo.id,
-    }).then((res) => {});
+    }).then(() => {});
   };
-  const startPlay = async (e) => {
+  const startPlay = async () => {
     clearInterval(timerPlay);
     timerPlay = null;
     timerPlay = setInterval(async () => {
