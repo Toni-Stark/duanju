@@ -581,6 +581,18 @@ export default function VideoView() {
       }
     });
   };
+
+  const naviPayTo = () => {
+    Taro.navigateTo({
+      url: "../mine/system/pay/index",
+    });
+  }
+  const naviMemberTo = () => {
+    Taro.navigateTo({
+      url: "../mine/system/member/index",
+    });
+  }
+
   // 弹窗视频列表
   const currentListContext = useMemo(()=>{
     return (
@@ -639,6 +651,97 @@ export default function VideoView() {
       </AtFloatLayout>
     )
   }, [show, dataInfo, pageList, current, currentInfo]);
+
+  let list = [
+    {
+      intro: "整剧永久免费看",
+      name: "解锁整剧全集",
+      price: "11",
+      score: "",
+      type: "3",
+      is_default: "1",
+      is_highlighted: '1'
+    },
+    {
+      intro: "全场短剧随意看",
+      name: "200K币",
+      price: "2",
+      score: "+100K币",
+      type: "1",
+      is_default: "0",
+      is_highlighted: '1'
+    },
+    {
+      intro: "仅需1.8元/天",
+      name: "解锁整剧全集",
+      price: "12.9",
+      score: "",
+      type: "2",
+      is_default: "0",
+      is_highlighted: '1'
+    },
+    {
+      intro: "多送6元",
+      name: "590K币",
+      price: "5.9",
+      score: "+600K币",
+      type: "1",
+      is_default: "0",
+      is_highlighted: '0'
+    },
+    {
+      intro: "仅需0.5元/天",
+      name: "全场剧免费看30天",
+      price: "14.9",
+      score: "",
+      type: "2",
+      is_default: "0",
+      is_highlighted: '0'
+    },
+    {
+      intro: "仅需0.2元/天",
+      name: "全场剧免费看30天",
+      price: "29.9",
+      score: "",
+      type: "2",
+      is_default: "0",
+      is_highlighted: '0'
+    },
+  ]
+
+  const payList = (item, index)=> {
+    let cla = "pay_modal_view_list_item";
+    if(item.type == "2"){
+      cla += " vip_shop";
+    }
+    if (item.is_default == "1"){
+      cla += " all_shop"
+    }
+    if (item.is_highlighted != '1') {
+      cla += " def_shop"
+    }
+  return (
+      <View className={cla} key={index}>
+        <View className="pay_modal_view_list_item_title">
+          <View className="pay_modal_view_list_item_title_main">
+            <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
+          </View>
+          {
+            item.type == "2" ?
+              <View className="pay_modal_view_list_item_title_text">
+                {item.name}
+                <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
+              </View>
+            :
+              <View className="pay_modal_view_list_item_title_text">{item.name}</View>
+          }
+        </View>
+        <View className="pay_modal_view_list_item_desc">
+          {item.intro}
+        </View>
+      </View>
+    )
+  }
   const currentPayList = useMemo(()=>{
     return (
       <AtFloatLayout className="pay_modal" isOpened={isShowModal} onClose={closeModal}>
@@ -648,80 +751,11 @@ export default function VideoView() {
             <View className="pay_modal_view_header_desc">账户余额：0K币（100K币/集）</View>
           </View>
           <View className="pay_modal_view_list">
-            <View className="pay_modal_view_list_item all_shop">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">11</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">解锁整剧全集</View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                整剧永久免费看
-              </View>
-            </View>
-            <View className="pay_modal_view_list_item">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">2</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">
-                  200K币
-                  <Text className="pay_modal_view_list_item_title_text_price">+100K币</Text>
-                </View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                整剧永久免费看
-              </View>
-            </View>
-            <View className="pay_modal_view_list_item vip_shop">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">12.9</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">解锁整剧全集</View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                仅需1.8元/天
-              </View>
-            </View>
-            <View className="pay_modal_view_list_item">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">5.9</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">
-                  590K币
-                  <Text className="pay_modal_view_list_item_title_text_price">+600K币</Text>
-                </View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                多送6元
-              </View>
-            </View>
-            <View className="pay_modal_view_list_item vip_shop">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">14.9</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">全场剧免费看30天</View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                仅需0.5元/天
-              </View>
-            </View>
-            <View className="pay_modal_view_list_item vip_shop">
-              <View className="pay_modal_view_list_item_title">
-                <View className="pay_modal_view_list_item_title_main">
-                  <Text className="pay_modal_view_list_item_title_main_price">29.9</Text>元
-                </View>
-                <View className="pay_modal_view_list_item_title_text">全场剧免费看180天</View>
-              </View>
-              <View className="pay_modal_view_list_item_desc">
-                仅需0.2元/天
-              </View>
-            </View>
+            {
+              list.map((item, index)=> payList(item, index))
+            }
           </View>
-          <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link">《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link">《会员服务协议》</Text></View>
+          <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link" onClick={naviPayTo}>《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link" onClick={naviMemberTo}>《会员服务协议》</Text></View>
         </View>
       </AtFloatLayout>
     )

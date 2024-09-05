@@ -25,6 +25,7 @@ export default defineAppConfig({
     "pages/video_up/index",
     "pages/mine/system/user/index",
     "pages/mine/system/pro/index",
+    "pages/mine/system/pay/index",
   ],
   window: {
     navigationStyle: "custom",
