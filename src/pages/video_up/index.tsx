@@ -1,13 +1,6 @@
-import {
-  View,
-  Image,
-  Video,
-  Button,
-  Swiper,
-  SwiperItem, Text,
-} from "@tarojs/components";
-import Taro, { useDidShow, useRouter } from "@tarojs/taro";
-import { AtButton, AtFloatLayout } from "taro-ui";
+import {Button, Image, Swiper, SwiperItem, Text, Video, View,} from "@tarojs/components";
+import Taro, {useDidShow, useRouter} from "@tarojs/taro";
+import {AtButton, AtFloatLayout} from "taro-ui";
 import "taro-ui/dist/style/components/loading.scss";
 import "taro-ui/dist/style/components/float-layout.scss";
 import "./index.less";
@@ -24,16 +17,20 @@ import down from "../../static/icon/down.png";
 import yuan from "../../static/icon/yuan.png";
 import {
   getMemberShare,
-  getMemberView, getPayOrder, getPayStatus,
+  getMemberView,
+  getPayOrder,
+  getPayStatus,
   getVideoFavorite,
   getVideoIndex,
   getVideoPay,
   getVideoUpdate,
+  getWalletTmpProducts,
 } from "@/common/interface";
-import {THide, THideT, TShow} from "@/common/common";
+import {getCheckLogin, THide, THideT, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
+import {commonSetting} from "@/store/config";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -67,6 +64,7 @@ export default function VideoView() {
   const [dataInfo, setDataInfo] = useState(undefined);
   const [pageList, setPageList] = useState(undefined);
   const [allList, setAllList] = useState(undefined);
+  const [payData, setPayData] = useState(undefined);
 
   const [current, setCurrent] = useState<any>({
     page: 0,
@@ -90,7 +88,6 @@ export default function VideoView() {
   });
   useDidShow(() => {
     const params: any = router.params;
-    console.log(params, 'log');
     if (params?.iv) {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
@@ -106,6 +103,12 @@ export default function VideoView() {
       setLoading(true)
       getVideoList({ v_id: params.id });
     }
+    getWalletTmpProducts({
+      v_id: params.id,
+      pn: params.pn,
+    }).then((res)=>{
+      setPayData(res.data)
+    })
 
     let _option = option;
     _option.title = "";
@@ -189,7 +192,6 @@ export default function VideoView() {
         return item.id == c_id
       });
       let currInfo = r_data[ind];
-
       if(currInfo.id != c_id) return;
       if(!currInfo?.is_pay) {
         TShow("解锁中", "loading", 2000);
@@ -197,7 +199,7 @@ export default function VideoView() {
           getVideoPay({v_s_id: currInfo.id}).then((res) => {
             if (res.code == 101) {
               THideT()
-              naviToHotOne(info);
+              naviToHotOne(currInfo);
               if (!params.current && info?.history_sub_id) {
                 SetStorageSync("currentStatus", info?.history_sub_id);
               }
@@ -229,7 +231,7 @@ export default function VideoView() {
         },200)
       });
       return;
-    })
+    });
   }
 
   // 设置点赞收藏按钮
@@ -279,14 +281,19 @@ export default function VideoView() {
   };
 
   const naviToHotOne = (info?: any) => {
+    THideT()
+    TShow("积分不足", "none", 1000);
     SetStorageSync("nowVal", info?.id);
-    Taro.navigateTo({
-      url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
-    });
+    if(payData?.product_list.length>0){
+      SetStorageSync("currentHand", info?.id);
+      setIsShowModal(true);
+    } else {
+      Taro.navigateTo({
+        url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
+      });
+    }
   };
   const openLayout = () => {
-    setIsShowModal(true);
-    return;
     let info = pageList.find((item) => item.title === current.page);
     setCurrent({ ...current, b_list: info.list });
     setShow(true);
@@ -374,6 +381,7 @@ export default function VideoView() {
   }
 
   const closeModal = () => {
+    getVideoList({ v_id: dataInfo.id});
     setIsShowModal(false);
   }
 
@@ -457,8 +465,11 @@ export default function VideoView() {
       getPayStatus({ order_id: id }).then((res) => {
         if (res.code !== 1) {
           THide();
+          THideT();
           times = times + 1;
           if (times >= 3) {
+            getVideoList({ v_id: dataInfo.id});
+            setIsShowModal(false);
             clearInterval(timer);
             timer = null;
             TShow(res.msg);
@@ -466,9 +477,13 @@ export default function VideoView() {
           return;
         }
         THide();
+        THideT();
         TShow("充值成功");
         SetStorageSync("nowValPay", '1');
         // 在这里实现后续操作
+        setIsShowModal(false);
+        TShow("支付成功")
+        getVideoList({ v_id: dataInfo.id});
         times = 0;
         clearInterval(timer)
       });
@@ -502,9 +517,7 @@ export default function VideoView() {
     return 0;
   };
   const payApiStatus = (params) => {
-    console.log(params, '创建订单1')
     getPayOrder(params).then((res) => {
-      console.log(res, '创建订单2')
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);
@@ -537,8 +550,11 @@ export default function VideoView() {
             fail({ errMsg, errCode }) {
               console.error(errMsg, errCode);
               THide();
+              THideT();
               if (errCode == -1) {
                 TShow("支付失败");
+                getVideoList({ v_id: dataInfo.id});
+                setIsShowModal(false);
               }
               if (errCode == -2) {
                 TShow("支付取消");
@@ -572,9 +588,9 @@ export default function VideoView() {
             }
             if (str == "fail") {
               TShow("支付失败");
-              // TShow(err.errMsg);
+              getVideoList({ v_id: dataInfo.id});
+              setIsShowModal(false);
             }
-            // });
             return;
           },
         });
@@ -652,62 +668,25 @@ export default function VideoView() {
     )
   }, [show, dataInfo, pageList, current, currentInfo]);
 
-  let list = [
-    {
-      intro: "整剧永久免费看",
-      name: "解锁整剧全集",
-      price: "11",
-      score: "",
-      type: "3",
-      is_default: "1",
-      is_highlighted: '1'
-    },
-    {
-      intro: "全场短剧随意看",
-      name: "200K币",
-      price: "2",
-      score: "+100K币",
-      type: "1",
-      is_default: "0",
-      is_highlighted: '1'
-    },
-    {
-      intro: "仅需1.8元/天",
-      name: "解锁整剧全集",
-      price: "12.9",
-      score: "",
-      type: "2",
-      is_default: "0",
-      is_highlighted: '1'
-    },
-    {
-      intro: "多送6元",
-      name: "590K币",
-      price: "5.9",
-      score: "+600K币",
-      type: "1",
-      is_default: "0",
-      is_highlighted: '0'
-    },
-    {
-      intro: "仅需0.5元/天",
-      name: "全场剧免费看30天",
-      price: "14.9",
-      score: "",
-      type: "2",
-      is_default: "0",
-      is_highlighted: '0'
-    },
-    {
-      intro: "仅需0.2元/天",
-      name: "全场剧免费看30天",
-      price: "29.9",
-      score: "",
-      type: "2",
-      is_default: "0",
-      is_highlighted: '0'
-    },
-  ]
+  const chooseOne = (item) => {
+    let data = {...payData}
+    data.product_list = data?.product_list?.map((it) => {
+      if (it.id == item.id) {
+        return {...it, is_default: "1"}
+      } else {
+        return {...it, is_default: "0"}
+      }
+    })
+    setPayData({...data})
+    TShow("支付中", "loading", 3000)
+    getCheckLogin().then((result) => {
+      let {token} = result;
+      SetStorageSync("allJson", result);
+      SetStorage("token", token).then(() => {
+        payApiStatus({product_id: item.id})
+      })
+    })
+  }
 
   const payList = (item, index)=> {
     let cla = "pay_modal_view_list_item";
@@ -720,8 +699,10 @@ export default function VideoView() {
     if (item.is_highlighted != '1') {
       cla += " def_shop"
     }
-  return (
-      <View className={cla} key={index}>
+    return (
+      <View className={cla} key={index} onClick={()=>{
+        chooseOne(item)
+      }}>
         <View className="pay_modal_view_list_item_title">
           <View className="pay_modal_view_list_item_title_main">
             <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
@@ -739,6 +720,7 @@ export default function VideoView() {
         <View className="pay_modal_view_list_item_desc">
           {item.intro}
         </View>
+        <Image className="vip_image" mode="widthFix" src={require('../../static/icon/vip.png')} />
       </View>
     )
   }
@@ -748,18 +730,21 @@ export default function VideoView() {
         <View className="pay_modal_view">
           <View className="pay_modal_view_header">
             <View className="pay_modal_view_header_title">感谢你支持作者，购买后继续观看</View>
-            <View className="pay_modal_view_header_desc">账户余额：0K币（100K币/集）</View>
+            <View className="pay_modal_view_header_desc">账户余额：{payData?.member_score}{commonSetting.coinName}（{payData?.spend_score}{commonSetting.coinName}/集）</View>
           </View>
           <View className="pay_modal_view_list">
             {
-              list.map((item, index)=> payList(item, index))
+              payData?.product_list.map((item, index)=> payList(item, index))
+            }
+            {
+              payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">暂无充值内容</View>:null
             }
           </View>
           <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link" onClick={naviPayTo}>《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link" onClick={naviMemberTo}>《会员服务协议》</Text></View>
         </View>
       </AtFloatLayout>
     )
-  }, [isShowModal])
+  }, [isShowModal, payData])
   return (
     <View className="index">
       {/* 返回按钮和标题 */}

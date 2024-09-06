@@ -26,6 +26,7 @@ export default defineAppConfig({
     "pages/mine/system/user/index",
     "pages/mine/system/pro/index",
     "pages/mine/system/pay/index",
+    "pages/mine/system/member/index",
   ],
   window: {
     navigationStyle: "custom",

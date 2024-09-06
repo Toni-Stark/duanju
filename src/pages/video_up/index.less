@@ -207,7 +207,8 @@
           width: 49%;
           border-radius: 4Px;
           overflow: hidden;
-          padding: 5Px 0;
+          margin: 5Px 0;
+          position: relative;
           &_title {
             display: flex;
             align-items: center;
@@ -244,6 +245,9 @@
             border-radius: 0 0 4Px 4Px;
             background-color: rgba(240, 204, 53, 0.25);
           }
+          .vip_image {
+            display: none;
+          }
         }
         .all_shop {
           .pay_modal_view_list_item_title {
@@ -261,10 +265,22 @@
           }
         }
         .vip_shop {
-          .pay_modal_view_list_item_title {
-            background: url("../../static/icon/vip.png") no-repeat;
-            background-size: cover;
+          .vip_image {
+            display: flex;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 36Px;
           }
+        }
+        &_pav {
+          min-height: 80Px;
+          font-size: 14Px;
+          color: #505559;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
       &_desc {
@@ -276,6 +292,18 @@
     }
     .layout {
       height: unset;
+    }
+    .at-float-layout__container.layout {
+      min-height: unset;
+      max-height: unset;
+      .layout-body {
+        min-height: unset;
+        max-height: unset;
+        .layout-body__content {
+          min-height: unset;
+          max-height: 60vh;
+        }
+      }
     }
   }
 }

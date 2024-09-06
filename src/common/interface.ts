@@ -102,4 +102,7 @@ export const getIndexActRecord = async (params?: any) => {
 export const getIndexChasingCount = async (params?: any) => {
   return cloudPost("member/chasing-count", params);
 };
+export const getWalletTmpProducts = async (params?: any) => {
+  return cloudPost("wallet/tmp-products", params);
+};
 
