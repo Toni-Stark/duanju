@@ -3,19 +3,19 @@ import Taro from "@tarojs/taro";
 const config = {
   wx: {
     dev: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },
 };

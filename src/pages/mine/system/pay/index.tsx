@@ -6,7 +6,7 @@ export default function PaySystem() {
 
   return (
     <View className="index">
-      <WebView src={env.BASE_URL+"default/topup"} />
+      <WebView src={env.BASE_URL+"index/topup"} />
     </View>
   );
 }

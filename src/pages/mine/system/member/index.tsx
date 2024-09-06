@@ -6,7 +6,8 @@ export default function PaySystem() {
 
   return (
     <View className="index">
-      <WebView src={env.BASE_URL+"default/member"} />
+      <WebView src={env.BASE_URL+"index/member"} />
     </View>
   );
 }
+
