@@ -237,8 +237,8 @@ export default function VideoView() {
   // 设置点赞收藏按钮
   const settingBtn = (info) => {
     let btnArr: any = [...fivList];
-    btnArr[0].value = info.like;
-    btnArr[1].value = info.collect;
+    btnArr[0].value = info?.like;
+    btnArr[1].value = info?.collect;
     btnArr[0].check = info?.is_liked ? 2 : 1;
     btnArr[1].check = info.is_collected ? 2 : 1;
     setFivList([...btnArr]);
