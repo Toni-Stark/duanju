@@ -75,6 +75,8 @@ export default function VideoView() {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
+  const [params, setParams] = useState(undefined);
+  const [root, setRoot] = useState(0);
 
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
@@ -92,23 +94,19 @@ export default function VideoView() {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
     }
-    if (params?.pn) {
-      SetStorage('pn', params?.pn).then(()=>{
-        SetStorage('pn_data', params).then(()=>{
-          setLoading(true)
-          getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) });
-        });
-      });
-    } else {
-      setLoading(true)
-      getVideoList({ v_id: params.id });
+    if(!params.pn){
+      RemoveStorageSync('pn_data')
+      setRoot(0)
+      refreshVideoInfo(params)
     }
-    getWalletTmpProducts({
-      v_id: params.id,
-      pn: params.pn,
-    }).then((res)=>{
-      setPayData(res.data)
-    })
+
+    if(params?.pn) {
+      if(!root){
+        refreshVideoInfo(params)
+        setRoot(1)
+      }
+    };
+
 
     let _option = option;
     _option.title = "";
@@ -129,6 +127,35 @@ export default function VideoView() {
       timerPlay = null;
     };
   }, []);
+  const refreshVideoInfo = (params) => {
+    if (params?.pn) {
+      let param = params;
+        // getMemberInfo().then((res)=>{
+        //   if(!param?.clickid) {
+        //     param.clickid = new Date().getTime()+res.data.id;
+        //   }
+          SetStorage('pn', param?.pn).then(()=>{
+            SetStorage('pn_data', param).then(()=>{
+              setLoading(true)
+              setParams(param)
+              console.log(param, 'param')
+              getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) });
+            });
+          });
+        // })
+        getWalletTmpProducts({
+          v_id: params.id,
+          pn: params.pn,
+        }).then((res)=>{
+          setPayData(res.data)
+        })
+    } else {
+      setLoading(true)
+      console.log("刷新页面")
+      getVideoList({...params, v_id: params.id });
+
+    }
+  }
   const getVideoList = (params) => {
     getVideoIndex(params).then((res) => {
       const {info, list} = res.data;
@@ -136,7 +163,7 @@ export default function VideoView() {
       settingBtn(info)
 
       setDataInfo(info);
-
+      console.log(params, 'params')
       let c_id = params?.current || info?.history_sub_id;
       if (!c_id) {
         c_id = list[Object.keys(list)[0]][0].id
@@ -198,16 +225,18 @@ export default function VideoView() {
         setTimFun(() => {
           getVideoPay({v_s_id: currInfo.id}).then((res) => {
             if (res.code == 101) {
-              THideT()
+              THide()
               naviToHotOne(currInfo);
               if (!params.current && info?.history_sub_id) {
                 SetStorageSync("currentStatus", info?.history_sub_id);
               }
               return;
             } else if (res.code == 200) {
-              THideT();
+              THide();
               TShow("购买成功");
-              getVideoList({v_id: info.id, current: currInfo.id, index: params.index});
+              console.log("购买成功")
+
+              refreshVideoInfo({...params, id: info.id, current: currInfo.id, index: params.index});
               return;
             }
             THide();
@@ -237,10 +266,10 @@ export default function VideoView() {
   // 设置点赞收藏按钮
   const settingBtn = (info) => {
     let btnArr: any = [...fivList];
-    btnArr[0].value = info.like;
-    btnArr[1].value = info.collect;
+    btnArr[0].value = info?.like;
+    btnArr[1].value = info?.collect;
     btnArr[0].check = info?.is_liked ? 2 : 1;
-    btnArr[1].check = info.is_collected ? 2 : 1;
+    btnArr[1].check = info?.is_collected ? 2 : 1;
     setFivList([...btnArr]);
   }
 
@@ -289,7 +318,7 @@ export default function VideoView() {
       setIsShowModal(true);
     } else {
       Taro.navigateTo({
-        url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
+        url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo?.spend_score),
       });
     }
   };
@@ -325,7 +354,7 @@ export default function VideoView() {
           } else if (res.code == 200) {
             THide();
             TShow("购买成功");
-            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind });
+            refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: ind})
             return;
           }
           THide();
@@ -365,7 +394,8 @@ export default function VideoView() {
   const onEnded = () => {
     if(index >= allList.length) return;
     let info = allList[index+1];
-    getVideoList({ v_id: dataInfo.id, current: info.id, index: index+1 });
+    console.log(info, 'info')
+    refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: index+1 });
   };
   const swiperChange = (e) => {
     let val = e.detail.current;
@@ -379,9 +409,13 @@ export default function VideoView() {
     let info = pageList?.find((item) => item.title === id);
     setCurrent({ ...current, b_list: info.list, page: id, data: list });
   }
-
   const closeModal = () => {
-    getVideoList({ v_id: dataInfo.id});
+    if(isShowModal){
+      setTimFun(()=>{
+        console.log('弹窗关闭')
+        refreshVideoInfo({...params, id: dataInfo.id})
+      }, 1000)
+    }
     setIsShowModal(false);
   }
 
@@ -460,6 +494,7 @@ export default function VideoView() {
 
 
   const payStatus = (id) => {
+    console.log("走进了循环")
     let times = 0;
     let timer = setInterval(() => {
       getPayStatus({ order_id: id }).then((res) => {
@@ -468,8 +503,6 @@ export default function VideoView() {
           THideT();
           times = times + 1;
           if (times >= 3) {
-            getVideoList({ v_id: dataInfo.id});
-            setIsShowModal(false);
             clearInterval(timer);
             timer = null;
             TShow(res.msg);
@@ -477,13 +510,15 @@ export default function VideoView() {
           return;
         }
         THide();
-        THideT();
         TShow("充值成功");
-        SetStorageSync("nowValPay", '1');
+        console.log("充值成功")
         // 在这里实现后续操作
+        setShow(false);
         setIsShowModal(false);
-        TShow("支付成功")
-        getVideoList({ v_id: dataInfo.id});
+        // TShow("支付成功")
+        SetStorageSync("nowValPay", '1');
+        let id = GetStorageSync("currentHand")
+        chooseCurrent(id)
         times = 0;
         clearInterval(timer)
       });
@@ -550,14 +585,11 @@ export default function VideoView() {
             fail({ errMsg, errCode }) {
               console.error(errMsg, errCode);
               THide();
-              THideT();
-              if (errCode == -1) {
-                TShow("支付失败");
-                getVideoList({ v_id: dataInfo.id});
-                setIsShowModal(false);
+              if (errMsg == "cancel") {
+                TShow("取消支付");
               }
-              if (errCode == -2) {
-                TShow("支付取消");
+              if (errMsg == "fail") {
+                TShow("支付失败");
               }
             },
           });
@@ -577,7 +609,6 @@ export default function VideoView() {
             payStatus(data.order_id);
           },
           fail: function (err) {
-            console.log(err);
             THide();
             let str = "fail";
             if (err.errMsg.indexOf("cancel") >= 0) {
@@ -588,8 +619,6 @@ export default function VideoView() {
             }
             if (str == "fail") {
               TShow("支付失败");
-              getVideoList({ v_id: dataInfo.id});
-              setIsShowModal(false);
             }
             return;
           },
@@ -690,7 +719,7 @@ export default function VideoView() {
 
   const payList = (item, index)=> {
     let cla = "pay_modal_view_list_item";
-    if(item.type == "2"){
+    if(item.type == "1"){
       cla += " vip_shop";
     }
     if (item.is_default == "1"){
@@ -707,15 +736,15 @@ export default function VideoView() {
           <View className="pay_modal_view_list_item_title_main">
             <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
           </View>
-          {
-            item.type == "2" ?
-              <View className="pay_modal_view_list_item_title_text">
-                {item.name}
-                <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
-              </View>
-            :
+          {/*{*/}
+          {/*  item.type == "2" ?*/}
+          {/*    <View className="pay_modal_view_list_item_title_text">*/}
+          {/*      {item.name}*/}
+          {/*      <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>*/}
+          {/*    </View>*/}
+          {/*    :*/}
               <View className="pay_modal_view_list_item_title_text">{item.name}</View>
-          }
+          {/*}*/}
         </View>
         <View className="pay_modal_view_list_item_desc">
           {item.intro}
@@ -784,8 +813,8 @@ export default function VideoView() {
                   src={
                     item.check
                       ? item.check == 2
-                        ? item.icon_g
-                        : item.icon
+                      ? item.icon_g
+                      : item.icon
                       : item.icon
                   }
                 />
