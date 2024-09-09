@@ -4,18 +4,18 @@ const config = {
   wx: {
     dev: {
       appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
     test: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+        appid: "wx00068c582abf3769",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
     prod: {
       appid: "wx00068c582abf3769",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/2hkLBfsk/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
   },
 };
