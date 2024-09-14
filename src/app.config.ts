@@ -1,6 +1,17 @@
-import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
-import makePhoneCall = apis.makePhoneCall;
-
+console.log(process.env, 'process')
+let env = process.env.npm_lifecycle_event.indexOf('build:tt')>=0;
+let window = env?{}:{
+  navigationStyle: "custom",
+  navigationBarBackgroundColor: "#ffffff",
+  backgroundTextStyle: "light",
+  navigationBarTitleText: "WeChat",
+  navigationBarTextStyle: "black",
+};
+let permission = env?{}:{
+  makePhoneCall: {
+    desc: "你的电话将用于拨打客服电话"
+  }
+}
 export default defineAppConfig({
   __usePrivacyCheck__: true,
   pages: [
@@ -28,18 +39,8 @@ export default defineAppConfig({
     "pages/mine/system/pay/index",
     "pages/mine/system/member/index",
   ],
-  window: {
-    navigationStyle: "custom",
-    navigationBarBackgroundColor: "#ffffff",
-    backgroundTextStyle: "light",
-    navigationBarTitleText: "WeChat",
-    navigationBarTextStyle: "black",
-  },
-  permission: {
-    makePhoneCall: {
-       desc: "你的电话将用于拨打客服电话"
-    }
-  },
+  window:window,
+  permission:permission,
   tabBar: {
     custom: false,
     list: [

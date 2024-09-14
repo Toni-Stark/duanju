@@ -24,6 +24,7 @@ import {
 import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import { Loading } from "@/components/loading";
+import {GetStorageSync} from "@/store/storage";
 
 let defaultActive = -999
 export default function Hot() {
@@ -43,10 +44,23 @@ export default function Hot() {
   const [bannerList, setBannerList] = useState([]);
   const [currentData, setCurrentList] = useState<any>([]);
   const [tagsData, setTagsData] = useState([]);
+  const [ENV, setENV] = useState(false);
+
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
+
   useLoad(() => {
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "热播剧"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    }
     let _option = option;
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;
@@ -391,13 +405,14 @@ export default function Hot() {
   }, [tagsData, loading1]);
   return (
     <View className="index">
+      {!ENV?
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
         search
         text="热播剧"
         url="../index/search/index"
-      />
+      />:null}
       <View className="index_zone">
         <ScrollView
           className="index_zone_view"

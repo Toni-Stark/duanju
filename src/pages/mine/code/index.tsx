@@ -33,15 +33,26 @@ export default function Code() {
   const [refresh, setRefresh] = useState(false);
   const [info, setInfo] = useState(undefined);
   const [desc, setDesc] = useState([]);
+  const [ENV, setENV] = useState(false);
+
   useLoad(() => {
     let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "我要推广"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+    }
     getMemberInfo().then((res) => {
       setInfo(res.data);
-
       currentMemberSpread();
     });
     setOption({ ..._option });
@@ -93,11 +104,13 @@ export default function Code() {
 
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="我要推广"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="我要推广"
+        /> :null}
+
       <View className="index_content">
         <ScrollView
           className="scroll_view"

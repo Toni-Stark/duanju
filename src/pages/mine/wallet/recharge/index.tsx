@@ -38,8 +38,20 @@ export default function Search() {
   ]);
   const [inList, setInList] = useState([]);
   const [info, setInfo] = useState(undefined);
+  const [ENV, setENV] = useState(false);
 
   useLoad(() => {
+
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "充值"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    }
     const params = router.params;
     let _option = option;
     if (params?.type) {
@@ -333,11 +345,12 @@ export default function Search() {
   }, [list, option, inList])
   return (
     <View className="index">
+      {!ENV?
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
         text={inList.length>0?"充值":"信息"}
-      />
+      />:null}
       <View className="index_content">
         {inList.length>0?<View className="index_content_banner">
           <View>创作不易，感谢您的支持</View>

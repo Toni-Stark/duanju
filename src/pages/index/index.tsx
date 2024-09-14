@@ -62,7 +62,7 @@ export default function Index() {
   const [videoElement, setVideoElement] = useState<any>(["#video", true]);
   const [video1Element, setVideo1Element] = useState<any>(["#video_1", false]);
   const [video2Element, setVideo2Element] = useState<any>(["#video_2", false]);
-
+  const [ENV, setENV] = useState(false);
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
@@ -82,18 +82,33 @@ export default function Index() {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
     }
-    // 屏幕尺寸基础数据
-    Taro.getSystemInfoAsync({
-      success: (res) => {
-        let _option = option;
-        const rect = Taro.getMenuButtonBoundingClientRect();
-        _option.barHeight = rect.top;
-        _option.statusBarHeight = rect.height;
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-        setOption({ ..._option });
-      },
-    });
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT"){
+      Taro.setNavigationBarTitle({
+        title: "追剧"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      setOption({ ..._option });
+    } else {
+      Taro.getSystemInfoAsync({
+        success: (res) => {
+          let _option = option;
+          const rect = Taro.getMenuButtonBoundingClientRect();
+          _option.barHeight = rect.top;
+          _option.statusBarHeight = rect.height;
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+          setOption({ ..._option });
+        },
+      });
+    }
     // ios兼容
     Taro.getSystemInfo({
       success: function (result) {
@@ -230,8 +245,10 @@ export default function Index() {
   // 监听页面滚动位置控制视频播放暂停
   const listenScrollVideo = (element,top, height=0, callback) => {
     const query = Taro.createSelectorQuery();
-    query.selectAll(element[0]).boundingClientRect()
-    query.exec((res) => {
+    if(element.length<=0) return;
+    query?.selectAll(element[0]).boundingClientRect()
+    query?.exec((res) => {
+      if(!res.length<=0)return;
       let num = res[0][0].top;
       if((num-height > -30  ||num<top) && element[1]){
         Taro.createVideoContext(element[0].split('#')[1]).pause();
@@ -452,7 +469,7 @@ export default function Index() {
           <View
             className="index_zone_view_header"
             style={{
-              marginTop: pch + option.barHeight,
+              marginTop: ENV?23:pch + option.barHeight,
               height: option.statusBarHeight,
               paddingLeft: 20
             }}

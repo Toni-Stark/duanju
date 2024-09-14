@@ -9,6 +9,7 @@ import { HeaderView } from "@/components/headerView";
 import top from "../../../../static/icon/top.png";
 import { Loading } from "@/components/loading";
 import {commonSetting} from "@/store/config";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Hot() {
   const router = useRouter();
@@ -27,25 +28,40 @@ export default function Hot() {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const [dataList, setDataList] = useState([]);
+  const [ENV, setENV] = useState(false);
+
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
   useLoad(() => {
-    const params = router.params;
-    let _option = option;
-    _option.title = params.title;
-    _option.id = params.id;
 
-    Taro.getSystemInfoAsync({
-      success: (res) => {
-        const rect = Taro.getMenuButtonBoundingClientRect();
-        _option.barHeight = rect.top;
-        _option.statusBarHeight = rect.height;
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-        setOption({ ..._option });
-      },
-    });
+    const params = router.params;
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: params.title
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+
+    } else {
+      let _option = option;
+      _option.title = params.title;
+      _option.id = params.id;
+
+      Taro.getSystemInfoAsync({
+        success: (res) => {
+          const rect = Taro.getMenuButtonBoundingClientRect();
+          _option.barHeight = rect.top;
+          _option.statusBarHeight = rect.height;
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+          setOption({ ..._option });
+        },
+      });
+    }
 
     getDataList(1, params.id);
   });
@@ -211,11 +227,13 @@ export default function Hot() {
   }, [dataList, loading, option])
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text={option.title}
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text={option.title}
+        />:null}
+
       <View className="index_zone">
         <ScrollView
           className="index_zone_view"

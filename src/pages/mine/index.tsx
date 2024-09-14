@@ -63,6 +63,14 @@ export default function Mine() {
       setOption({...obj});
       console.log(obj, option)
     });
+
+    Taro.setNavigationBarTitle({
+      title: "我的"
+    });
+    Taro.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: '#151922',
+    })
   });
   const naviTo = (item) => {
     if (item.url == "ke") {

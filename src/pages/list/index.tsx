@@ -12,6 +12,7 @@ import {
 import { Loading } from "@/components/loading";
 import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
+import {GetStorageSync} from "@/store/storage";
 
 export default function List() {
   const [option, setOption] = useState({
@@ -51,8 +52,19 @@ export default function List() {
     count: 0
   });
   const [headerInfo, setHeaderInfo] = useState(undefined);
+  const [ENV, setENV] = useState(false);
 
-  useLoad(async () => {
+  useDidShow(()=>{
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "追剧"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    }
     let _option = option;
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.top;
@@ -64,13 +76,7 @@ export default function List() {
         _option.videoHeight = res.screenWidth / 0.72;
       },
     });
-    setOption({ ..._option });
-
-    // await getDefaultList();
-
-    // await historyList({p: 1});
-  });
-  useDidShow(()=>{
+    setOption({..._option});
     if(staticInfo.p<=1){
       currentTab(option.habit, staticInfo.p);
     }
@@ -90,7 +96,7 @@ export default function List() {
           }
           setStaticInfo({p: params.p, list: list, count: list.length});
           setNewData(list);
-          if(!headerInfo){
+          if(!headerInfo && list.length>0){
             setHeaderInfo({
               video_url: list[0].video_url,
               video_img: list[0].video_img,
@@ -269,13 +275,14 @@ export default function List() {
   }, [newData, loading]);
   return (
     <View className="index">
+      {!ENV?
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
         search
         text="追剧"
         url="../index/search/index"
-      />
+      />:null}
       <View className="index_zone">
         <ScrollView
           className="index_zone_view"

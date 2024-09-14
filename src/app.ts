@@ -5,8 +5,10 @@ import "taro-ui/dist/style/index.scss";
 import "taro-ui/dist/style/components/tab-bar.scss";
 import "taro-ui/dist/style/components/badge.scss";
 import "taro-ui/dist/style/components/list.scss";
+import {SetStorageSync} from "@/store/storage";
 
 function App({ children }: PropsWithChildren<any>) {
+  SetStorageSync("ENV", Taro.getEnv());
   useLaunch(() => {
     const updateManager = Taro.getUpdateManager();
     // 请求完新版本信息的回调
@@ -34,5 +36,6 @@ function App({ children }: PropsWithChildren<any>) {
   });
   return children;
 }
+
 
 export default App;

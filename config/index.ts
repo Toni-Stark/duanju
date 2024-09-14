@@ -42,7 +42,6 @@ export default defineConfig(async (merge, { command, mode }) => {
         }),
       ],
     },
-
     mini: {
       postcss: {
         pxtransform: {

@@ -7,6 +7,7 @@ import right from "../../../static/icon/right.png";
 import { getMemberInfo } from "@/common/interface";
 import { HeaderView } from "@/components/headerView";
 import {commonSetting} from "@/store/config";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Wallet() {
   const [option, setOption] = useState({
@@ -14,8 +15,19 @@ export default function Wallet() {
     barHeight: 0,
   });
   const [info, setInfo] = useState(undefined);
+  const [ENV, setENV] = useState(false);
 
   useDidShow(() => {
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "我的钱包"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    }
     let _option = option;
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect?.top;
@@ -90,11 +102,12 @@ export default function Wallet() {
   }, [])
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="我的钱包"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="我的钱包"
+        />:null}
       <View className="index_content">
         {currentContext}
         {/*<View className="index_content_bug">*/}
