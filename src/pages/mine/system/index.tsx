@@ -5,6 +5,7 @@ import "./index.less";
 import {useMemo, useState} from "react";
 import right from "../../../static/icon/right.png";
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 
 export default function System() {
   const [option, setOption] = useState({
@@ -21,23 +22,27 @@ export default function System() {
       title: "隐私协议",
       url: "./pro/index",
     },
-    // {
-    //   title: "注销账号",
-    //   url: "./log_off/index",
-    // },
-    // {
-    //   title: "关于小程序",
-    //   url: "./about/index",
-    // },
   ]);
+  const [ENV, setENV] = useState(false);
 
   useLoad(() => {
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "系统服务"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
 
-    setOption({ ..._option });
+      setOption({ ..._option });
+    }
   });
   const menuContent = useMemo(() => {
     return (
@@ -62,11 +67,14 @@ export default function System() {
   }, [dataList]);
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="系统服务"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          search
+          text="系统服务"
+          url="../index/search/index"
+        />:null}
       <View className="index_content">
         {menuContent}
       </View>

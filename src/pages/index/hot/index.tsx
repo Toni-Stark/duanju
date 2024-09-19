@@ -8,6 +8,7 @@ import { getIndexTagsVideo } from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Hot() {
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function Hot() {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const [dataList, setDataList] = useState([]);
+  const [ENV, setENV] = useState(false);
+
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
@@ -35,16 +38,26 @@ export default function Hot() {
     let _option = option;
     _option.title = params.title;
     _option.id = params.id;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-      },
-    });
-
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: params.title
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+        },
+      });
+    }
     setOption({ ..._option });
     getIndexClassList();
   });
@@ -88,11 +101,12 @@ export default function Hot() {
   };
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text={option.title}
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text={option.title}
+        />:null}
       <View className="index_zone">
         <ScrollView
           className="index_zone_view"

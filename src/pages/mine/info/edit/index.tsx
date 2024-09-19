@@ -6,6 +6,7 @@ import { useState } from "react";
 import { setMember } from "@/common/interface";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Edit() {
   const [option, setOption] = useState({
@@ -13,13 +14,25 @@ export default function Edit() {
     barHeight: 0,
     value: "",
   });
+  const [ENV, setENV] = useState(false);
 
   useLoad(() => {
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    setOption({ ..._option });
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "个人资料"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      setOption({..._option});
+    }
   });
   const editNickName = () => {
     if(option.value?.trim().length>0){
@@ -40,11 +53,12 @@ export default function Edit() {
 
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="个人资料"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="个人资料"
+        />:null}
       <View className="index_content">
         <View className="index_content_text">
           <View style={{ paddingLeft: 10 }}>修改昵称</View>

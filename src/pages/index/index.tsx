@@ -32,6 +32,7 @@ import { setInterFun } from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
 import {NoneView} from "@/components/noneView";
+import {SelfVideo} from "@/components/selfVideo";
 
 export default function Index() {
   const router = useRouter();
@@ -321,24 +322,9 @@ export default function Index() {
     } else if (headerVideo?.url) {
       return (
         <>
-          <Video
-            id="video"
-            className="components-video-video"
-            src={headerVideo?.url}
-            poster={headerVideo?.img}
-            initialTime={0}
-            controls={false}
-            autoplay={true}
-            enable-progress-gesture={false}
-            muted
-            loop
-            onClick={() => naviToVideoUp(headerVideo?.id)}
-            objectFit="cover"
-            showFullscreenBtn={false}
-            enablePlayGesture
-            showCenterPlayBtn
-            playBtnPosition="center"
-          />
+          <SelfVideo id={headerVideo?.id} url={headerVideo?.url} height={575} img={headerVideo?.img} callback={(key)=>{
+            naviToVideoUp(key)
+          }} />
           <View className="components-video-shadow" />
           <View
             className="components-video-card"

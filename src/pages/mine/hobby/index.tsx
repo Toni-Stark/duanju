@@ -4,6 +4,7 @@ import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import { useState } from "react";
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Hobby() {
   const [option, setOption] = useState({
@@ -95,21 +96,32 @@ export default function Hobby() {
     },
   ]);
   const [current, setCurrent] = useState([]);
+  const [ENV, setENV] = useState(false);
 
   useLoad(() => {
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-        _option.videoHeight = res.screenWidth / 0.72;
-      },
-    });
-
-    setOption({ ..._option });
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "选择您的兴趣爱好"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+          _option.videoHeight = res.screenWidth / 0.72;
+        },
+      });
+      setOption({ ..._option });
+    }
   });
 
   const chooseItem = (id) => {
@@ -128,11 +140,12 @@ export default function Hobby() {
 
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="选择您的兴趣爱好"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="选择您的兴趣爱好"
+        />:null}
       <View className="index_content">
         <View className="index_content_main">
           {dataList.map((item, index) => {

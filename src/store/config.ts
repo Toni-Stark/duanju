@@ -19,7 +19,7 @@ const config = {
     },
   },
 };
-// 抖音小程序
+// 抖音小程序ENV
 const GE = ()=>{
   let env = Taro.getEnv();
   if (env === "TT") return 'tt';

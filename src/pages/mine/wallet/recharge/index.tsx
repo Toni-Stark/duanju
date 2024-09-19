@@ -89,7 +89,7 @@ export default function Search() {
     currentMemberInfo(false);
     getWalletProducts().then((res) => {
       setInList(res.data.product_list);
-      setOption({ ...option, bar: res.data.product_list[0].id });
+      setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
     });
   };
 
@@ -130,18 +130,96 @@ export default function Search() {
     TShow("支付中", "loading", 10000);
 
     getCheckLogin().then((result) => {
-      console.log(result, '获取登录状态')
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
-        payApiStatus({ product_id: option.bar });
+        if(ENV) {
+          payApiStatusTiktok({product_id: item.id})
+        } else {
+          payApiStatus({ product_id: option.bar });
+        }
       });
     });
   };
-  const payApiStatus = (params) => {
-    console.log(params, '创建订单1')
+
+  const payApiStatusTiktok = (params) => {
     getPayOrder(params).then((res) => {
-      console.log(res, '创建订单2')
+      if (res.code !== 200) {
+        THide();
+        return TShow(res.msg);
+      }
+      if (res.data.is_vir) {
+        let data = res.data;
+        let sData = res.data.signData;
+        const SDKVersion = Taro.getSystemInfoSync().SDKVersion;
+        if (
+          compareVersion(SDKVersion, "2.19.2") >= 0 ||
+          tt.canIUse("requestVirtualPayment")
+        ) {
+          tt.requestVirtualPayment({
+            signData: JSON.stringify({
+              offerId: sData.offerId,
+              buyQuantity: sData.buyQuantity,
+              env: sData.env,
+              currencyType: sData.currencyType,
+              productId: sData.productId,
+              goodsPrice: sData.goodsPrice,
+              outTradeNo: sData.outTradeNo,
+              attach: sData.attach,
+            }),
+            paySig: data.paySig,
+            signature: data.signature,
+            mode: res.data.mode,
+            success(res) {
+              payStatus(data.signData.outTradeNo);
+            },
+            fail({ errMsg, errCode }) {
+              console.error(errMsg, errCode);
+              THide();
+              if (errCode == -1) {
+                TShow("支付失败");
+              }
+              if (errCode == -2) {
+                TShow("支付取消");
+              }
+            },
+          });
+        } else {
+          console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
+        }
+      } else {
+        let data = res.data.json_params;
+        tt.requestPayment({
+          timeStamp: data.time.toString(),
+          nonceStr: data.nonce_str,
+          package: data.package,
+          signType: "RSA",
+          paySign: data.sign,
+          success: function (res) {
+            THide();
+            payStatus(data.order_id);
+          },
+          fail: function (err) {
+            console.log(err);
+            THide();
+            let str = "fail";
+            if (err.errMsg.indexOf("cancel") >= 0) {
+              str = "cancel";
+            }
+            if (str == "cancel") {
+              TShow("取消支付");
+            }
+            if (str == "fail") {
+              TShow("支付失败");
+            }
+            return;
+          },
+        });
+      }
+    });
+  };
+  const payApiStatus = (params) => {
+    getPayOrder(params).then((res) => {
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);

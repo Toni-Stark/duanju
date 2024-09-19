@@ -47,18 +47,26 @@ export default defineAppConfig({
       {
         pagePath: "pages/index/index",
         text: "首页",
+        selectedIconPath: './static/tabbar/home-f.png',
+        iconPath: './static/tabbar/home-g.png'
       },
       {
         pagePath: "pages/list/index",
         text: "追剧",
+        selectedIconPath: './static/tabbar/star-f.png',
+        iconPath: './static/tabbar/star-g.png'
       },
       {
         pagePath: "pages/hot/index",
         text: "热播",
+        selectedIconPath: './static/tabbar/hot-f.png',
+        iconPath: './static/tabbar/hot-g.png'
       },
       {
         pagePath: "pages/mine/index",
         text: "我的",
+        selectedIconPath: './static/tabbar/mine-f.png',
+        iconPath: './static/tabbar/mine-g.png'
       },
     ],
     color: "#b2b5bc",

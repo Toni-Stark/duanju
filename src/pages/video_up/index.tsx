@@ -1,4 +1,4 @@
-import {Button, Image, Swiper, SwiperItem, Text, Video, View,} from "@tarojs/components";
+import {Button, Image, Swiper, SwiperItem, Text, Video, View} from "@tarojs/components";
 import Taro, {useDidShow, useRouter} from "@tarojs/taro";
 import {AtButton, AtFloatLayout} from "taro-ui";
 import "taro-ui/dist/style/components/loading.scss";
@@ -31,6 +31,8 @@ import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
+import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
+import setTopBarText = apis.setTopBarText;
 
 let timePlay = 0;
 let timerPlay = null;
@@ -77,6 +79,8 @@ export default function VideoView() {
   const [isShowModal, setIsShowModal] = useState(false);
   const [params, setParams] = useState(undefined);
   const [root, setRoot] = useState(0);
+  const [ENV, setENV] = useState(false);
+  const [controls, setControls] = useState(false);
 
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
@@ -108,25 +112,38 @@ export default function VideoView() {
     };
 
 
-    let _option = option;
-    _option.title = "";
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.height;
-    _option.statusBarHeight = rect.top;
-    setOption({ ..._option });
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      _option.title = "";
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.height;
+      _option.statusBarHeight = rect.top;
+      setOption({ ..._option });
+    }
   });
+  let tim = null;
   useEffect(() => {
-    Taro.setVisualEffectOnCapture({
-      visualEffect: 'hidden',
-      success: ()=>{
-        console.log('阻止截屏或录屏');
+    console.log('监听control的变化',controls)
+    clearTimeout(tim)
+    tim = null;
+    tim = setTimeout(()=>{
+      if(controls){
+        setControls(false)
       }
-    })
+      clearTimeout(tim)
+      tim = null;
+    },2000)
     return () => {
       clearInterval(timerPlay);
       timerPlay = null;
     };
-  }, []);
+  }, [controls]);
   const refreshVideoInfo = (params) => {
     if (params?.pn) {
       let param = params;
@@ -153,7 +170,6 @@ export default function VideoView() {
       setLoading(true)
       console.log("刷新页面")
       getVideoList({...params, v_id: params.id });
-
     }
   }
   const getVideoList = (params) => {
@@ -252,7 +268,11 @@ export default function VideoView() {
           v_id: currInfo.id,
         });
         currInfo.url = res.data?.url;
+        Taro.setNavigationBarTitle({
+          title: `第${currInfo.name}集`
+        });
         setCurrentInfo(currInfo);
+        setControls(true)
         setIndex(params?.index||0);
         setTimFun(() => {
           setIndex(ind);
@@ -336,8 +356,13 @@ export default function VideoView() {
     if (info) {
       getVideoUpdate({ v_s_id: info.id }).then((res) => {
         info.url = res.data?.url;
+        console.log(info, 'info')
+        Taro.setNavigationBarTitle({
+          title: `第${info.name}集`
+        });
         setCurrentInfo(info);
         setIndex(ind);
+        setControls(true)
         setLoading(false)
       });
       setCurrent({ ...current, v_id: info.id });
@@ -394,14 +419,12 @@ export default function VideoView() {
   const onEnded = () => {
     if(index >= allList.length) return;
     let info = allList[index+1];
-    console.log(info, 'info')
     refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: index+1 });
   };
   const swiperChange = (e) => {
     let val = e.detail.current;
     let info = allList[val];
     if(info.id == currentInfo.id || loading) return;
-    // getVideoList({ v_id: dataInfo.id, current: info.id, index: val });
     chooseCurrent(info.id)
   }
   const currentChange = (id) => {
@@ -430,35 +453,46 @@ export default function VideoView() {
       />
     )
   }, [pages])
-
-  const currentViewVideo = (ind, index) => {
+  const currentViewVideo = (ind, index,controls) => {
     let bool = index === ind && currentInfo?.url;
-    return (
-      <>
-        {bool ?
-          <Video
-            className="center_video_large"
-            src={currentInfo?.url}
-            poster={dataInfo?.img}
-            style={{opacity: bool ? 1 : 0, zIndex:500}}
-            initialTime={0}
-            controls
-            onPlay={startPlay}
-            onPause={stopPlay}
-            onEnded={onEnded}
-            showPlayBtn
-            showFullscreenBtn={false}
-            enableProgressGesture={true}
-            autoplay={true}
-            enablePlayGesture
-            showCenterPlayBtn
-            playBtnPosition="center"
-            loop={false}
-            objectFit="cover"
-          /> : null}
-        <Image className="center_video_img" src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
-      </>
-    )
+      return (
+        <>
+          {bool ?
+            <Video
+              className="center_video_large"
+              src={currentInfo?.url}
+              poster={dataInfo?.img}
+              style={{opacity: bool ? 1 : 0, zIndex:500}}
+              initialTime={0}
+              controls={true}
+              onControlsToggle={()=>{console.log(234234324)}}
+              onPlay={startPlay}
+              onPause={stopPlay}
+              onEnded={onEnded}
+              showPlayBtn={controls}
+              showBottomProgress={controls}
+              vslideGesture={false}
+              showFullscreenBtn={false}
+              pageGesture={false}
+              enableProgressGesture={false}
+              vslideGestureInFullscreen={false}
+              autoplay={true}
+              enablePlayGesture
+              showCenterPlayBtn
+              playBtnPosition="center"
+              loop={false}
+              objectFit="cover"
+            /> : null}
+          { !bool
+            ?
+            <Image className="center_video_img" mode={"aspectFill"} src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
+            :!controls?
+              <View className="center_video_view" onClick={()=>{
+                setControls(true)
+              }} />:null
+          }
+        </>
+      )
   }
 
   const currentSwiper = useMemo(()=>{
@@ -480,7 +514,7 @@ export default function VideoView() {
               <SwiperItem>
                 <View className='swiper_item'>
                   <View className="center_video">
-                    {currentViewVideo(ind, index)}
+                    {currentViewVideo(ind, index,controls)}
                   </View>
                   <View className='swiper_item_footer' />
                 </View>
@@ -490,7 +524,7 @@ export default function VideoView() {
         }
       </Swiper>
     )
-  }, [index,loading, allList, currentInfo, dataInfo])
+  }, [index,loading, allList, currentInfo, dataInfo,controls])
 
 
   const payStatus = (id) => {
@@ -551,6 +585,83 @@ export default function VideoView() {
 
     return 0;
   };
+
+  const payApiStatusTiktok = (params) => {
+    getPayOrder(params).then((res) => {
+      if (res.code !== 200) {
+        THide();
+        return TShow(res.msg);
+      }
+      if (res.data.is_vir) {
+        let data = res.data;
+        let sData = res.data.signData;
+        const SDKVersion = Taro.getSystemInfoSync().SDKVersion;
+        if (
+          compareVersion(SDKVersion, "2.19.2") >= 0 ||
+          Taro.canIUse("requestVirtualPayment")
+        ) {
+          tt.requestVirtualPayment({
+            signData: JSON.stringify({
+              offerId: sData.offerId,
+              buyQuantity: sData.buyQuantity,
+              env: sData.env,
+              currencyType: sData.currencyType,
+              productId: sData.productId,
+              goodsPrice: sData.goodsPrice,
+              outTradeNo: sData.outTradeNo,
+              attach: sData.attach,
+            }),
+            paySig: data.paySig,
+            signature: data.signature,
+            mode: res.data.mode,
+            success() {
+              payStatus(data.signData.outTradeNo);
+            },
+            fail({ errMsg, errCode }) {
+              console.error(errMsg, errCode);
+              THide();
+              if (errMsg == "cancel") {
+                TShow("取消支付");
+              }
+              if (errMsg == "fail") {
+                TShow("支付失败");
+              }
+            },
+          });
+        } else {
+          console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
+        }
+      } else {
+        let data = res.data.json_params;
+        tt.requestPayment({
+          timeStamp: data.time.toString(),
+          nonceStr: data.nonce_str,
+          package: data.package,
+          signType: "RSA",
+          paySign: data.sign,
+          success: function () {
+            THide();
+            payStatus(data.order_id);
+          },
+          fail: function (err) {
+            THide();
+            let str = "fail";
+            if (err.errMsg.indexOf("cancel") >= 0) {
+              str = "cancel";
+            }
+            if (str == "cancel") {
+              TShow("取消支付");
+            }
+            if (str == "fail") {
+              TShow("支付失败");
+            }
+            return;
+          },
+        });
+      }
+    });
+  };
+
   const payApiStatus = (params) => {
     getPayOrder(params).then((res) => {
       if (res.code !== 200) {
@@ -563,7 +674,7 @@ export default function VideoView() {
         const SDKVersion = Taro.getSystemInfoSync().SDKVersion;
         if (
           compareVersion(SDKVersion, "2.19.2") >= 0 ||
-          wx.canIUse("requestVirtualPayment")
+          Taro.canIUse("requestVirtualPayment")
         ) {
           wx.requestVirtualPayment({
             signData: JSON.stringify({
@@ -712,7 +823,11 @@ export default function VideoView() {
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
-        payApiStatus({product_id: item.id})
+        if(ENV){
+          payApiStatusTiktok({product_id: item.id})
+        } else {
+          payApiStatus({product_id: item.id})
+        }
       })
     })
   }
@@ -777,20 +892,23 @@ export default function VideoView() {
   return (
     <View className="index">
       {/* 返回按钮和标题 */}
-      <View
-        className="index_header"
-        style={{
-          top: option.statusBarHeight + "Px",
-          height: option.barHeight + "Px",
-        }}
-      >
-        <View className="index_header_view">
-          {backBtnView}
-          <View className="index_header_view_text">
-            第{currentInfo?.name}集
+      {
+        ENV?null:<View
+          className="index_header"
+          style={{
+            top: option.statusBarHeight + "Px",
+            height: option.barHeight + "Px",
+          }}
+        >
+          <View className="index_header_view">
+            {backBtnView}
+            <View className="index_header_view_text">
+              第{currentInfo?.name}集
+            </View>
           </View>
         </View>
-      </View>
+      }
+
       {/* 视频列表选择框 */}
       <View className="index_footer" onClick={openLayout}>
         <View className="index_footer_text">

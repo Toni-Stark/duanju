@@ -60,18 +60,19 @@ export default function Hot() {
         frontColor: '#ffffff',
         backgroundColor: '#1e212a',
       })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+          setOption({ ..._option });
+        },
+      });
     }
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-        setOption({ ..._option });
-      },
-    });
     getIndexBanner().then((res) => {
       if (res.code === 200) {
         setBannerList(res.data);

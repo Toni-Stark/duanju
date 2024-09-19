@@ -28,21 +28,34 @@ export default function Cate() {
   const [dataList, setDataList] = useState([]);
   const [value, setValue] = useState("");
   const [kwList, setKwList] = useState([]);
+  const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
   useLoad(() => {
+    setENV(GetStorageSync('ENV') == "TT")
     let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-      },
-    });
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "搜索"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+        },
+      });
+    }
+
 
     let list = GetStorageSync("kw");
     if (!list) {
@@ -210,11 +223,13 @@ export default function Cate() {
   }, [dataList, kwList, value, option, loading]);
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="搜索"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="搜索"
+        />:null}
+
       <View className="index_search">
         <Image mode="widthFix" src={search} className="index_search_img" />
         <View className="index_search_input">

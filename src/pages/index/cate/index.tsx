@@ -9,6 +9,7 @@ import { getIndexClassify, getIndexClassifyList } from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Search() {
   const router = useRouter();
@@ -29,6 +30,8 @@ export default function Search() {
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const [btnList, setBtnList] = useState([]);
   const [dataList, setDataList] = useState([]);
+  const [ENV, setENV] = useState(false);
+
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
@@ -37,15 +40,28 @@ export default function Search() {
     let _option = option;
     _option.title = params?.title;
     _option.type = params?.type;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-      },
-    });
+
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: option?.title || "更多分类"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+        },
+      });
+    }
+
     setOption({ ..._option });
     getIndexClassList();
   });
@@ -98,11 +114,13 @@ export default function Search() {
   };
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text={option?.title || "更多分类"}
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text={option?.title || "更多分类"}
+        />:null}
+
       {option.type == "1" ? (
         <View className="index_buttons">
           {btnList.map((item, index) => {

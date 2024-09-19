@@ -9,6 +9,7 @@ import { getSex } from "@/common/tools";
 import { AtFloatLayout } from "taro-ui";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 
 const selector = ["男", "女"];
 
@@ -21,14 +22,25 @@ export default function Info() {
     current: [0],
     show: false,
   });
+  const [ENV, setENV] = useState(false);
 
   useEffect(() => {
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    setOption({ ..._option });
-    return () => {};
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "个人资料"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      setOption({ ..._option });
+    }
   }, []);
 
   useDidShow(() => {
@@ -79,11 +91,12 @@ export default function Info() {
   };
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text="个人资料"
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text="个人资料"
+        />:null}
       <View className="index_content">
         <View className="index_content_header">
           <View className="header_view">

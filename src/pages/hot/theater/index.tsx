@@ -5,6 +5,7 @@ import "./index.less";
 import { useState } from "react";
 
 import { HeaderView } from "@/components/headerView";
+import {GetStorageSync} from "@/store/storage";
 // let routerList = [
 //   { title: "真得鹿剧场", icon: card },
 //   { title: "星星剧场", icon: card },
@@ -30,22 +31,35 @@ export default function Theater() {
   });
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
+  const [ENV, setENV] = useState(false);
+
   const handleScrollTop = () => {
     setScrollTop(scrollTop ? 0 : 1);
   };
   useLoad(() => {
-    let _option = option;
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-      },
-    });
+    setENV(GetStorageSync('ENV') == "TT")
+    if(GetStorageSync('ENV') == "TT") {
+      Taro.setNavigationBarTitle({
+        title: "热播剧"
+      });
+      Taro.setNavigationBarColor({
+        frontColor: '#ffffff',
+        backgroundColor: '#1e212a',
+      })
+    } else {
+      let _option = option;
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+        },
+      });
 
-    setOption({ ..._option });
+      setOption({ ..._option });
+    }
   });
 
   const onScroll = (e) => {
@@ -66,11 +80,13 @@ export default function Theater() {
 
   return (
     <View className="index">
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text=""
-      />
+      {!ENV?
+        <HeaderView
+          barHeight={option.barHeight}
+          height={option.statusBarHeight}
+          text=""
+        />:null}
+
       <View className="index_main">
         <Image className="index_main_img" src={rouOption.icon} />
         <View className="index_main_text">{rouOption.title}</View>
