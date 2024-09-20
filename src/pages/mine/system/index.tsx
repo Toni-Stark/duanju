@@ -71,9 +71,7 @@ export default function System() {
         <HeaderView
           barHeight={option.barHeight}
           height={option.statusBarHeight}
-          search
           text="系统服务"
-          url="../index/search/index"
         />:null}
       <View className="index_content">
         {menuContent}

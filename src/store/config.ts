@@ -4,7 +4,6 @@ const config = {
   tt: {
     dev: {
       appid: "ttd8c0ae7d47f7595601",
-      // appid: "wx4fa1b29d25262470",
       BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"
@@ -12,7 +11,6 @@ const config = {
     },
     test: {
       appid: "ttd8c0ae7d47f7595601",
-      // appid: "wx4fa1b29d25262470",
       BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"
@@ -20,7 +18,6 @@ const config = {
     },
     prod: {
       appid: "ttd8c0ae7d47f7595601",
-      // appid: "wx4fa1b29d25262470",
       BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"

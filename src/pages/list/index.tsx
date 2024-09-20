@@ -13,6 +13,7 @@ import { Loading } from "@/components/loading";
 import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import {GetStorageSync} from "@/store/storage";
+import {SelfVideo} from "@/components/selfVideo";
 
 export default function List() {
   const [option, setOption] = useState({
@@ -190,6 +191,7 @@ export default function List() {
   };
 
   const naviToVideoUp = (id) => {
+    if(!id) return;
     Taro.navigateTo({
       url: "../video_up/index?id=" + id,
     });
@@ -208,27 +210,19 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
+              console.log(headerInfo);
               naviToVideoUp(headerInfo?.video_id);
             }}
           >
-            <Video
-              className="components-video-large-video"
-              style={{ height: option.screenWidth + "px" }}
-              src={headerInfo?.video_url}
-              poster={headerInfo?.video_img}
-              initialTime={0}
-              controls={false}
-              autoplay
-              enable-progress-gesture={false}
-              muted
-              showPlayBtn
-              showFullscreenBtn={false}
-              enablePlayGesture
-              showCenterPlayBtn
-              playBtnPosition="center"
-              loop={false}
-              objectFit="cover"
-            />
+            <SelfVideo
+              cla={"components-video-large-video"}
+              id={headerInfo?.id}
+              url={headerInfo?.video_url}
+              height={option.screenWidth}
+              img={headerInfo?.video_img}
+              callback={(key)=>{
+              naviToVideoUp(key)
+            }} />
             <View className="components-video-large-content">
               <View className="large-content-main">
                 <View className="large-content-main-title">

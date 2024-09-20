@@ -31,11 +31,11 @@ import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
-import {apis} from "@tarojs/plugin-platform-h5/dist/dist/definition.json";
-import setTopBarText = apis.setTopBarText;
+import {CurrentViewVideo} from "@/components/detailVideo";
 
 let timePlay = 0;
 let timerPlay = null;
+let loadTime = null;
 export default function VideoView() {
   const pages = Taro.getCurrentPages();
   const router = useRouter();
@@ -129,7 +129,6 @@ export default function VideoView() {
   });
   let tim = null;
   useEffect(() => {
-    console.log('监听control的变化',controls)
     clearTimeout(tim)
     tim = null;
     tim = setTimeout(()=>{
@@ -274,10 +273,10 @@ export default function VideoView() {
         setCurrentInfo(currInfo);
         setControls(true)
         setIndex(params?.index||0);
+        setIndex(ind);
         setTimFun(() => {
-          setIndex(ind);
           setLoading(false)
-        },200)
+        },1000)
       });
       return;
     });
@@ -363,7 +362,13 @@ export default function VideoView() {
         setCurrentInfo(info);
         setIndex(ind);
         setControls(true)
-        setLoading(false)
+        clearTimeout(loadTime)
+        loadTime = null;
+        loadTime = setTimeout(()=>{
+          clearTimeout(loadTime)
+          loadTime = null;
+          setLoading(false)
+        },1000);
       });
       setCurrent({ ...current, v_id: info.id });
     }
@@ -453,47 +458,6 @@ export default function VideoView() {
       />
     )
   }, [pages])
-  const currentViewVideo = (ind, index,controls) => {
-    let bool = index === ind && currentInfo?.url;
-      return (
-        <>
-          {bool ?
-            <Video
-              className="center_video_large"
-              src={currentInfo?.url}
-              poster={dataInfo?.img}
-              style={{opacity: bool ? 1 : 0, zIndex:500}}
-              initialTime={0}
-              controls={true}
-              onControlsToggle={()=>{console.log(234234324)}}
-              onPlay={startPlay}
-              onPause={stopPlay}
-              onEnded={onEnded}
-              showPlayBtn={controls}
-              showBottomProgress={controls}
-              vslideGesture={false}
-              showFullscreenBtn={false}
-              pageGesture={false}
-              enableProgressGesture={false}
-              vslideGestureInFullscreen={false}
-              autoplay={true}
-              enablePlayGesture
-              showCenterPlayBtn
-              playBtnPosition="center"
-              loop={false}
-              objectFit="cover"
-            /> : null}
-          { !bool
-            ?
-            <Image className="center_video_img" mode={"aspectFill"} src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
-            :!controls?
-              <View className="center_video_view" onClick={()=>{
-                setControls(true)
-              }} />:null
-          }
-        </>
-      )
-  }
 
   const currentSwiper = useMemo(()=>{
     return (
@@ -502,7 +466,7 @@ export default function VideoView() {
         indicatorColor='#999'
         indicatorActiveColor='#333'
         current={index}
-        duration={loading?0:500}
+        duration={ENV?1:loading?0:500}
         scrollWithAnimation={false}
         skipHiddenItemLayout={true}
         enablePassive={true}
@@ -514,7 +478,18 @@ export default function VideoView() {
               <SwiperItem>
                 <View className='swiper_item'>
                   <View className="center_video">
-                    {currentViewVideo(ind, index,controls)}
+                    <CurrentViewVideo
+                      ind={ind}
+                      ENV={ENV}
+                      index={index}
+                      onEnded={onEnded}
+                      stopPlay={stopPlay}
+                      controls={controls}
+                      dataInfo={dataInfo}
+                      startPlay={startPlay}
+                      currentInfo={currentInfo}
+                      setControls={setControls}
+                    />
                   </View>
                   <View className='swiper_item_footer' />
                 </View>
