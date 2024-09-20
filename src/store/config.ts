@@ -4,23 +4,23 @@ const config = {
   tt: {
     dev: {
       appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "https://niubojc.com/api/aokdaIh/",
+      BASE_URL: "https://6a6c-106-91-6-61.ngrok-free.app/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
       appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "https://niubojc.com/api/aokdaIh/",
+      BASE_URL: "https://6a6c-106-91-6-61.ngrok-free.app/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
       appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "https://niubojc.com/api/aokdaIh/",
+      BASE_URL: "https://6a6c-106-91-6-61.ngrok-free.app/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },

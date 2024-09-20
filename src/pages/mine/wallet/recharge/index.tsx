@@ -41,7 +41,14 @@ export default function Search() {
   const [ENV, setENV] = useState(false);
 
   useLoad(() => {
-
+    const params = router.params;
+    let _option = option;
+    if (params?.type) {
+      _option.type = params?.type;
+    }
+    if (params?.is_pay) {
+      _option.is_pay = params?.is_pay;
+    }
     setENV(GetStorageSync('ENV') == "TT")
     if(GetStorageSync('ENV') == "TT") {
       Taro.setNavigationBarTitle({
@@ -51,25 +58,19 @@ export default function Search() {
         frontColor: '#ffffff',
         backgroundColor: '#1e212a',
       })
+    } else {
+      const rect = Taro.getMenuButtonBoundingClientRect();
+      _option.barHeight = rect.top;
+      _option.statusBarHeight = rect.height;
+      Taro.getSystemInfo({
+        success: (res) => {
+          _option.screenWidth = res.screenWidth;
+          _option.screenHeight = res.screenHeight;
+        },
+      });
     }
-    const params = router.params;
-    let _option = option;
-    if (params?.type) {
-      _option.type = params?.type;
-    }
-    if (params?.is_pay) {
-      _option.is_pay = params?.is_pay;
-    }
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.top;
-    _option.statusBarHeight = rect.height;
-    Taro.getSystemInfo({
-      success: (res) => {
-        _option.screenWidth = res.screenWidth;
-        _option.screenHeight = res.screenHeight;
-      },
-    });
     setOption({ ..._option });
+    Taro.showToast({ title: "加载中...",	mask:true, icon: "none" });
     getProList();
   });
 
@@ -90,6 +91,7 @@ export default function Search() {
     getWalletProducts().then((res) => {
       setInList(res.data.product_list);
       setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
+      Taro.hideToast()
     });
   };
 
@@ -189,28 +191,56 @@ export default function Search() {
         }
       } else {
         let data = res.data.json_params;
-        tt.requestPayment({
-          timeStamp: data.time.toString(),
-          nonceStr: data.nonce_str,
-          package: data.package,
-          signType: "RSA",
-          paySign: data.sign,
+        console.log(data, 'data')
+        tt.pay({
+          orderInfo: {
+            order_id: data.order_id,
+            order_token: data.order_token,
+          },
+          service: 5,
+          _debug: function (debug){
+            console.log(debug, 'debug')
+          },
           success: function (res) {
-            THide();
-            payStatus(data.order_id);
+
+            if(res.code == 0){
+              payStatus(data.order_id);
+              return;
+            }
+            if(res.code == 1){
+              TShow("取消超时");
+              return;
+            }
+            if(res.code == 2){
+              TShow("支付失败");
+              return;
+            }
+            if(res.code == 3){
+              TShow("支付关闭");
+              return;
+            }
+            if(res.code == 4){
+              TShow("取消支付");
+              return;
+            }
+            if(res.code == 9){
+              TShow("订单状态开发者自行获取");
+              return;
+            }
           },
           fail: function (err) {
-            console.log(err);
             THide();
-            let str = "fail";
-            if (err.errMsg.indexOf("cancel") >= 0) {
-              str = "cancel";
-            }
-            if (str == "cancel") {
-              TShow("取消支付");
-            }
-            if (str == "fail") {
+            if (err.errMsg.indexOf("10000") >= 0) {
               TShow("支付失败");
+              return;
+            }
+            if (err.errMsg.indexOf("10001") >= 0) {
+              TShow("调起微信失败");
+              return;
+            }
+            if (err.errMsg.indexOf("10002") >= 0) {
+              TShow("微信未安装");
+              return;
             }
             return;
           },
