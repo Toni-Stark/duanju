@@ -134,7 +134,7 @@ export default function Search() {
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
         if(ENV) {
-          payApiStatusTiktok({product_id: item.id})
+          payApiStatusTiktok({product_id: option.bar})
         } else {
           payApiStatus({ product_id: option.bar });
         }

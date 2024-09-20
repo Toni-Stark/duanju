@@ -1,12 +1,13 @@
 import {
   View,
   ScrollView,
-  Image
+  Image,
+  Button
 } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
-import { useState } from "react";
+import { useState} from "react";
 import down from "../../../static/icon/down_load.png";
 import share from "../../../static/icon/share.png";
 import { getMemberInfo, getMemberSpread } from "@/common/interface";
@@ -27,9 +28,11 @@ export default function Code() {
     }
     return {
       title: '放牛娃短剧',
+      imageUrl: 'https://fanyi-cdn.cdn.bcebos.com/static/cat/asset/logo.2481f256.png',
       path: '/pages/index/index?iv='+userInfo.sn,
     }
   })
+
   const [refresh, setRefresh] = useState(false);
   const [info, setInfo] = useState(undefined);
   const [desc, setDesc] = useState([]);
@@ -46,6 +49,16 @@ export default function Code() {
         frontColor: '#ffffff',
         backgroundColor: '#1e212a',
       })
+      Taro.showShareMenu({
+        withShareTicket: true,
+        success() {
+          console.log('分享按钮已显示');
+        },
+        fail(err) {
+          console.log('显示分享按钮失败', err);
+        }
+      });
+
     } else {
       const rect = Taro.getMenuButtonBoundingClientRect();
       _option.barHeight = rect.top;
@@ -85,17 +98,22 @@ export default function Code() {
     });
   };
   const shareImage = () => {
-    Taro.downloadFile({
-      url: info.spread_qrcode,
-      success: (res) => {
-        Taro.showShareImageMenu({
-          path: res.tempFilePath,
-        });
-      },
-      fail: () => {
-        TShow("微信权限申请中，暂时无法使用");
-      },
-    });
+    if(ENV){
+
+      // 手动触发分享
+    } else {
+      Taro.downloadFile({
+        url: info.spread_qrcode,
+        success: (res) => {
+          Taro.showShareImageMenu({
+            path: res.tempFilePath,
+          });
+        },
+        fail: () => {
+          TShow("微信权限申请中，暂时无法使用");
+        },
+      });
+    }
   };
   const refreshChange = () => {
     setRefresh(true);
@@ -204,18 +222,15 @@ export default function Code() {
                 <Image className="control_view_img" src={down} />
                 保存图片
               </View>
-              <View className="control_view" onClick={shareImage}>
+              {ENV?<Button type="share" className="control_view" openType="share" onClick={shareImage}>
                 <Image className="control_view_img" src={share} />
                 分享好友
-              </View>
-              {/*<Button*/}
-              {/*  className="control_view"*/}
-              {/*  openType="share"*/}
-              {/*  hoverClass="index_label_active"*/}
-              {/*>*/}
-              {/*  <Image className="control_view_img" src={share} />*/}
-              {/*  分享好友*/}
-              {/*</Button>*/}
+              </Button>:
+                <View className="control_view" onClick={shareImage}>
+                  <Image className="control_view_img" src={share} />
+                  分享好友
+                </View>
+              }
             </View>
           </View>
           <View className="desc">
