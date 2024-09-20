@@ -3,19 +3,19 @@ import Taro from "@tarojs/taro";
 const config = {
   wx: {
     dev: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
-        appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
-      appid: "wx00068c582abf3769",
-      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
-      WEB_VIEW: "https://niubojc.com/api/"
+      appid: "wx4fa1b29d25262470",
+      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
+      WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },
 };
