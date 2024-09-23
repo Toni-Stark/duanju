@@ -557,7 +557,6 @@ export default function VideoView() {
         return -1;
       }
     }
-
     return 0;
   };
 
