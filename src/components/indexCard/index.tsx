@@ -4,6 +4,7 @@ import "./index.less";
 import Taro from "@tarojs/taro";
 import right from "@/static/icon/right.png";
 import {getIndexActRecord} from "@/common/interface";
+import {noTimeout} from "@/common/tools";
 
 type Props = {
   data: any;
@@ -18,9 +19,11 @@ export const IndexCard = (props: Props) => {
     });
   };
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
+    })
   };
   if (!data?.video_list || data?.video_list <= 0) {
     return null;
@@ -32,7 +35,9 @@ export const IndexCard = (props: Props) => {
         <View
           className="ssview-lar-link"
           onClick={() => {
-            naviToList(data.name, data.id);
+            noTimeout(()=> {
+              naviToList(data.name, data.id);
+            })
           }}
         >
           热门独播

@@ -11,6 +11,7 @@ import menu from "../../static/icon/meun.png";
 import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -65,49 +66,62 @@ export default function Mine() {
     });
   });
   const naviTo = (item) => {
-    if (item.url == "ke") {
-      console.log(option)
-      Taro.makePhoneCall({
-        phoneNumber: option.my_kf,
-      })
-      return;
-    }
-    Taro.navigateTo({
-      url: item.url,
-    });
+
+    noTimeout(()=> {
+      if (item.url == "ke") {
+        console.log(option)
+        Taro.makePhoneCall({
+          phoneNumber: option.my_kf,
+        })
+        return;
+      }
+      Taro.navigateTo({
+        url: item.url,
+      });
+    })
   };
   const naviToInfo = () => {
-    Taro.navigateTo({
-      url: "./info/index",
-    });
+
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./info/index",
+      });
+    })
   };
   const naviToRecharge = () => {
-    Taro.navigateTo({
-      url: "./wallet/recharge/index?type=2",
-    });
+
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./wallet/recharge/index?type=2",
+      });
+    })
   };
   const currentLocat = () => {
-    getMemberSign().then((res) => {
-      if (res.code === 200) {
-        setOption({
-          ...option,
-          is_signed: 1,
-        });
-        getMemberInfo().then((res) => {
+    noTimeout(()=>{
+      getMemberSign().then((res) => {
+        if (res.code === 200) {
           setOption({
             ...option,
-            ...res.data,
-            loading: true,
+            is_signed: 1,
           });
-        });
-      }
-    });
+          getMemberInfo().then((res) => {
+            setOption({
+              ...option,
+              ...res.data,
+              loading: true,
+            });
+          });
+        }
+      });
+    })
   };
   const naviToWallet = () => {
-    let val = "./wallet/wllt/index?id=" + 2 + "&title="+commonSetting.coinName+"记录";
-    Taro.navigateTo({
-      url: val,
-    });
+    noTimeout(()=> {
+      let val = "./wallet/wllt/index?id=" + 2 + "&title=" + commonSetting.coinName + "记录";
+      Taro.navigateTo({
+        url: val,
+      });
+    })
   };
   const headerContent = useMemo(() => {
     return (

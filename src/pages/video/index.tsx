@@ -33,6 +33,7 @@ import {
 import {THide, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import { GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -292,16 +293,20 @@ export default function VideoView() {
     currentVideoFavorite(index, bool);
   };
   const shareView = () => {
-    getMemberShare({
-      v_id: dataInfo.id,
-      v_s_id: currentInfo.id,
-    }).then(() => {});
-
+    noTimeout(()=> {
+      getMemberShare({
+        v_id: dataInfo.id,
+        v_s_id: currentInfo.id,
+      }).then(() => {
+      });
+    })
   };
   const openLayout = () => {
-    let info = btnList.find((item) => item.title === current.page);
-    setCurrent({ ...current, b_list: info.list });
-    setShow(true);
+    noTimeout(()=> {
+      let info = btnList.find((item) => item.title === current.page);
+      setCurrent({...current, b_list: info.list});
+      setShow(true);
+    })
   };
   const handleClose = () => {
     setShow(false);
@@ -491,7 +496,10 @@ export default function VideoView() {
                   type="primary"
                   size="normal"
                   onClick={() => {
-                    currentListInfo(item.title);
+
+                    noTimeout(()=> {
+                      currentListInfo(item.title);
+                    })
                   }}
                 >
                   {item.title}
@@ -556,7 +564,7 @@ export default function VideoView() {
           return (
             <View
               className="index_label_view"
-              onClick={() => clickItemValue(index, item.check)}
+              onClick={() => noTimeout(()=>{clickItemValue(index, item.check)})}
               hoverClass="index_label_active"
             >
               <View className="view">

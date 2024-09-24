@@ -6,6 +6,7 @@ import { useState } from "react";
 import { setMember } from "@/common/interface";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
+import {noTimeout} from "@/common/tools";
 
 export default function Edit() {
   const [option, setOption] = useState({
@@ -22,17 +23,20 @@ export default function Edit() {
     setOption({ ..._option });
   });
   const editNickName = () => {
-    if(option.value?.trim().length>0){
-      setMember({ nickname: option.value }).then((res) => {
-        if (res.code !== 200) {
-          TShow(res.msg);
-          return;
-        }
-        Taro.navigateBack();
-      });
-      return;
-    }
-    TShow("请输入昵称")
+    noTimeout(()=> {
+
+      if (option.value?.trim().length > 0) {
+        setMember({nickname: option.value}).then((res) => {
+          if (res.code !== 200) {
+            TShow(res.msg);
+            return;
+          }
+          Taro.navigateBack();
+        });
+        return;
+      }
+      TShow("请输入昵称")
+    })
   };
   const changeValue = (e) => {
     setOption({ ...option, value: e.detail.value });

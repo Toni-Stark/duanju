@@ -24,6 +24,7 @@ import {
 import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import { Loading } from "@/components/loading";
+import {noTimeout} from "@/common/tools";
 
 let defaultActive = -999
 export default function Hot() {
@@ -44,7 +45,10 @@ export default function Hot() {
   const [currentData, setCurrentList] = useState<any>([]);
   const [tagsData, setTagsData] = useState([]);
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     let _option = option;
@@ -133,13 +137,19 @@ export default function Hot() {
   };
 
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
+
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
+    })
   };
   const naviToCateOne = (type, title) => {
+
+    noTimeout(()=> {
     Taro.navigateTo({
       url: "./cate/index?type=" + type + "&title=" + title,
+    });
     });
   };
   const currentList = async ({ classify, p, refresh }:{classify?: any, p?:any, refresh?: any}) => {
@@ -210,7 +220,8 @@ export default function Hot() {
       <>
         <View className="navi-line">
           他们都在看
-          <View className="navi-line-fresh" onClick={refreshList}>
+          <View className="navi-line-fresh" onClick={()=>
+            noTimeout(()=> {refreshList()})}>
             换一换
             <Image
               mode="widthFix"
@@ -238,7 +249,9 @@ export default function Hot() {
                 type="primary"
                 size="normal"
                 onClick={() => {
-                  setActive(item.id);
+                  noTimeout(()=> {
+                    setActive(item.id);
+                  })
                 }}
               >
                 {item.name}

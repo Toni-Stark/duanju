@@ -2,6 +2,7 @@ import Taro from "@tarojs/taro";
 import { CoverView } from "@tarojs/components";
 import { useState } from "react";
 import "./index.less";
+import {noTimeout} from "@/common/tools";
 
 export const PageTabBarEnum = {
   Home: 1, // 首页,
@@ -42,12 +43,14 @@ export default function customTabBar() {
 
   const switchTab = (tabData) => {
     const { pagePath } = tabData;
-    Taro.switchTab({
-      url: pagePath,
-      success: () => {
-        setTabList(tabList);
-      },
-    });
+    noTimeout(()=> {
+      Taro.switchTab({
+        url: pagePath,
+        success: () => {
+          setTabList(tabList);
+        },
+      });
+    })
   };
   return (
     <CoverView className="custom-tab">

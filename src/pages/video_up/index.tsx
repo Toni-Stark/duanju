@@ -26,10 +26,10 @@ import {
   getVideoPay,
   getVideoUpdate, getWalletProducts,
 } from "@/common/interface";
-import {getCheckLogin, THide, THideT, TShow} from "@/common/common";
+import {getCheckLogin, THide, THideT, TLoading, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
-import {setTimFun} from "@/common/tools";
+import {noTimeout, setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
 
 let timePlay = 0;
@@ -285,12 +285,16 @@ export default function VideoView() {
   }
 
   const naviBack = () => {
-    Taro.navigateBack();
+    noTimeout(()=> {
+      Taro.navigateBack();
+    })
   };
   const naviHome = () => {
-    Taro.switchTab({
-      url: "/pages/index/index",
-    });
+    noTimeout(()=> {
+      Taro.switchTab({
+        url: "/pages/index/index",
+      });
+    })
   };
 
 
@@ -309,15 +313,19 @@ export default function VideoView() {
     currentVideoFavorite(index, bool);
   };
   const shareView = () => {
-    getMemberShare({
-      v_id: dataInfo.id,
-      v_s_id: currentInfo.id,
-    }).then(() => {});
-
+    noTimeout(()=> {
+      getMemberShare({
+        v_id: dataInfo.id,
+        v_s_id: currentInfo.id,
+      }).then(() => {
+      });
+    })
   };
 
   const handleClose = () => {
-    setShow(false);
+    noTimeout(()=> {
+      setShow(false);
+    })
   };
 
   const naviToHotOne = (info?: any) => {
@@ -344,9 +352,11 @@ export default function VideoView() {
     }
   };
   const openLayout = () => {
-    let info = pageList.find((item) => item.title === current.page);
-    setCurrent({ ...current, b_list: info.list });
-    setShow(true);
+    noTimeout(()=> {
+      let info = pageList.find((item) => item.title === current.page);
+      setCurrent({...current, b_list: info.list});
+      setShow(true);
+    })
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
@@ -429,7 +439,7 @@ export default function VideoView() {
     let info = allList[val];
     if(info.id == currentInfo.id || loading) return;
     // getVideoList({ v_id: dataInfo.id, current: info.id, index: val });
-    chooseCurrent(info.id)
+      chooseCurrent(info.id)
   }
   const currentChange = (id) => {
     let list = [];
@@ -674,13 +684,18 @@ export default function VideoView() {
   };
 
   const naviPayTo = () => {
-    Taro.navigateTo({
-      url: "../mine/system/pay/index",
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../mine/system/pay/index",
+      });
+    })
   }
   const naviMemberTo = () => {
-    Taro.navigateTo({
+    noTimeout(()=> {
+
+      Taro.navigateTo({
       url: "../mine/system/member/index",
+      });
     });
   }
 
@@ -707,7 +722,9 @@ export default function VideoView() {
                   type="primary"
                   size="normal"
                   onClick={() => {
-                    currentChange(item.title);
+                    noTimeout(()=> {
+                      currentChange(item.title);
+                    })
                   }}
                 >
                   {item.title}
@@ -744,6 +761,7 @@ export default function VideoView() {
   }, [show, dataInfo, pageList, current, currentInfo]);
 
   const chooseOne = (item) => {
+    TLoading("支付中...")
     let data = {...payData}
     data.product_list = data?.product_list?.map((it) => {
       if (it.id == item.id) {
@@ -753,7 +771,6 @@ export default function VideoView() {
       }
     })
     setPayData({...data})
-    TShow("支付中", "loading", 3000)
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
@@ -780,7 +797,9 @@ export default function VideoView() {
     }
     return (
       <View className={cla} key={index} onClick={()=>{
-        chooseOne(item)
+        // noTimeout(()=> {
+          chooseOne(item)
+        // })
       }}>
         <View className="pay_modal_view_list_item_title">
           <View className="pay_modal_view_list_item_title_main">
@@ -854,7 +873,8 @@ export default function VideoView() {
           return (
             <View
               className="index_label_view"
-              onClick={() => clickItemValue(index, item.check)}
+              onClick={() =>     noTimeout(()=> {
+                clickItemValue(index, item.check)})}
               hoverClass="index_label_active"
             >
               <View className="view">

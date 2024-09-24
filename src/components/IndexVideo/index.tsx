@@ -2,6 +2,7 @@ import { Video, View } from "@tarojs/components";
 
 import "./index.less";
 import Taro from "@tarojs/taro";
+import {noTimeout} from "@/common/tools";
 
 type Props = {
   height: any;
@@ -17,7 +18,7 @@ export const IndexVideo = (props: Props) => {
     });
   };
   return (
-    <View className="mini-view-large" onClick={() => naviToVideoUp(data.id)}>
+    <View className="mini-view-large" onClick={() => {noTimeout(()=>{naviToVideoUp(data.id)})}}>
       <Video
         className="mini-view-large-video"
         style={{ height: height + "px" }}

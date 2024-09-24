@@ -7,6 +7,7 @@ import right from "../../../static/icon/right.png";
 import { getMemberInfo } from "@/common/interface";
 import { HeaderView } from "@/components/headerView";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Wallet() {
   const [option, setOption] = useState({
@@ -27,9 +28,11 @@ export default function Wallet() {
     setOption({ ..._option });
   });
   const naviToDetail = () => {
-    Taro.navigateTo({
-      url: "./recharge/index?type=2",
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./recharge/index?type=2",
+      });
+    })
   };
 
   const naviToList = (num) => {

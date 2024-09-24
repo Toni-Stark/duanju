@@ -86,6 +86,17 @@ export const getLogin = (option) => {
   });
 };
 
+export const TLoading = (title) => {
+  return new Promise((resolve) => {
+    Taro.showLoading({
+      title: typeof title == 'string' ? title : '',
+      mask: true,
+      success: () => {
+        resolve()
+      }
+    })
+  });
+};
 export const TShow = (text, icon = "none", duration = 1500) => {
   return new Promise((resolve) => {
     Taro.showToast({

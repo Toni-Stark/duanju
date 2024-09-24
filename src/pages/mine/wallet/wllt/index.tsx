@@ -9,6 +9,7 @@ import { HeaderView } from "@/components/headerView";
 import top from "../../../../static/icon/top.png";
 import { Loading } from "@/components/loading";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Hot() {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function Hot() {
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const [dataList, setDataList] = useState([]);
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     const params = router.params;

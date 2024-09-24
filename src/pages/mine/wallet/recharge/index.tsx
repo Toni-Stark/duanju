@@ -16,6 +16,7 @@ import {SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
 import {getCheckLogin, THide, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Search() {
   const router = useRouter();
@@ -137,10 +138,8 @@ export default function Search() {
     if(!inList||inList?.length<=0){
       return;
     }
-    TShow("支付中", "loading", 10000);
 
     getCheckLogin().then((result) => {
-      console.log(result, '获取登录状态')
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
@@ -361,7 +360,7 @@ export default function Search() {
       }
     })
     setPayData({...data})
-    TShow("支付中", "loading", 3000)
+    // TShow("支付中", "loading", 3000)
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
@@ -455,7 +454,7 @@ export default function Search() {
             </View>
         :null}
         { !payData?.is_template ? <View className={inList && inList.length > 0 ? "index_content_btn" : "index_content_btn_gray"}
-               onClick={payOrder}
+               onClick={()=>{noTimeout(()=>{payOrder()})}}
         >
           {inList.length > 0 ? '确认支付' : '暂不支持'}
 

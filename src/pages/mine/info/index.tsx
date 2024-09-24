@@ -5,7 +5,7 @@ import "./index.less";
 import { useEffect, useState } from "react";
 import header from "../../../static/source/header.png";
 import { getMemberInfo, setMember } from "@/common/interface";
-import { getSex } from "@/common/tools";
+import {getSex, noTimeout} from "@/common/tools";
 import { AtFloatLayout } from "taro-ui";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
@@ -65,7 +65,9 @@ export default function Info() {
     });
   };
   const handleCom = () => {
-    setMember({ sex: option.current[0] + 1 }).then((res) => {
+    noTimeout(()=> {
+
+      setMember({ sex: option.current[0] + 1 }).then((res) => {
       if (res.code !== 200) {
         TShow(res.msg);
         return;
@@ -74,6 +76,7 @@ export default function Info() {
         ...option,
         sex: selector[option.current[0]],
         show: false,
+      });
       });
     });
   };

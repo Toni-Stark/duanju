@@ -28,7 +28,7 @@ import {
 import { Loading } from "@/components/loading";
 import { IndexCard } from "@/components/indexCard";
 import { IndexVideo } from "@/components/IndexVideo";
-import { setInterFun } from "@/common/tools";
+import {noTimeout, setInterFun} from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
 import {NoneView} from "@/components/noneView";
@@ -246,22 +246,28 @@ export default function Index() {
   }
 
   const naviToCateOne = (type, title) => {
-    Taro.navigateTo({
-      url: "./cate/index?type=" + type + "&title=" + title,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./cate/index?type=" + type + "&title=" + title,
+      });
+    })
   };
 
   const naviToSearch = (type) => {
-    Taro.navigateTo({
-      url: "./search/index?type=" + type,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./search/index?type=" + type,
+      });
+    })
   };
   const naviToVideoUp = (id) => {
-    if(!id) return;
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
-    setShowNew(false)
+    noTimeout(()=> {
+      if (!id) return;
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
+      setShowNew(false)
+    })
   };
 
   const currentSwiper = useMemo(() => {
@@ -515,7 +521,7 @@ export default function Index() {
         <FloatView
           show={showNew}
           naviVideo={(id)=>{naviToVideoUp(id)}}
-          clickFun={()=>{setShowNew(false)}}
+          clickFun={()=>{noTimeout(()=>{setShowNew(false)})}}
           img={message?.img}
           text={message?.video_name}
           title={message?.title}

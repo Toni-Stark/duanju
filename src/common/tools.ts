@@ -70,3 +70,12 @@ export const getSystemInfo = () => {
     if(res.platform == 'devtools') return resolve(1);  //开发者工具
   })
 }
+let timeout = null;
+export const noTimeout = (callback) => {
+  if(timeout) return;
+  timeout = setTimeout(()=>{
+    callback();
+    clearTimeout(timeout);
+    timeout = null;
+  },  300);
+}

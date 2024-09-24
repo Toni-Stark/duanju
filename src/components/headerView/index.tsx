@@ -6,6 +6,7 @@ import home from "@/static/icon/home.png";
 import searchImg from "@/static/icon/search.png";
 import Taro from "@tarojs/taro";
 import {useEffect, useMemo, useState} from "react";
+import {noTimeout} from "@/common/tools";
 
 type Props = {
   barHeight: number;
@@ -20,17 +21,23 @@ export const HeaderView = (props: Partial<Props>) => {
   const [UA, setUA] = useState(true);
 
   const naviBack = () => {
-    Taro.navigateBack();
+    noTimeout(()=> {
+      Taro.navigateBack();
+    })
   };
   const naviSearch = () => {
-    Taro.navigateTo({
-      url: url,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: url,
+      });
+    })
   };
   const naviHome = () => {
-    Taro.switchTab({
-      url: "/pages/index/index",
-    });
+    noTimeout(()=> {
+      Taro.switchTab({
+        url: "/pages/index/index",
+      });
+    })
   };
   useEffect(() => {
     Taro.getSystemInfo({

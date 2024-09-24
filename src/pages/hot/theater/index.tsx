@@ -5,6 +5,7 @@ import "./index.less";
 import { useState } from "react";
 
 import { HeaderView } from "@/components/headerView";
+import {noTimeout} from "@/common/tools";
 // let routerList = [
 //   { title: "真得鹿剧场", icon: card },
 //   { title: "星星剧场", icon: card },
@@ -31,7 +32,10 @@ export default function Theater() {
   const [scrollTop, setScrollTop] = useState(0);
   const [scrollOpacity, setScrollOpacity] = useState(0);
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     let _option = option;

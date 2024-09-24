@@ -9,6 +9,7 @@ import { getIndexClassify, getIndexClassifyList } from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
+import {noTimeout} from "@/common/tools";
 
 export default function Search() {
   const router = useRouter();
@@ -92,8 +93,11 @@ export default function Search() {
     getDataList(option.active, 1);
   };
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
+    noTimeout(()=> {
+
+      Taro.navigateTo({
       url: "../../video_up/index?id=" + id,
+      });
     });
   };
   return (

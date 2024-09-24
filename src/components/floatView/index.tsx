@@ -1,6 +1,7 @@
 import {Image, View} from "@tarojs/components";
 
 import "./index.less";
+import {noTimeout} from "@/common/tools";
 
 type Props = {
   text: string;
@@ -21,7 +22,7 @@ export const FloatView = (props: Partial<Props>) => {
             {title}
           </View>
           <View className="float_modal_main">
-            <Image onClick={()=>naviVideo(id)} mode="widthFix" className="img" src={img} />
+            <Image onClick={()=>noTimeout(()=>{naviVideo(id)})} mode="widthFix" className="img" src={img} />
           </View>
           <View className="float_modal_desc">{text}</View>
           <View className="float_modal_btn" onClick={clickFun}>我知道了</View>

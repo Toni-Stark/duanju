@@ -9,6 +9,7 @@ import { getIndexTagsVideo} from "@/common/interface";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
+import {noTimeout} from "@/common/tools";
 
 export default function Search() {
   const router = useRouter();
@@ -30,7 +31,10 @@ export default function Search() {
   const [btnList] = useState([]);
   const [dataList, setDataList] = useState([]);
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     const params = router.params;
@@ -159,7 +163,10 @@ export default function Search() {
                   type="primary"
                   size="normal"
                   onClick={() => {
-                    setActive(item.id);
+
+                    noTimeout(()=> {
+                      setActive(item.id);
+                    })
                   }}
                 >
                   {item.name}
