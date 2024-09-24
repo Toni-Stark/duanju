@@ -68,29 +68,29 @@ export default function Search() {
       setInfo(res.data);
       let pn = res.data?.pn;
       setPnInt(pn);
-        getWalletProducts().then((result)=>{
-          if(result.data.is_template){
-            if(!result.data){
-              Taro.showModal({
-                title: '提示',
-                content: '无支付模板',
-                success(res) {
-                  if (res.confirm) {
-                    console.log('用户点击确定');
-                    // 执行相关操作
-                  } else if (res.cancel) {
-                    console.log('用户点击取消');
-                    // 执行相关操作
-                  }
-                }
-              });
-            }
-            setPayData(result.data)
-          } else {
-            setInList(result.data.product_list);
-            setOption({ ...option, bar: result.data.product_list[0].id });
-          }
-        })
+      getWalletProducts().then((result)=>{
+        if(result.data.is_template){
+          // if(!result.data){
+          //   Taro.showModal({
+          //     title: '提示',
+          //     content: '无支付模板',
+          //     success(res) {
+          //       if (res.confirm) {
+          //         console.log('用户点击确定');
+          //         // 执行相关操作
+          //       } else if (res.cancel) {
+          //         console.log('用户点击取消');
+          //         // 执行相关操作
+          //       }
+          //     }
+          //   });
+          // }
+          setPayData(result.data)
+        } else {
+          setInList(result.data.product_list);
+          setOption({ ...option, bar: result.data.product_list[0].id });
+        }
+      })
       // } else {
       //   getWalletProducts().then((result) => {
       //     setInList(result.data.product_list);
@@ -124,7 +124,10 @@ export default function Search() {
         THide();
         TShow("充值成功");
         SetStorageSync("nowValPay", '1');
-        currentMemberInfo(true);
+        getProList();
+        if(option.type == "1"){
+          Taro.navigateBack();
+        }
         times = 0;
         clearInterval(timer)
       });
@@ -214,9 +217,7 @@ export default function Search() {
             }
             if (str == "fail") {
               TShow("支付失败");
-              // TShow(err.errMsg);
             }
-            // });
             return;
           },
         });

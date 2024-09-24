@@ -25,14 +25,12 @@ import {
   getVideoIndex,
   getVideoPay,
   getVideoUpdate, getWalletProducts,
-  getWalletTmpProducts,
 } from "@/common/interface";
 import {getCheckLogin, THide, THideT, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
-import {DialogView} from "@/components/dialogView";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -90,6 +88,11 @@ export default function VideoView() {
     };
   });
   useDidShow(() => {
+    console.log(isShowModal, 'isShowModal')
+    if(isShowModal){
+      setIsShowModal(false);
+      return;
+    }
     const params: any = router.params;
     if(!params?.pn){
       getMemberInfo().then((res) => {
@@ -114,49 +117,34 @@ export default function VideoView() {
       if (params?.pn) {
         SetStorage('pn', params?.pn).then(()=>{
           setLoading(true)
-          getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) });
+          getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 1);
         });
       } else {
         setLoading(true)
-        getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) });
+        getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 2);
       }
     });
-
-    getWalletProducts({
-      v_id: params.id,
-      pn: params.pn
-    }).then((res)=>{
-      if(res.data.is_template){
-        if(res.data.product_list.length<=0){
-          Taro.showModal({
-            title: '提示',
-            content: '无支付模板',
-            success(res) {
-              if (res.confirm) {
-                console.log('用户点击确定');
-                // 执行相关操作
-              } else if (res.cancel) {
-                console.log('用户点击取消');
-                // 执行相关操作
-              }
-            }
-          });
-        }
-        setPayData({
-          is_template: true,
-          member_score: "0",
-          product_list: [],
-          spend_score: 200
-        })
-      }
-    })
-
+    setTimeout(()=>{
+      getPayListData({
+        v_id: params.id,
+        pn: params.pn
+      })
+    },200)
     let _option = option;
     _option.title = "";
     const rect = Taro.getMenuButtonBoundingClientRect();
     _option.barHeight = rect.height;
     _option.statusBarHeight = rect.top;
     setOption({ ..._option });
+  }
+
+  const getPayListData = (params) => {
+    getWalletProducts(params).then((res)=>{
+      console.log(res.data, 'res.data')
+      if(res.data.is_template){
+        setPayData(res.data)
+      }
+    })
   }
 
   useEffect(() => {
@@ -171,10 +159,11 @@ export default function VideoView() {
       timerPlay = null;
     };
   }, []);
-  const getVideoList = (params) => {
+  const getVideoList = (params, num) => {
+    console.log(params, num, 'params')
     getVideoIndex(params).then((res) => {
-      const {info, list} = res.data;
 
+      const {info, list} = res.data;
       settingBtn(info)
 
       setDataInfo(info);
@@ -249,7 +238,14 @@ export default function VideoView() {
             } else if (res.code == 200) {
               THideT();
               TShow("购买成功");
-              getVideoList({v_id: info.id, current: currInfo.id, index: params.index,pn_data:pnData});
+              getVideoList({v_id: info.id, current: currInfo.id, index: params.index,pn_data:pnData}, 3);
+              getMemberInfo().then((res) => {
+                let pn = res.data?.pn;
+                getPayListData({
+                  v_id: dataInfo.id,
+                  pn: pn
+                })
+              })
               return;
             }
             THide();
@@ -257,19 +253,21 @@ export default function VideoView() {
         }, 400)
         return;
       }
-      getVideoUpdate({v_s_id: currInfo.id}).then((res) => {
-        setCurrent({
-          ...current,
-          b_list: list[page],
-          page: page,
-          v_id: currInfo.id,
-        });
-        currInfo.url = res.data?.url;
-        setCurrentInfo(currInfo);
-        setIndex(params?.index||0);
+      let vsId = currInfo.id;
+      getVideoUpdate({v_s_id: vsId}).then((res) => {
         setTimFun(() => {
-          setIndex(ind);
-          setLoading(false)
+          setCurrent({
+            ...current,
+            b_list: list[page],
+            page: page,
+            v_id: vsId,
+          });
+          currInfo.url = res.data?.url;
+          setCurrentInfo(currInfo);
+          setIndex(ind||0);
+          setTimFun(() => {
+            setLoading(false)
+          },500)
         },200)
       });
       return;
@@ -324,9 +322,10 @@ export default function VideoView() {
 
   const naviToHotOne = (info?: any) => {
     THideT()
-    TShow("积分不足", "none", 1000);
+    console.log(payData, 'payData')
     SetStorageSync("nowVal", info?.id);
     if(payData?.product_list.length>0 && payData?.is_template){
+      // TShow("积分不足", "none", 1000);
       SetStorageSync("currentHand", info?.id);
       setIsShowModal(true);
     } else if(payData?.product_list.length<=0 && payData?.is_template){
@@ -334,11 +333,13 @@ export default function VideoView() {
         THideT()
         TShow("支付模板未配置", "none", 1000);
         setLoading(true)
-        getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData});
+        getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData}, 4);
       },1000)
     }else {
+      setLoading(false)
+      TShow("积分不足", "none", 1000);
       Taro.navigateTo({
-        url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
+        url: "../mine/wallet/recharge/index?type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
       });
     }
   };
@@ -374,7 +375,14 @@ export default function VideoView() {
           } else if (res.code == 200) {
             THide();
             TShow("购买成功");
-            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind,pn_data:pnData });
+            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind,pn_data:pnData }, 5);
+            getMemberInfo().then((res) => {
+              let pn = res.data?.pn;
+              getPayListData({
+                v_id: dataInfo.id,
+                pn: pn
+              })
+            })
             return;
           }
           THide();
@@ -414,7 +422,7 @@ export default function VideoView() {
   const onEnded = () => {
     if(index >= allList.length) return;
     let info = allList[index+1];
-    getVideoList({ v_id: dataInfo.id, current: info.id, index: index+1,pn_data:pnData });
+    getVideoList({ v_id: dataInfo.id, current: info.id, index: index+1,pn_data:pnData }, 6);
   };
   const swiperChange = (e) => {
     let val = e.detail.current;
@@ -430,7 +438,8 @@ export default function VideoView() {
   }
 
   const closeModal = () => {
-    getVideoList({ v_id: dataInfo.id,pn_data:pnData});
+    setLoading(true);
+    getVideoList({ v_id: dataInfo.id,pn_data:pnData}, 7);
     setIsShowModal(false);
   }
 
@@ -516,8 +525,9 @@ export default function VideoView() {
           THide();
           THideT();
           times = times + 1;
-          if (times >= 3) {
-            getVideoList({ v_id: dataInfo.id,pn_data:pnData});
+          if (times >= 6) {
+            setLoading(true);
+            getVideoList({ v_id: dataInfo.id,pn_data:pnData}, 8);
             setIsShowModal(false);
             clearInterval(timer);
             timer = null;
@@ -531,8 +541,16 @@ export default function VideoView() {
         SetStorageSync("nowValPay", '1');
         // 在这里实现后续操作
         setIsShowModal(false);
+        setLoading(true);
         TShow("支付成功")
-        getVideoList({ v_id: dataInfo.id,pn_data:pnData});
+        getMemberInfo().then((res) => {
+          let pn = res.data?.pn;
+          getPayListData({
+            v_id: dataInfo.id,
+            pn: pn
+          })
+        })
+        getVideoList({ v_id: dataInfo.id,current: currentInfo.id,pn_data:pnData},9);
         times = 0;
         clearInterval(timer)
       });
@@ -602,11 +620,15 @@ export default function VideoView() {
               THideT();
               if (errCode == -1) {
                 TShow("支付失败");
-                getVideoList({ v_id: dataInfo.id,pn_data:pnData});
+                setLoading(true);
+                getVideoList({ v_id: dataInfo.id,pn_data:pnData},10);
                 setIsShowModal(false);
               }
               if (errCode == -2) {
                 TShow("支付取消");
+                setLoading(true);
+                getVideoList({ v_id: dataInfo.id,pn_data:pnData},10);
+                setIsShowModal(false);
               }
             },
           });
@@ -634,10 +656,14 @@ export default function VideoView() {
             }
             if (str == "cancel") {
               TShow("取消支付");
+              setLoading(true);
+              getVideoList({ v_id: dataInfo.id,pn_data:pnData},10);
+              setIsShowModal(false);
             }
             if (str == "fail") {
               TShow("支付失败");
-              getVideoList({ v_id: dataInfo.id,pn_data:pnData});
+              setLoading(true);
+              getVideoList({ v_id: dataInfo.id,pn_data:pnData}, 11);
               setIsShowModal(false);
             }
             return;
@@ -731,16 +757,19 @@ export default function VideoView() {
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
-      let v_id = GetStorageSync("nowVal");
       SetStorage("token", token).then(() => {
-        payApiStatus({product_id: item.id,v_id:v_id})
+        if(item.type === "3") {
+          payApiStatus({product_id: item.id,v_id:dataInfo.id})
+        } else {
+          payApiStatus({product_id: item.id})
+        }
       })
     })
   }
 
   const payList = (item, index)=> {
     let cla = "pay_modal_view_list_item";
-    if(item.type == "2"){
+    if(item.type == "1"){
       cla += " vip_shop";
     }
     if (item.is_default == "1"){
@@ -758,7 +787,7 @@ export default function VideoView() {
             <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
           </View>
           {
-            item.type == "2" ?
+            item.type == "1" ?
               <View className="pay_modal_view_list_item_title_text">
                 {item.name}
                 <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
