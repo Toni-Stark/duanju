@@ -16,6 +16,7 @@ import share_g from "../../static/icon/share-arrow.png";
 import down from "../../static/icon/down.png";
 import yuan from "../../static/icon/yuan.png";
 import {
+  getMemberInfo,
   getMemberShare,
   getMemberView,
   getPayOrder,
@@ -23,7 +24,7 @@ import {
   getVideoFavorite,
   getVideoIndex,
   getVideoPay,
-  getVideoUpdate,
+  getVideoUpdate, getWalletProducts,
   getWalletTmpProducts,
 } from "@/common/interface";
 import {getCheckLogin, THide, THideT, TShow} from "@/common/common";
@@ -31,6 +32,7 @@ import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
+import {DialogView} from "@/components/dialogView";
 
 let timePlay = 0;
 let timerPlay = null;
@@ -75,6 +77,7 @@ export default function VideoView() {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
+  const [pnData, setPnData] = useState(undefined);
 
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
@@ -88,26 +91,64 @@ export default function VideoView() {
   });
   useDidShow(() => {
     const params: any = router.params;
+    if(!params?.pn){
+      getMemberInfo().then((res) => {
+        let pn = res.data?.pn;
+        if(pn){
+          params.pn = pn
+        }
+        rootVideoInfo(params);
+      })
+    } else {
+      rootVideoInfo(params);
+    }
+  });
+  const rootVideoInfo = (params) => {
     if (params?.iv) {
       let sn = decodeURIComponent(params.iv);
       SetStorageSync("sn", sn);
     }
-    if (params?.pn) {
-      SetStorage('pn', params?.pn).then(()=>{
-        SetStorage('pn_data', params).then(()=>{
+    SetStorage('pn_data', params).then(()=>{
+      console.log(params,'params')
+      setPnData(JSON.stringify(params));
+      if (params?.pn) {
+        SetStorage('pn', params?.pn).then(()=>{
           setLoading(true)
           getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) });
         });
-      });
-    } else {
-      setLoading(true)
-      getVideoList({ v_id: params.id });
-    }
-    getWalletTmpProducts({
+      } else {
+        setLoading(true)
+        getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) });
+      }
+    });
+
+    getWalletProducts({
       v_id: params.id,
-      pn: params.pn,
+      pn: params.pn
     }).then((res)=>{
-      setPayData(res.data)
+      if(res.data.is_template){
+        if(res.data.product_list.length<=0){
+          Taro.showModal({
+            title: '提示',
+            content: '无支付模板',
+            success(res) {
+              if (res.confirm) {
+                console.log('用户点击确定');
+                // 执行相关操作
+              } else if (res.cancel) {
+                console.log('用户点击取消');
+                // 执行相关操作
+              }
+            }
+          });
+        }
+        setPayData({
+          is_template: true,
+          member_score: "0",
+          product_list: [],
+          spend_score: 200
+        })
+      }
     })
 
     let _option = option;
@@ -116,7 +157,8 @@ export default function VideoView() {
     _option.barHeight = rect.height;
     _option.statusBarHeight = rect.top;
     setOption({ ..._option });
-  });
+  }
+
   useEffect(() => {
     Taro.setVisualEffectOnCapture({
       visualEffect: 'hidden',
@@ -207,7 +249,7 @@ export default function VideoView() {
             } else if (res.code == 200) {
               THideT();
               TShow("购买成功");
-              getVideoList({v_id: info.id, current: currInfo.id, index: params.index});
+              getVideoList({v_id: info.id, current: currInfo.id, index: params.index,pn_data:pnData});
               return;
             }
             THide();
@@ -284,10 +326,17 @@ export default function VideoView() {
     THideT()
     TShow("积分不足", "none", 1000);
     SetStorageSync("nowVal", info?.id);
-    if(payData?.product_list.length>0){
+    if(payData?.product_list.length>0 && payData?.is_template){
       SetStorageSync("currentHand", info?.id);
       setIsShowModal(true);
-    } else {
+    } else if(payData?.product_list.length<=0 && payData?.is_template){
+      setTimeout(()=>{
+        THideT()
+        TShow("支付模板未配置", "none", 1000);
+        setLoading(true)
+        getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData});
+      },1000)
+    }else {
       Taro.navigateTo({
         url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo.spend_score),
       });
@@ -325,7 +374,7 @@ export default function VideoView() {
           } else if (res.code == 200) {
             THide();
             TShow("购买成功");
-            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind });
+            getVideoList({ v_id: dataInfo.id, current: info.id, index: ind,pn_data:pnData });
             return;
           }
           THide();
@@ -365,7 +414,7 @@ export default function VideoView() {
   const onEnded = () => {
     if(index >= allList.length) return;
     let info = allList[index+1];
-    getVideoList({ v_id: dataInfo.id, current: info.id, index: index+1 });
+    getVideoList({ v_id: dataInfo.id, current: info.id, index: index+1,pn_data:pnData });
   };
   const swiperChange = (e) => {
     let val = e.detail.current;
@@ -381,7 +430,7 @@ export default function VideoView() {
   }
 
   const closeModal = () => {
-    getVideoList({ v_id: dataInfo.id});
+    getVideoList({ v_id: dataInfo.id,pn_data:pnData});
     setIsShowModal(false);
   }
 
@@ -468,7 +517,7 @@ export default function VideoView() {
           THideT();
           times = times + 1;
           if (times >= 3) {
-            getVideoList({ v_id: dataInfo.id});
+            getVideoList({ v_id: dataInfo.id,pn_data:pnData});
             setIsShowModal(false);
             clearInterval(timer);
             timer = null;
@@ -483,7 +532,7 @@ export default function VideoView() {
         // 在这里实现后续操作
         setIsShowModal(false);
         TShow("支付成功")
-        getVideoList({ v_id: dataInfo.id});
+        getVideoList({ v_id: dataInfo.id,pn_data:pnData});
         times = 0;
         clearInterval(timer)
       });
@@ -553,7 +602,7 @@ export default function VideoView() {
               THideT();
               if (errCode == -1) {
                 TShow("支付失败");
-                getVideoList({ v_id: dataInfo.id});
+                getVideoList({ v_id: dataInfo.id,pn_data:pnData});
                 setIsShowModal(false);
               }
               if (errCode == -2) {
@@ -588,7 +637,7 @@ export default function VideoView() {
             }
             if (str == "fail") {
               TShow("支付失败");
-              getVideoList({ v_id: dataInfo.id});
+              getVideoList({ v_id: dataInfo.id,pn_data:pnData});
               setIsShowModal(false);
             }
             return;
@@ -682,8 +731,9 @@ export default function VideoView() {
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
+      let v_id = GetStorageSync("nowVal");
       SetStorage("token", token).then(() => {
-        payApiStatus({product_id: item.id})
+        payApiStatus({product_id: item.id,v_id:v_id})
       })
     })
   }
@@ -737,7 +787,7 @@ export default function VideoView() {
               payData?.product_list.map((item, index)=> payList(item, index))
             }
             {
-              payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">暂无充值内容</View>:null
+              payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">无支付模板</View>:null
             }
           </View>
           <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link" onClick={naviPayTo}>《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link" onClick={naviMemberTo}>《会员服务协议》</Text></View>

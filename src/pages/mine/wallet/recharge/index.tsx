@@ -1,4 +1,4 @@
-import { View, Image } from "@tarojs/components";
+import {View, Image, Text} from "@tarojs/components";
 import Taro, { useLoad, useRouter } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
@@ -10,9 +10,9 @@ import {
   getMemberInfo,
   getPayOrder,
   getPayStatus,
-  getWalletProducts,
+  getWalletProducts, getWalletTmpProducts,
 } from "@/common/interface";
-import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
+import {SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
 import {getCheckLogin, THide, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
@@ -38,6 +38,8 @@ export default function Search() {
   ]);
   const [inList, setInList] = useState([]);
   const [info, setInfo] = useState(undefined);
+  const [payData, setPayData] = useState(undefined);
+  const [pnInt, setPnInt] = useState(undefined);
 
   useLoad(() => {
     const params = router.params;
@@ -61,24 +63,41 @@ export default function Search() {
     getProList();
   });
 
-  const currentMemberInfo = (bool) => {
+  const getProList = () => {
     getMemberInfo().then((res) => {
       setInfo(res.data);
-      setTimeout(() => {
-        if (option.type == 1) {
-          if (bool) {
-            Taro.navigateBack();
+      let pn = res.data?.pn;
+      setPnInt(pn);
+        getWalletProducts().then((result)=>{
+          if(result.data.is_template){
+            if(!result.data){
+              Taro.showModal({
+                title: '提示',
+                content: '无支付模板',
+                success(res) {
+                  if (res.confirm) {
+                    console.log('用户点击确定');
+                    // 执行相关操作
+                  } else if (res.cancel) {
+                    console.log('用户点击取消');
+                    // 执行相关操作
+                  }
+                }
+              });
+            }
+            setPayData(result.data)
+          } else {
+            setInList(result.data.product_list);
+            setOption({ ...option, bar: result.data.product_list[0].id });
           }
-        }
-      }, 1500);
-    });
-  };
-  const getProList = () => {
-    currentMemberInfo(false);
-    getWalletProducts().then((res) => {
-      setInList(res.data.product_list);
-      setOption({ ...option, bar: res.data.product_list[0].id });
-    });
+        })
+      // } else {
+      //   getWalletProducts().then((result) => {
+      //     setInList(result.data.product_list);
+      //     setOption({ ...option, bar: result.data.product_list[0].id });
+      //   });
+      // }
+    })
   };
 
   const checkType = (e) => {
@@ -127,9 +146,7 @@ export default function Search() {
     });
   };
   const payApiStatus = (params) => {
-    console.log(params, '创建订单1')
     getPayOrder(params).then((res) => {
-      console.log(res, '创建订单2')
       if (res.code !== 200) {
         THide();
         return TShow(res.msg);
@@ -235,7 +252,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList.length<=0) return null;
+    if(inList.length<=0 && payData?.product_list.length<=0) return null;
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -253,8 +270,9 @@ export default function Search() {
         </View>
       </View>
     )
-  }, [info,inList])
+  }, [info,inList,payData])
   const coinContext = useMemo(() => {
+    if(pnInt)return;
     return (
       <View className="index_content_list">
         {inList.map((res) => {
@@ -303,7 +321,7 @@ export default function Search() {
         })}
       </View>
     )
-  }, [inList, option])
+  }, [inList, option, pnInt])
   const payContext = useMemo(()=>{
     if(inList.length<=0) return null;
     return (
@@ -330,7 +348,79 @@ export default function Search() {
         })}
       </View>
     )
-  }, [list, option, inList])
+  }, [list, option, inList,payData])
+
+  const chooseOne = (item) => {
+    let data = {...payData}
+    data.product_list = data?.product_list?.map((it) => {
+      if (it.id == item.id) {
+        return {...it, is_default: "1"}
+      } else {
+        return {...it, is_default: "0"}
+      }
+    })
+    setPayData({...data})
+    TShow("支付中", "loading", 3000)
+    getCheckLogin().then((result) => {
+      let {token} = result;
+      SetStorageSync("allJson", result);
+      SetStorage("token", token).then(() => {
+        payApiStatus({product_id: item.id})
+      })
+    })
+  }
+  const payList = (item, index)=> {
+    let cla = "pay_modal_view_list_item";
+    if(item.type == "2"){
+      cla += " vip_shop";
+    }
+    if (item.is_default == "1"){
+      cla += " all_shop"
+    }
+    if (item.is_highlighted != '1') {
+      cla += " def_shop"
+    }
+    return (
+      <View className={cla} key={index} onClick={()=>{
+        chooseOne(item)
+      }}>
+        <View className="pay_modal_view_list_item_title">
+          <View className="pay_modal_view_list_item_title_main">
+            <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
+          </View>
+          {
+            item.type == "2" ?
+              <View className="pay_modal_view_list_item_title_text">
+                {item.name}
+                <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
+              </View>
+              :
+              <View className="pay_modal_view_list_item_title_text">{item.name}</View>
+          }
+        </View>
+        <View className="pay_modal_view_list_item_desc">
+          {item.intro}
+        </View>
+        <Image className="vip_image" mode="widthFix" src={require('../../../../static/icon/vip.png')} />
+      </View>
+    )
+  }
+
+  const currentPayList = useMemo(()=>{
+    if (!pnInt && payData?.product_list.length<=0) return;
+    return (
+      <View className="pay_modal_view">
+        <View className="pay_modal_view_list">
+          {
+            payData?.product_list.map((item, index)=> payList(item, index))
+          }
+          {
+            payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">无支付模板</View>:null
+          }
+        </View>
+      </View>
+    )
+  }, [payData, pnInt])
   return (
     <View className="index">
       <HeaderView
@@ -347,9 +437,10 @@ export default function Search() {
         {currentContext}
         {/*列表*/}
         {coinContext}
+        {currentPayList}
         {/*支付方式列表*/}
         {payContext}
-        {inList.length>0?
+        {inList.length>0 || payData?.product_list.length>0?
             <View className="index_content_desc">
               <View className="title">充值须知</View>
               <View className="desc">
@@ -362,12 +453,12 @@ export default function Search() {
               </View>
             </View>
         :null}
-        <View className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
-          onClick={payOrder}
+        { !payData?.is_template ? <View className={inList && inList.length > 0 ? "index_content_btn" : "index_content_btn_gray"}
+               onClick={payOrder}
         >
-          {inList.length>0?'确认支付':'暂不支持'}
+          {inList.length > 0 ? '确认支付' : '暂不支持'}
 
-        </View>
+        </View>: null}
       </View>
     </View>
   );
