@@ -86,7 +86,10 @@ export default function Search() {
           //     }
           //   });
           // }
-          setPayData(result.data)
+          console.log(Taro.getSystemInfoSync().platform)
+          if(Taro.getSystemInfoSync().platform.indexOf('ios')<0 && Taro.getSystemInfoSync().platform.indexOf('ipad')<0 ){
+            setPayData(result.data)
+          }
         } else {
           setInList(result.data.product_list);
           setOption({ ...option, bar: result.data.product_list[0].id });
@@ -252,7 +255,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList.length<=0 && payData?.product_list.length<=0) return null;
+    if(inList.length<=0 && (!payData || payData?.product_list.length<=0)) return null;
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -421,6 +424,7 @@ export default function Search() {
       </View>
     )
   }, [payData, pnInt])
+
   return (
     <View className="index">
       <HeaderView
