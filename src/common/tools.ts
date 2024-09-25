@@ -77,5 +77,5 @@ export const noTimeout = (callback) => {
     callback();
     clearTimeout(timeout);
     timeout = null;
-  },  300);
+  },  200);
 }

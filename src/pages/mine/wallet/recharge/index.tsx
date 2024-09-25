@@ -10,11 +10,11 @@ import {
   getMemberInfo,
   getPayOrder,
   getPayStatus,
-  getWalletProducts, getWalletTmpProducts,
+  getWalletProducts,
 } from "@/common/interface";
 import {SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
-import {getCheckLogin, THide, TShow} from "@/common/common";
+import {getCheckLogin, THide, TLoading, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
 
@@ -41,8 +41,10 @@ export default function Search() {
   const [info, setInfo] = useState(undefined);
   const [payData, setPayData] = useState(undefined);
   const [pnInt, setPnInt] = useState(undefined);
+  const [para, setPara] = useState(undefined);
 
   useLoad(() => {
+    TLoading("加载中...")
     const params = router.params;
     let _option = option;
     if (params?.type) {
@@ -61,15 +63,21 @@ export default function Search() {
       },
     });
     setOption({ ..._option });
-    getProList();
+    if(params.v_id){
+      setPara({v_id: params.v_id})
+      getProList({v_id: params.v_id});
+    } else {
+      setPara({})
+      getProList({});
+    }
   });
 
-  const getProList = () => {
+  const getProList = (params) => {
     getMemberInfo().then((res) => {
       setInfo(res.data);
       let pn = res.data?.pn;
       setPnInt(pn);
-      getWalletProducts().then((result)=>{
+      getWalletProducts(params).then((result)=>{
         if(result.data.is_template){
           // if(!result.data){
           //   Taro.showModal({
@@ -86,13 +94,17 @@ export default function Search() {
           //     }
           //   });
           // }
-          console.log(Taro.getSystemInfoSync().platform)
           if(Taro.getSystemInfoSync().platform.indexOf('ios')<0 && Taro.getSystemInfoSync().platform.indexOf('ipad')<0 ){
             setPayData(result.data)
           }
+          THide()
         } else {
-          setInList(result.data.product_list);
+
+          if(Taro.getSystemInfoSync().platform.indexOf('ios')<0 && Taro.getSystemInfoSync().platform.indexOf('ipad')<0 ){
+            setInList(result.data.product_list);
+          }
           setOption({ ...option, bar: result.data.product_list[0].id });
+          THide()
         }
       })
       // } else {
@@ -103,7 +115,7 @@ export default function Search() {
       // }
     })
   };
-
+  console.log(Taro.getSystemInfoSync().platform)
   const checkType = (e) => {
     setOption({ ...option, active: e });
   };
@@ -128,7 +140,7 @@ export default function Search() {
         THide();
         TShow("充值成功");
         SetStorageSync("nowValPay", '1');
-        getProList();
+        getProList(para);
         if(option.type == "1"){
           Taro.navigateBack();
         }
@@ -146,7 +158,7 @@ export default function Search() {
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
-        payApiStatus({ product_id: option.bar });
+        payApiStatus({ product_id: option.bar, v_id:para?.v_id });
       });
     });
   };
@@ -368,13 +380,15 @@ export default function Search() {
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
-        payApiStatus({product_id: item.id})
+        payApiStatus({product_id: item.id, v_id:para?.v_id})
       })
     })
   }
+
+
   const payList = (item, index)=> {
     let cla = "pay_modal_view_list_item";
-    if(item.type == "2"){
+    if(item.type == "1"){
       cla += " vip_shop";
     }
     if (item.is_default == "1"){
@@ -392,7 +406,7 @@ export default function Search() {
             <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
           </View>
           {
-            item.type == "2" ?
+            item.type == "1" ?
               <View className="pay_modal_view_list_item_title_text">
                 {item.name}
                 <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>

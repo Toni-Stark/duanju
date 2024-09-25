@@ -76,6 +76,7 @@ export default function VideoView() {
   const [loading, setLoading] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
   const [pnData, setPnData] = useState(undefined);
+  const [pns, setPNS] = useState(undefined);
 
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
@@ -100,6 +101,7 @@ export default function VideoView() {
         if(pn){
           params.pn = pn
         }
+        setPNS(params.pn)
         rootVideoInfo(params);
       })
     } else {
@@ -330,33 +332,39 @@ export default function VideoView() {
 
   const naviToHotOne = (info?: any) => {
     THideT()
-    console.log(payData, 'payData')
     SetStorageSync("nowVal", info?.id);
-    if(payData?.product_list.length>0 && payData?.is_template){
-      // TShow("积分不足", "none", 1000);
-      SetStorageSync("currentHand", info?.id);
-      setIsShowModal(true);
-    } else if(payData?.product_list.length<=0 && payData?.is_template){
-      setTimeout(()=>{
-        THideT()
-        TShow("支付模板未配置", "none", 1000);
-        setLoading(true)
-        getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData}, 4);
-      },1000)
-    }else {
+    if(pns){
       setLoading(false)
       TShow("积分不足", "none", 1000);
       Taro.navigateTo({
-        url: "../mine/wallet/recharge/index?type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
+        url: "../mine/wallet/recharge/index?v_id="+dataInfo.id+"&type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
       });
+    } else {
+      if(payData?.product_list.length>0 && payData?.is_template){
+        // TShow("积分不足", "none", 1000);
+        SetStorageSync("currentHand", info?.id);
+        setIsShowModal(true);
+      } else if(payData?.product_list.length<=0 && payData?.is_template){
+        setTimeout(()=>{
+          THideT()
+          TShow("支付模板未配置", "none", 1000);
+          setLoading(true)
+          getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData}, 4);
+        },1000)
+      } else {
+        console.log(234234234,dataInfo)
+        setLoading(false)
+        TShow("积分不足", "none", 1000);
+        Taro.navigateTo({
+          url: "../mine/wallet/recharge/index?v_id="+dataInfo.id+"&type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
+        });
+      }
     }
   };
   const openLayout = () => {
-    noTimeout(()=> {
       let info = pageList.find((item) => item.title === current.page);
       setCurrent({...current, b_list: info.list});
       setShow(true);
-    })
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
