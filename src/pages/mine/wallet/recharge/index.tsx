@@ -16,6 +16,7 @@ import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
 import {getCheckLogin, THide, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Search() {
   const router = useRouter();
@@ -96,10 +97,16 @@ export default function Search() {
   };
 
   const checkType = (e) => {
-    setOption({ ...option, active: e });
+
+    noTimeout(()=> {
+      setOption({...option, active: e});
+    })
   };
   const checkTab = (e) => {
-    setOption({ ...option, bar: e });
+
+    noTimeout(()=> {
+      setOption({...option, bar: e});
+    })
   };
 
   const payStatus = (id) => {
@@ -484,7 +491,7 @@ export default function Search() {
             </View>
         :null}
         <View className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
-          onClick={payOrder}
+          onClick={()=>noTimeout(payOrder)}
         >
           {inList.length>0?'确认支付':'暂不支持'}
 

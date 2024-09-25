@@ -5,6 +5,7 @@ import "./index.less";
 import { useState } from "react";
 import { HeaderView } from "@/components/headerView";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function Hobby() {
   const [option, setOption] = useState({
@@ -164,7 +165,9 @@ export default function Hobby() {
                           borderColor: bool >= 0 ? "#fcc547" : "none",
                         }}
                         onClick={() => {
-                          chooseItem(it.id);
+                          noTimeout(()=> {
+                            chooseItem(it.id);
+                          })
                         }}
                       >
                         {it.title}

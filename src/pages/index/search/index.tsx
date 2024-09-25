@@ -10,6 +10,7 @@ import { GetStorageSync, SetStorageSync } from "@/store/storage";
 import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
+import {noTimeout} from "@/common/tools";
 
 export default function Cate() {
   const [option, setOption] = useState({
@@ -31,7 +32,9 @@ export default function Cate() {
   const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     setENV(GetStorageSync('ENV') == "TT")
@@ -78,22 +81,24 @@ export default function Cate() {
     getCurrentList();
   };
   const getCurrentList = () => {
-    setLoading(true);
-    getCurrentSearch({ kw: value, p: 1 });
-    if (value.trim()?.length > 0) {
-      let list = GetStorageSync("kw");
-      if (!list) {
-        list = [];
+    noTimeout(()=> {
+      setLoading(true);
+      getCurrentSearch({kw: value, p: 1});
+      if (value.trim()?.length > 0) {
+        let list = GetStorageSync("kw");
+        if (!list) {
+          list = [];
+        }
+        let info = list?.find((item) => item === value);
+        if (info) {
+          return;
+        }
+        list = [value, ...list];
+        list.splice(10, 1);
+        SetStorageSync("kw", list);
+        setKwList([...list]);
       }
-      let info = list?.find((item) => item === value);
-      if (info) {
-        return;
-      }
-      list = [value, ...list];
-      list.splice(10, 1);
-      SetStorageSync("kw", list);
-      setKwList([...list]);
-    }
+    })
   };
   const getCurrentSearch = (params) => {
     getIndexSearch(params).then((res) => {
@@ -112,14 +117,19 @@ export default function Cate() {
     setOption({ ...option, confirm: false });
   };
   const addSearch = (title) => {
-    setValue(title);
-    setLoading(true);
-    getCurrentSearch({ kw: title, p: 1 });
+
+    noTimeout(()=> {
+      setValue(title);
+      setLoading(true);
+      getCurrentSearch({kw: title, p: 1});
+    })
   };
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../../video_up/index?id=" + id,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../../video_up/index?id=" + id,
+      });
+    })
   };
   const currentContext = useMemo(() => {
     if (loading) {

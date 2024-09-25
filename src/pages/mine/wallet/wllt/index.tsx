@@ -10,6 +10,7 @@ import top from "../../../../static/icon/top.png";
 import { Loading } from "@/components/loading";
 import {commonSetting} from "@/store/config";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function Hot() {
   const router = useRouter();
@@ -31,7 +32,9 @@ export default function Hot() {
   const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=>{
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
 

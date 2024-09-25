@@ -25,6 +25,7 @@ import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import { Loading } from "@/components/loading";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 let defaultActive = -999
 export default function Hot() {
@@ -47,7 +48,9 @@ export default function Hot() {
   const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
 
   useLoad(() => {
@@ -117,12 +120,14 @@ export default function Hot() {
     setLoading(true);
   };
   const setActive = (id) => {
-    if (id == defaultActive) {
-      currentRecommendList({ classify: defaultActive, p: 1 });
-    } else {
-      currentList({ classify: id, p: 1 });
-    }
-    setOption({ ...option, active: id });
+    noTimeout(()=> {
+      if (id == defaultActive) {
+        currentRecommendList({classify: defaultActive, p: 1});
+      } else {
+        currentList({classify: id, p: 1});
+      }
+      setOption({...option, active: id});
+    })
   };
   const currentFraList = async (list, callback) => {
     let arr = [];
@@ -148,14 +153,18 @@ export default function Hot() {
   };
 
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
+    })
   };
   const naviToCateOne = (type, title) => {
-    Taro.navigateTo({
-      url: "./cate/index?type=" + type + "&title=" + title,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./cate/index?type=" + type + "&title=" + title,
+      });
+    })
   };
   const currentList = async ({ classify, p, refresh }:{classify?: any, p?:any, refresh?: any}) => {
     let arr: any;
@@ -186,11 +195,13 @@ export default function Hot() {
     }
   };
   const refreshList = () => {
-    if (option.active == defaultActive) {
-      currentRecommendList({ classify: defaultActive, p: 1, refresh: 1 });
-    } else {
-      currentList({ classify: option.active, p: 1, refresh: 1 });
-    }
+    noTimeout(()=> {
+      if (option.active == defaultActive) {
+        currentRecommendList({classify: defaultActive, p: 1, refresh: 1});
+      } else {
+        currentList({classify: option.active, p: 1, refresh: 1});
+      }
+    })
   };
   const currentSwiper = useMemo(() => {
     if (bannerList.length <= 0) {

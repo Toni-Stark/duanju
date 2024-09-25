@@ -10,6 +10,7 @@ import { NoneView } from "@/components/noneView";
 import { HeaderView } from "@/components/headerView";
 import { Loading } from "@/components/loading";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function Search() {
   const router = useRouter();
@@ -33,7 +34,9 @@ export default function Search() {
   const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     const params = router.params;
@@ -81,7 +84,9 @@ export default function Search() {
     });
   };
   const setActive = (id) => {
-    getDataList(id, 1);
+    noTimeout(()=> {
+      getDataList(id, 1);
+    })
   };
   const onScroll = (e) => {
     if (scrollOpacity === 0 && e.detail.scrollTop >= option.screenHeight) {
@@ -99,9 +104,11 @@ export default function Search() {
     getDataList(option.active, 1);
   };
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../../video_up/index?id=" + id,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../../video_up/index?id=" + id,
+      });
+    })
   };
 
   const currentNoneView = useMemo(()=>{

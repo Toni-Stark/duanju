@@ -98,6 +98,16 @@ export const TShow = (text, icon = "none", duration = 1500) => {
     });
   });
 };
+export const TLoading = (text) => {
+  return new Promise((resolve) => {
+    Taro.showLoading({
+      title: typeof text == 'string' ? text : '',
+      mask:true,
+    }).then(() => {
+      resolve();
+    });
+  });
+};
 export const THide = () => {
   Taro.hideLoading();
 };

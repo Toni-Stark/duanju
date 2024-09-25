@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { HeaderView } from "@/components/headerView";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 // let routerList = [
 //   { title: "真得鹿剧场", icon: card },
 //   { title: "星星剧场", icon: card },
@@ -34,7 +35,9 @@ export default function Theater() {
   const [ENV, setENV] = useState(false);
 
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     setENV(GetStorageSync('ENV') == "TT")

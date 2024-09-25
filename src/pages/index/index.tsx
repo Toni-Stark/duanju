@@ -28,7 +28,7 @@ import {
 import { Loading } from "@/components/loading";
 import { IndexCard } from "@/components/indexCard";
 import { IndexVideo } from "@/components/IndexVideo";
-import { setInterFun } from "@/common/tools";
+import {noTimeout, setInterFun} from "@/common/tools";
 import {GetStorageSync, SetStorageSync} from "@/store/storage";
 import {FloatView} from "@/components/floatView";
 import {NoneView} from "@/components/noneView";
@@ -65,7 +65,9 @@ export default function Index() {
   const [video2Element, setVideo2Element] = useState<any>(["#video_2", false]);
   const [ENV, setENV] = useState(false);
   const handleScrollTop = () => {
-    setScrollTop(scrollTop ? 0 : 1);
+    noTimeout(()=> {
+      setScrollTop(scrollTop ? 0 : 1);
+    })
   };
   useLoad(() => {
     Taro.getPrivacySetting({
@@ -215,12 +217,15 @@ export default function Index() {
     setOption({ ...option, active: classify });
   };
   const setActive = (id) => {
-    if (id == 88) {
-      currentRecommendList(88);
-    } else {
-      currentList({ classify: id, p: 1 });
-      getIndexActRecord({frame: '1', act: '1', target_id: id});
-    }
+
+    noTimeout(()=> {
+      if (id == 88) {
+        currentRecommendList(88);
+      } else {
+        currentList({classify: id, p: 1});
+        getIndexActRecord({frame: '1', act: '1', target_id: id});
+      }
+    })
   };
   const onScroll = (e) => {
     let top = e.detail.scrollTop;
@@ -264,22 +269,28 @@ export default function Index() {
   }
 
   const naviToCateOne = (type, title) => {
-    Taro.navigateTo({
-      url: "./cate/index?type=" + type + "&title=" + title,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./cate/index?type=" + type + "&title=" + title,
+      });
+    })
   };
 
   const naviToSearch = (type) => {
-    Taro.navigateTo({
-      url: "./search/index?type=" + type,
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./search/index?type=" + type,
+      });
+    })
   };
   const naviToVideoUp = (id) => {
-    if(!id) return;
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
-    setShowNew(false)
+    noTimeout(()=> {
+      if (!id) return;
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
+      setShowNew(false)
+    })
   };
 
   const currentSwiper = useMemo(() => {

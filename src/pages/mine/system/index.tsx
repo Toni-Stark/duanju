@@ -6,6 +6,7 @@ import {useMemo, useState} from "react";
 import right from "../../../static/icon/right.png";
 import { HeaderView } from "@/components/headerView";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function System() {
   const [option, setOption] = useState({
@@ -52,8 +53,10 @@ export default function System() {
             <View
               className="index_content_card_item"
               onClick={() => {
-                Taro.navigateTo({
-                  url: item.url,
+                noTimeout(()=>{
+                  Taro.navigateTo({
+                    url: item.url,
+                  });
                 });
               }}
             >

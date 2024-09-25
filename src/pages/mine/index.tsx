@@ -11,6 +11,7 @@ import menu from "../../static/icon/meun.png";
 import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
+import {noTimeout} from "@/common/tools";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -85,14 +86,18 @@ export default function Mine() {
     });
   };
   const naviToInfo = () => {
-    Taro.navigateTo({
-      url: "./info/index",
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./info/index",
+      });
+    })
   };
   const naviToRecharge = () => {
-    Taro.navigateTo({
-      url: "./wallet/recharge/index?type=2",
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "./wallet/recharge/index?type=2",
+      });
+    })
   };
   const currentLocat = () => {
     getMemberSign().then((res) => {
@@ -112,10 +117,12 @@ export default function Mine() {
     });
   };
   const naviToWallet = () => {
-    let val = "./wallet/wllt/index?id=" + 2 + "&title="+commonSetting.coinName+"记录";
-    Taro.navigateTo({
-      url: val,
-    });
+    noTimeout(()=> {
+      let val = "./wallet/wllt/index?id=" + 2 + "&title=" + commonSetting.coinName + "记录";
+      Taro.navigateTo({
+        url: val,
+      });
+    })
   };
   const headerContent = useMemo(() => {
     return (
@@ -184,7 +191,7 @@ export default function Mine() {
           <View
             hoverClass="hover_view"
             className="content-wel-integral-btn active"
-            onClick={currentLocat}
+            onClick={()=>noTimeout(currentLocat)}
           >
             签到
           </View>
@@ -201,7 +208,9 @@ export default function Mine() {
           return (
             <View
               className="content-wel-list-item"
-              onClick={() => naviTo(item)}
+              onClick={() =>
+                noTimeout(()=> {naviTo(item)})
+              }
             >
               <Image
                 mode="widthFix"

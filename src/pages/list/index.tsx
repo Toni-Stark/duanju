@@ -14,6 +14,7 @@ import { HeaderView } from "@/components/headerView";
 import { NoneView } from "@/components/noneView";
 import {GetStorageSync} from "@/store/storage";
 import {SelfVideo} from "@/components/selfVideo";
+import {noTimeout} from "@/common/tools";
 
 export default function List() {
   const [option, setOption] = useState({
@@ -191,9 +192,11 @@ export default function List() {
   };
 
   const naviToVideoUp = (id) => {
-    if(!id) return;
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
+    noTimeout(()=> {
+      if(!id) return;
+      Taro.navigateTo({
+        url: "../video_up/index?id=" + id,
+      });
     });
   };
 
@@ -210,7 +213,6 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
-              console.log(headerInfo);
               naviToVideoUp(headerInfo?.video_id);
             }}
           >

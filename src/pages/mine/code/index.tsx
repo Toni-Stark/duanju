@@ -14,6 +14,7 @@ import { getMemberInfo, getMemberSpread } from "@/common/interface";
 import { TShow } from "@/common/common";
 import { HeaderView } from "@/components/headerView";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function Code() {
   const [option, setOption] = useState({
@@ -78,42 +79,46 @@ export default function Code() {
     });
   };
   const saveImage = () => {
-    TShow('保存中', 'loading')
-    Taro.downloadFile({
-      url: info.spread_qrcode,
-      success: function (res) {
-        console.log(res.tempFilePath)
-        if (res.statusCode === 200) {
-          Taro.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => {
-              TShow("保存成功");
-            },
-            fail: () => {
-              TShow("微信权限申请中，暂时无法使用");
-            },
-          });
+    noTimeout(()=> {
+      TShow('保存中', 'loading')
+      Taro.downloadFile({
+        url: info.spread_qrcode,
+        success: function (res) {
+          console.log(res.tempFilePath)
+          if (res.statusCode === 200) {
+            Taro.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                TShow("保存成功");
+              },
+              fail: () => {
+                TShow("微信权限申请中，暂时无法使用");
+              },
+            });
+          }
         }
-      }
+      });
     });
   };
   const shareImage = () => {
-    if(ENV){
+    noTimeout(()=> {
+      if (ENV) {
 
-      // 手动触发分享
-    } else {
-      Taro.downloadFile({
-        url: info.spread_qrcode,
-        success: (res) => {
-          Taro.showShareImageMenu({
-            path: res.tempFilePath,
-          });
-        },
-        fail: () => {
-          TShow("微信权限申请中，暂时无法使用");
-        },
-      });
-    }
+        // 手动触发分享
+      } else {
+        Taro.downloadFile({
+          url: info.spread_qrcode,
+          success: (res) => {
+            Taro.showShareImageMenu({
+              path: res.tempFilePath,
+            });
+          },
+          fail: () => {
+            TShow("微信权限申请中，暂时无法使用");
+          },
+        });
+      }
+    })
   };
   const refreshChange = () => {
     setRefresh(true);

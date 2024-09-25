@@ -26,10 +26,10 @@ import {
   getVideoUpdate,
   getWalletTmpProducts,
 } from "@/common/interface";
-import {getCheckLogin, THide, THideT, TShow} from "@/common/common";
+import {getCheckLogin, THide, THideT, TLoading, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
-import {setTimFun} from "@/common/tools";
+import {noTimeout, setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
 import {CurrentViewVideo} from "@/components/detailVideo";
 
@@ -293,39 +293,47 @@ export default function VideoView() {
   }
 
   const naviBack = () => {
-    Taro.navigateBack();
+    noTimeout(()=>{
+      Taro.navigateBack();
+    })
   };
   const naviHome = () => {
-    Taro.switchTab({
-      url: "/pages/index/index",
-    });
+    noTimeout(()=>{
+      Taro.switchTab({
+        url: "/pages/index/index",
+      });
+    })
   };
 
 
   const clickItemValue = (index, value) => {
-    let list: any = fivList;
-    let bool = value == 1 ? 2 : 1;
-    if (value) {
-      list[index].check = bool;
-      if (value == 1) {
-        list[index].value = Number(list[index].value) + 1;
-      } else {
-        list[index].value = Number(list[index].value) - 1;
+      let list: any = fivList;
+      let bool = value == 1 ? 2 : 1;
+      if (value) {
+        list[index].check = bool;
+        if (value == 1) {
+          list[index].value = Number(list[index].value) + 1;
+        } else {
+          list[index].value = Number(list[index].value) - 1;
+        }
+        setFivList([...list]);
       }
-      setFivList([...list]);
-    }
-    currentVideoFavorite(index, bool);
+      currentVideoFavorite(index, bool);
   };
   const shareView = () => {
-    getMemberShare({
-      v_id: dataInfo.id,
-      v_s_id: currentInfo.id,
-    }).then(() => {});
-
+    noTimeout(()=> {
+      getMemberShare({
+        v_id: dataInfo.id,
+        v_s_id: currentInfo.id,
+      }).then(() => {
+      });
+    })
   };
 
   const handleClose = () => {
-    setShow(false);
+    noTimeout(()=>{
+      setShow(false);
+    })
   };
 
   const naviToHotOne = (info?: any) => {
@@ -342,9 +350,11 @@ export default function VideoView() {
     }
   };
   const openLayout = () => {
-    let info = pageList.find((item) => item.title === current.page);
-    setCurrent({ ...current, b_list: info.list });
-    setShow(true);
+    noTimeout(()=> {
+      let info = pageList.find((item) => item.title === current.page);
+      setCurrent({...current, b_list: info.list});
+      setShow(true);
+    })
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
@@ -355,7 +365,6 @@ export default function VideoView() {
     if (info) {
       getVideoUpdate({ v_s_id: info.id }).then((res) => {
         info.url = res.data?.url;
-        console.log(info, 'info')
         Taro.setNavigationBarTitle({
           title: `第${info.name}集`
         });
@@ -433,9 +442,11 @@ export default function VideoView() {
     chooseCurrent(info.id)
   }
   const currentChange = (id) => {
-    let list = [];
-    let info = pageList?.find((item) => item.title === id);
-    setCurrent({ ...current, b_list: info.list, page: id, data: list });
+    noTimeout(()=>{
+      let list = [];
+      let info = pageList?.find((item) => item.title === id);
+      setCurrent({ ...current, b_list: info.list, page: id, data: list });
+    })
   }
   const closeModal = () => {
     if(isShowModal){
@@ -614,7 +625,6 @@ export default function VideoView() {
           signType: "RSA",
           paySign: data.sign,
           success: function () {
-            THide();
             payStatus(data.order_id);
           },
           fail: function (err) {
@@ -713,14 +723,19 @@ export default function VideoView() {
   };
 
   const naviPayTo = () => {
-    Taro.navigateTo({
-      url: "../mine/system/pay/index",
-    });
+
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../mine/system/pay/index",
+      });
+    })
   }
   const naviMemberTo = () => {
-    Taro.navigateTo({
-      url: "../mine/system/member/index",
-    });
+    noTimeout(()=> {
+      Taro.navigateTo({
+        url: "../mine/system/member/index",
+      });
+    })
   }
 
   // 弹窗视频列表
@@ -745,9 +760,7 @@ export default function VideoView() {
                   key={index}
                   type="primary"
                   size="normal"
-                  onClick={() => {
-                    currentChange(item.title);
-                  }}
+                  onClick={()=>{currentChange(item.title)}}
                 >
                   {item.title}
                 </AtButton>
@@ -766,7 +779,7 @@ export default function VideoView() {
                         ? "linear-gradient(to right, #a829e8, #3c6fef);"
                         : "#3e4150",
                   }}
-                  onClick={() => chooseCurrent(item.id)}
+                  onClick={() => noTimeout(()=>chooseCurrent(item.id))}
                 >
                   {item.name}
                   {!item?.is_pay ? (
@@ -792,7 +805,7 @@ export default function VideoView() {
       }
     })
     setPayData({...data})
-    TShow("支付中", "loading", 3000)
+    TLoading("支付中")
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
@@ -819,7 +832,7 @@ export default function VideoView() {
     }
     return (
       <View className={cla} key={index} onClick={()=>{
-        chooseOne(item)
+          chooseOne(item)
       }}>
         <View className="pay_modal_view_list_item_title">
           <View className="pay_modal_view_list_item_title_main">

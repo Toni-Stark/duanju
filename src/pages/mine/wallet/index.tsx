@@ -8,6 +8,7 @@ import { getMemberInfo } from "@/common/interface";
 import { HeaderView } from "@/components/headerView";
 import {commonSetting} from "@/store/config";
 import {GetStorageSync} from "@/store/storage";
+import {noTimeout} from "@/common/tools";
 
 export default function Wallet() {
   const [option, setOption] = useState({
@@ -39,25 +40,29 @@ export default function Wallet() {
     setOption({ ..._option });
   });
   const naviToDetail = () => {
-    Taro.navigateTo({
-      url: "./recharge/index?type=2",
-    });
+    noTimeout(()=>{
+      Taro.navigateTo({
+        url: "./recharge/index?type=2",
+      });
+    })
   };
 
   const naviToList = (num) => {
-    let arr = [
-      {
-        title: "充值记录",
-        id: 1,
-      },
-      {
-        title: commonSetting.coinName+"记录",
-        id: 2,
-      },
-    ];
-    let val = "./wllt/index?id=" + arr[num].id + "&title=" + arr[num].title;
-    Taro.navigateTo({
-      url: val,
+    noTimeout(()=>{
+      let arr = [
+        {
+          title: "充值记录",
+          id: 1,
+        },
+        {
+          title: commonSetting.coinName+"记录",
+          id: 2,
+        },
+      ];
+      let val = "./wllt/index?id=" + arr[num].id + "&title=" + arr[num].title;
+      Taro.navigateTo({
+        url: val,
+      });
     });
   };
 
