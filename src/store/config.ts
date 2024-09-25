@@ -3,24 +3,24 @@ import Taro from "@tarojs/taro";
 const config = {
   tt: {
     dev: {
-      appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "http://192.168.10.221:8821/api/dskafdsl/",
+      appid: "tta19ad7273eae33dd01",
+      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
+      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
-      appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "http://192.168.10.221:8821/api/dskafdsl/",
+      appid: "tta19ad7273eae33dd01",
+      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
+      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
-      appid: "ttd8c0ae7d47f7595601",
-      BASE_URL: "http://192.168.10.221:8821/api/dskafdsl/",
+      appid: "tta19ad7273eae33dd01",
+      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "https://6a6c-106-91-6-61.ngrok-free.app/api/"
+      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },

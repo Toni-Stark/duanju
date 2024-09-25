@@ -12,6 +12,7 @@ import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
+import {GetStorageSync} from "@/store/storage";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -54,8 +55,10 @@ export default function Mine() {
       url: "./system/index",
     },
   ]);
+  const [ENV, setENV] = useState(false);
 
   useDidShow(() => {
+    setENV(Taro.getEnv() == "TT")
     getMemberInfo().then((res) => {
       let obj = {
         ...res.data,
@@ -201,16 +204,26 @@ export default function Mine() {
       </View>
     )
   }, [option]);
+
+  const imCallback = () => {
+    console.log(111, "imCallback")
+  }
+  const onimError = () => {
+    console.log(222, "onimError")
+  }
+
   const naviContent = useMemo(()=>{
+    console.log(ENV, Taro.getEnv())
     return (
       <View className="content-wel-list">
         {list.map((item) => {
-          return (
-            <View
-              className="content-wel-list-item"
-              onClick={() =>
-                noTimeout(()=> {naviTo(item)})
-              }
+          if(ENV && item.url == "ke"){
+            return (
+              /* #ifdef MP-TOUTIAO */
+            <button
+              open-type="im"
+              data-im-id="288372215"
+              class="content-wel-list-item"
             >
               <Image
                 mode="widthFix"
@@ -220,12 +233,32 @@ export default function Mine() {
               <View className="content-wel-list-item-text">
                 {item.title}
               </View>
-            </View>
+            </button>
+            /* #endif */
           );
+          } else {
+            return (
+              <View
+                className="content-wel-list-item"
+                onClick={() =>
+                  noTimeout(()=> {naviTo(item)})
+                }
+              >
+                <Image
+                  mode="widthFix"
+                  src={item.icon}
+                  className="content-wel-list-item-img"
+                />
+                <View className="content-wel-list-item-text">
+                  {item.title}
+                </View>
+              </View>
+            );
+          }
         })}
       </View>
     )
-  }, [list, option])
+  }, [list, option,ENV])
 
   return (
     <View className="index">

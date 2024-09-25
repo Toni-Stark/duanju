@@ -197,21 +197,15 @@ export default function Search() {
           console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
         }
       } else {
-        let data = res.data.json_params;
-        console.log(data, 'data')
-        tt.pay({
-          orderInfo: {
-            order_id: data.order_id,
-            order_token: data.order_token,
-          },
-          service: 5,
-          _debug: function (debug){
-            console.log(debug, 'debug')
-          },
+        let par = res.data.json_params;
+        console.log(par, "par");
+        tt.requestOrder({
+          data: par.data,
+          byteAuthorization: par.byteAuthorization,
           success: function (res) {
-
+            console.log(res, 'err2')
             if(res.code == 0){
-              payStatus(data.order_id);
+              payStatus(res.order_id);
               return;
             }
             if(res.code == 1){
@@ -236,6 +230,7 @@ export default function Search() {
             }
           },
           fail: function (err) {
+            console.log(err, 'err1')
             THide();
             if (err.errMsg.indexOf("10000") >= 0) {
               TShow("支付失败");
