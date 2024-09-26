@@ -16,6 +16,7 @@ import share_g from "../../static/icon/share-arrow.png";
 import down from "../../static/icon/down.png";
 import yuan from "../../static/icon/yuan.png";
 import {
+  getMemberInfo,
   getMemberShare,
   getMemberView,
   getPayOrder,
@@ -23,7 +24,7 @@ import {
   getVideoFavorite,
   getVideoIndex,
   getVideoPay,
-  getVideoUpdate,
+  getVideoUpdate, getWalletProducts,
   getWalletTmpProducts,
 } from "@/common/interface";
 import {getCheckLogin, payToast, THide, THideT, TLoading, TShow} from "@/common/common";
@@ -81,6 +82,8 @@ export default function VideoView() {
   const [root, setRoot] = useState(0);
   const [ENV, setENV] = useState(false);
   const [controls, setControls] = useState(false);
+  const [pnData, setPnData] = useState(undefined);
+  const [pns, setPNS] = useState(undefined);
 
   let userInfo: any = GetStorageSync("allJson");
   Taro.useShareAppMessage((res) => {
@@ -93,27 +96,28 @@ export default function VideoView() {
     };
   });
   useDidShow(() => {
+    console.log(isShowModal, 'isShowModal')
+    if(isShowModal){
+      setIsShowModal(false);
+      return;
+    }
     const params: any = router.params;
-    if (params?.iv) {
-      let sn = decodeURIComponent(params.iv);
-      SetStorageSync("sn", sn);
+    if(!params?.pn){
+      getMemberInfo().then((res) => {
+        let pn = res.data?.pn;
+        if(pn){
+          params.pn = pn
+        }
+        setPNS(params.pn)
+        rootVideoInfo(params);
+      })
+    } else {
+      rootVideoInfo(params);
     }
-    if(!params.pn){
-      RemoveStorageSync('pn_data')
-      setRoot(0)
-      refreshVideoInfo(params)
-    }
 
-    if(params?.pn) {
-      if(!root){
-        refreshVideoInfo(params)
-        setRoot(1)
-      }
-    };
-
-
-    setENV(GetStorageSync('ENV') == "TT")
-    if(GetStorageSync('ENV') == "TT") {
+    let envs = GetStorageSync('ENV') == "TT";
+    setENV(envs)
+    if(envs) {
       Taro.setNavigationBarColor({
         frontColor: '#ffffff',
         backgroundColor: '#1e212a',
@@ -127,6 +131,48 @@ export default function VideoView() {
       setOption({ ..._option });
     }
   });
+
+  const rootVideoInfo = (params) => {
+    if (params?.iv) {
+      let sn = decodeURIComponent(params.iv);
+      SetStorageSync("sn", sn);
+    }
+    SetStorage('pn_data', params).then(()=>{
+      console.log(params,'params')
+      setPnData(JSON.stringify(params));
+      if (params?.pn) {
+        SetStorage('pn', params?.pn).then(()=>{
+          setLoading(true)
+          getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 1);
+        });
+      } else {
+        setLoading(true)
+        getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 2);
+      }
+    });
+    setTimeout(()=>{
+      getPayListData({
+        v_id: params.id,
+        pn: params.pn
+      })
+    },200)
+    let _option = option;
+    _option.title = "";
+    const rect = Taro.getMenuButtonBoundingClientRect();
+    _option.barHeight = rect.height;
+    _option.statusBarHeight = rect.top;
+    setOption({ ..._option });
+  }
+
+  const getPayListData = (params) => {
+    getWalletProducts(params).then((res)=>{
+      console.log(res.data, 'res.data')
+      if(res.data.is_template){
+        setPayData(res.data)
+      }
+    })
+  }
+
   let tim = null;
   useEffect(() => {
     clearTimeout(tim)
@@ -155,7 +201,7 @@ export default function VideoView() {
               setLoading(true)
               setParams(param)
               console.log(param, 'param')
-              getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) });
+              getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) }, 54);
             });
           });
         // })
@@ -168,10 +214,10 @@ export default function VideoView() {
     } else {
       setLoading(true)
       console.log("刷新页面")
-      getVideoList({...params, v_id: params.id });
+      getVideoList({...params, v_id: params.id }, 89);
     }
   }
-  const getVideoList = (params) => {
+  const getVideoList = (params, num) => {
     getVideoIndex(params).then((res) => {
       const {info, list} = res.data;
 
