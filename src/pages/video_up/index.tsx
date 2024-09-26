@@ -26,7 +26,7 @@ import {
   getVideoUpdate,
   getWalletTmpProducts,
 } from "@/common/interface";
-import {getCheckLogin, THide, THideT, TLoading, TShow} from "@/common/common";
+import {getCheckLogin, payToast, THide, THideT, TLoading, TShow} from "@/common/common";
 import home from "@/static/icon/home.png";
 import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import {noTimeout, setTimFun} from "@/common/tools";
@@ -625,31 +625,37 @@ export default function VideoView() {
           console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
         }
       } else {
-        let data = res.data.json_params;
-        tt.requestPayment({
-          timeStamp: data.time.toString(),
-          nonceStr: data.nonce_str,
-          package: data.package,
-          signType: "RSA",
-          paySign: data.sign,
-          success: function () {
-            payStatus(data.order_id);
-          },
-          fail: function (err) {
-            THide();
-            let str = "fail";
-            if (err.errMsg.indexOf("cancel") >= 0) {
-              str = "cancel";
-            }
-            if (str == "cancel") {
-              TShow("取消支付");
-            }
-            if (str == "fail") {
-              TShow("支付失败");
-            }
-            return;
-          },
-        });
+        if (tt.canIUse("requestOrder")) {
+          let par = res.data.json_params;
+          console.log(res.data, "par_...");
+          tt.requestOrder({
+            data: par.data,
+            byteAuthorization: par.byteAuthorization,
+            success: function (result) {
+              console.log(result, 'success')
+              const {orderId, itemOrderList, logId} = result
+              tt.getOrderPayment({
+                orderId: orderId,
+                success: function (payRes){
+                  console.log(payRes,'payRes')
+                  payStatus(par.order_id);
+                },
+                fail: function (payErr){
+                  console.log(payErr,'payErr')
+                  payToast(payErr.errNo)
+                },
+              })
+            },
+            fail: function (err) {
+              console.log(err, 'err')
+              THide();
+              TShow(err.errMsg);
+              return;
+            },
+          });
+        } else {
+          console.log("当前用户的客户端版本不支持 wx.requestOrder");
+        }
       }
     });
   };
@@ -787,7 +793,7 @@ export default function VideoView() {
                         ? "linear-gradient(to right, #a829e8, #3c6fef);"
                         : "#3e4150",
                   }}
-                  onClick={() => noTimeout(()=>chooseCurrent(item.id))}
+                  onClick={() => chooseCurrent(item.id)}
                 >
                   {item.name}
                   {!item?.is_pay ? (

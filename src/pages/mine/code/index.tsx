@@ -91,7 +91,8 @@ export default function Code() {
               success: () => {
                 TShow("保存成功");
               },
-              fail: () => {
+              fail: (err) => {
+                console.log(err);
                 if(ENV){
                   TShow("抖音权限申请中，暂时无法使用");
                 } else {

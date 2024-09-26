@@ -14,7 +14,7 @@ import {
 } from "@/common/interface";
 import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
-import {getCheckLogin, payToast, THide, TShow} from "@/common/common";
+import {getCheckLogin, payToast, THide, THideT, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
 
@@ -97,7 +97,6 @@ export default function Search() {
   };
 
   const checkType = (e) => {
-
     noTimeout(()=> {
       setOption({...option, active: e});
     })
@@ -115,6 +114,7 @@ export default function Search() {
       getPayStatus({ order_id: id }).then((res) => {
         if (res.code !== 1) {
           THide();
+          THideT();
           times = times + 1;
           if (times >= 3) {
             clearInterval(timer);
