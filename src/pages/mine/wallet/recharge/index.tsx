@@ -14,7 +14,7 @@ import {
 } from "@/common/interface";
 import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
-import {getCheckLogin, THide, TShow} from "@/common/common";
+import {getCheckLogin, payToast, THide, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
 
@@ -50,7 +50,7 @@ export default function Search() {
     if (params?.is_pay) {
       _option.is_pay = params?.is_pay;
     }
-    setENV(GetStorageSync('ENV') == "TT")
+    setENV(Taro.getEnv() == "TT")
     if(GetStorageSync('ENV') == "TT") {
       Taro.setNavigationBarTitle({
         title: "充值"
@@ -124,7 +124,7 @@ export default function Search() {
           return;
         }
         THide();
-        TShow("充值成功");
+        // TShow("充值成功");
         SetStorageSync("nowValPay", '1');
         currentMemberInfo(true);
         times = 0;
@@ -197,56 +197,37 @@ export default function Search() {
           console.log("当前用户的客户端版本不支持 wx.requestVirtualPayment");
         }
       } else {
-        let par = res.data.json_params;
-        console.log(par, "par");
-        tt.requestOrder({
-          data: par.data,
-          byteAuthorization: par.byteAuthorization,
-          success: function (res) {
-            console.log(res, 'err2')
-            if(res.code == 0){
-              payStatus(res.order_id);
+        if (tt.canIUse("requestOrder")) {
+          let par = res.data.json_params;
+          console.log(res.data, "par_...");
+          tt.requestOrder({
+            data: par.data,
+            byteAuthorization: par.byteAuthorization,
+            success: function (result) {
+              console.log(result, 'success')
+              const {orderId, itemOrderList, logId} = result
+              tt.getOrderPayment({
+                orderId: orderId,
+                success: function (payRes){
+                  console.log(payRes,'payRes')
+                  payStatus(par.order_id);
+                },
+                fail: function (payErr){
+                  console.log(payErr,'payErr')
+                  payToast(payErr.errNo)
+                },
+              })
+            },
+            fail: function (err) {
+              console.log(err, 'err')
+              THide();
+              TShow(err.errMsg);
               return;
-            }
-            if(res.code == 1){
-              TShow("取消超时");
-              return;
-            }
-            if(res.code == 2){
-              TShow("支付失败");
-              return;
-            }
-            if(res.code == 3){
-              TShow("支付关闭");
-              return;
-            }
-            if(res.code == 4){
-              TShow("取消支付");
-              return;
-            }
-            if(res.code == 9){
-              TShow("订单状态开发者自行获取");
-              return;
-            }
-          },
-          fail: function (err) {
-            console.log(err, 'err1')
-            THide();
-            if (err.errMsg.indexOf("10000") >= 0) {
-              TShow("支付失败");
-              return;
-            }
-            if (err.errMsg.indexOf("10001") >= 0) {
-              TShow("调起微信失败");
-              return;
-            }
-            if (err.errMsg.indexOf("10002") >= 0) {
-              TShow("微信未安装");
-              return;
-            }
-            return;
-          },
-        });
+            },
+          });
+        } else {
+          console.log("当前用户的客户端版本不支持 wx.requestOrder");
+        }
       }
     });
   };
@@ -427,6 +408,7 @@ export default function Search() {
     )
   }, [inList, option])
   const payContext = useMemo(()=>{
+    if(ENV) return;
     if(inList.length<=0) return null;
     return (
       <View className="index_content_label">

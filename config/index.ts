@@ -17,7 +17,28 @@ export default defineConfig(async (merge, { command, mode }) => {
     },
     sourceRoot: "src",
     outputRoot: "dist",
-    plugins: [],
+    plugins: [
+      [
+        "@tarojs/plugin-inject",
+        {
+          components: {
+            // 给button组件添加自定义事件
+            Button: {
+              // 正常情况下需要添加小驼峰的dataImId 属性，taro会转换成 data-im-id
+              // 但是 ，关键的来了，如果你只加了这一个自定义属性，那么恭喜你，
+              // 明明已经转换成了，但还是会报错： data-im-id is required 巴拉巴拉巴拉
+              dataImId: "",
+              // 解决上面的问题的办法来了，就是再添加一个带横杠的 data-im-id
+              // 不知道原理是啥，反正能用。 有懂的同学请不吝赐教。
+              "data-im-id": "",
+              // 这个是没走通之前添加了看报错的，后面没有去掉，
+              // 也没有详细测试去掉会不会有影响，建议保留
+              onerror: "eh",
+            },
+          },
+        },
+      ],
+    ],
     defineConstants: {},
     copy: {
       patterns: [],

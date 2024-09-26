@@ -4,23 +4,23 @@ const config = {
   tt: {
     dev: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
+      BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
+      BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "http://www.videoshare.pctop.cc/api/B84JRXoisI250RjL/",
+      BASE_URL: "https://niubojc.com/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
-      WEB_VIEW: "http://www.videoshare.pctop.cc/api/"
+      WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
   },

@@ -253,6 +253,9 @@ export default function VideoView() {
 
               refreshVideoInfo({...params, id: info.id, current: currInfo.id, index: params.index});
               return;
+            } else {
+              console.log(234234)
+              TShow(res.msg);
             }
             THide();
           })
@@ -343,7 +346,9 @@ export default function VideoView() {
     if(payData?.product_list.length>0){
       SetStorageSync("currentHand", info?.id);
       setIsShowModal(true);
+      THide();
     } else {
+      THide();
       Taro.navigateTo({
         url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo?.spend_score),
       });
@@ -395,8 +400,11 @@ export default function VideoView() {
             TShow("购买成功");
             refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: ind})
             return;
+          } else {
+            THide();
+            console.log(234234)
+            TShow(res.msg);
           }
-          THide();
         });
       }, 500);
       return;

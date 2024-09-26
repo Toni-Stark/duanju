@@ -7,7 +7,8 @@ let window = env?{}:{
   navigationBarTitleText: "WeChat",
   navigationBarTextStyle: "black",
 };
-let permission = env?{}:{
+let permission = env?{
+}:{
   makePhoneCall: {
     desc: "你的电话将用于拨打客服电话"
   }

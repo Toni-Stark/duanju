@@ -92,7 +92,11 @@ export default function Code() {
                 TShow("保存成功");
               },
               fail: () => {
-                TShow("微信权限申请中，暂时无法使用");
+                if(ENV){
+                  TShow("抖音权限申请中，暂时无法使用");
+                } else {
+                  TShow("微信权限申请中，暂时无法使用");
+                }
               },
             });
           }

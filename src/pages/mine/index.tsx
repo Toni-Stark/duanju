@@ -1,4 +1,4 @@
-import { View, Image } from "@tarojs/components";
+import {View, Image, Button} from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
@@ -213,18 +213,16 @@ export default function Mine() {
   }
 
   const naviContent = useMemo(()=>{
-    console.log(ENV, Taro.getEnv())
     return (
       <View className="content-wel-list">
         {list.map((item) => {
           if(ENV && item.url == "ke"){
             return (
-              /* #ifdef MP-TOUTIAO */
-            <button
-              open-type="im"
-              data-im-id="288372215"
-              class="content-wel-list-item"
-            >
+              <Button
+                className="content-wel-list-item"
+                openType="im"
+                dataImId="288372215"
+              >
               <Image
                 mode="widthFix"
                 src={item.icon}
@@ -233,8 +231,7 @@ export default function Mine() {
               <View className="content-wel-list-item-text">
                 {item.title}
               </View>
-            </button>
-            /* #endif */
+            </Button>
           );
           } else {
             return (
