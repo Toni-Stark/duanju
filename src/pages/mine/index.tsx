@@ -12,7 +12,6 @@ import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
-import {GetStorageSync} from "@/store/storage";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -25,7 +24,8 @@ export default function Mine() {
     id: "",
     sn: "",
     loading: false,
-    my_kf: "",
+    my_kf: "", dy_my_kf: ""
+
   });
 
   const [list] = useState([
@@ -65,7 +65,7 @@ export default function Mine() {
         loading: true,
       }
       setOption({...obj});
-      console.log(obj, option)
+      console.log(obj)
     });
 
     Taro.setNavigationBarTitle({
@@ -205,13 +205,6 @@ export default function Mine() {
     )
   }, [option]);
 
-  const imCallback = () => {
-    console.log(111, "imCallback")
-  }
-  const onimError = () => {
-    console.log(222, "onimError")
-  }
-
   const naviContent = useMemo(()=>{
     return (
       <View className="content-wel-list">
@@ -221,7 +214,7 @@ export default function Mine() {
               <Button
                 className="content-wel-list-item"
                 openType="im"
-                dataImId="288372215"
+                dataImId={option?.dy_my_kf}
               >
               <Image
                 mode="widthFix"

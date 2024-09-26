@@ -14,7 +14,7 @@ import {
 } from "@/common/interface";
 import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
 import { HeaderView } from "@/components/headerView";
-import {getCheckLogin, payToast, THide, THideT, TShow} from "@/common/common";
+import {getCheckLogin, payToast, THide, THideT, TLoading, TShow} from "@/common/common";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
 
@@ -40,8 +40,13 @@ export default function Search() {
   const [inList, setInList] = useState([]);
   const [info, setInfo] = useState(undefined);
   const [ENV, setENV] = useState(false);
+  const [payData, setPayData] = useState(undefined);
+  const [pnInt, setPnInt] = useState(undefined);
+  const [para, setPara] = useState(undefined);
+  const [loading, setLoading] = useState(false);
 
   useLoad(() => {
+    TLoading("加载中...")
     const params = router.params;
     let _option = option;
     if (params?.type) {
@@ -71,8 +76,13 @@ export default function Search() {
       });
     }
     setOption({ ..._option });
-    Taro.showToast({ title: "加载中...",	mask:true, icon: "none" });
-    getProList();
+    if(params.v_id){
+      setPara({v_id: params.v_id})
+      getProList({v_id: params.v_id});
+    } else {
+      setPara({})
+      getProList({});
+    }
   });
 
   const currentMemberInfo = (bool) => {
@@ -87,13 +97,33 @@ export default function Search() {
       }, 1500);
     });
   };
-  const getProList = () => {
+  const getProList = (params) => {
     currentMemberInfo(false);
-    getWalletProducts().then((res) => {
-      setInList(res.data.product_list);
-      setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
-      Taro.hideToast()
-    });
+    getMemberInfo().then((res) => {
+      setInfo(res.data);
+      let pn = res.data?.pn;
+      setPnInt(pn);
+      getWalletProducts(params).then((result) => {
+        if (result.data.is_template) {
+          if (Taro.getSystemInfoSync().platform.indexOf('ios') < 0 && Taro.getSystemInfoSync().platform.indexOf('ipad') < 0) {
+            setPayData(result.data)
+          }
+          THide()
+        } else {
+          if (Taro.getSystemInfoSync().platform.indexOf('ios') < 0 && Taro.getSystemInfoSync().platform.indexOf('ipad') < 0) {
+            setInList(result.data.product_list);
+          }
+          setOption({...option, bar: result.data.product_list[0].id});
+          THide()
+        }
+        setLoading(true)
+      })
+    })
+    // getWalletProducts().then((res) => {
+    //   setInList(res.data.product_list);
+    //   setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
+    //   Taro.hideToast()
+    // });
   };
 
   const checkType = (e) => {
@@ -126,6 +156,7 @@ export default function Search() {
         THide();
         // TShow("充值成功");
         SetStorageSync("nowValPay", '1');
+        getProList
         currentMemberInfo(true);
         times = 0;
         clearInterval(timer)
@@ -434,7 +465,81 @@ export default function Search() {
         })}
       </View>
     )
-  }, [list, option, inList])
+  }, [list, option, inList,payData])
+
+
+  const chooseOne = (item) => {
+    let data = {...payData}
+    data.product_list = data?.product_list?.map((it) => {
+      if (it.id == item.id) {
+        return {...it, is_default: "1"}
+      } else {
+        return {...it, is_default: "0"}
+      }
+    })
+    setPayData({...data})
+    // TShow("支付中", "loading", 3000)
+    getCheckLogin().then((result) => {
+      let {token} = result;
+      SetStorageSync("allJson", result);
+      SetStorage("token", token).then(() => {
+        payApiStatus({product_id: item.id, v_id:para?.v_id})
+      })
+    })
+  }
+
+  const payList = (item, index)=> {
+    let cla = "pay_modal_view_list_item";
+    if(item.type == "1"){
+      cla += " vip_shop";
+    }
+    if (item.is_default == "1"){
+      cla += " all_shop"
+    }
+    if (item.is_highlighted != '1') {
+      cla += " def_shop"
+    }
+    return (
+      <View className={cla} key={index} onClick={()=>{
+        chooseOne(item)
+      }}>
+        <View className="pay_modal_view_list_item_title">
+          <View className="pay_modal_view_list_item_title_main">
+            <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
+          </View>
+          {
+            item.type == "1" ?
+              <View className="pay_modal_view_list_item_title_text">
+                {item.name}
+                <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
+              </View>
+              :
+              <View className="pay_modal_view_list_item_title_text">{item.name}</View>
+          }
+        </View>
+        <View className="pay_modal_view_list_item_desc">
+          {item.intro}
+        </View>
+        <Image className="vip_image" mode="widthFix" src={require('../../../../static/icon/vip.png')} />
+      </View>
+    )
+  }
+
+  const currentPayList = useMemo(()=>{
+    if (!pnInt && payData?.product_list.length<=0) return;
+    return (
+      <View className="pay_modal_view">
+        <View className="pay_modal_view_list">
+          {
+            payData?.product_list.map((item, index)=> payList(item, index))
+          }
+          {
+            payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">无支付模板</View>:null
+          }
+        </View>
+      </View>
+    )
+  }, [payData, pnInt])
   return (
     <View className="index">
       {!ENV?
@@ -452,6 +557,7 @@ export default function Search() {
         {currentContext}
         {/*列表*/}
         {coinContext}
+        {currentPayList}
         {/*支付方式列表*/}
         {payContext}
         {inList.length>0?

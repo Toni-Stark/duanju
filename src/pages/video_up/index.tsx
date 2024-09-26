@@ -156,6 +156,8 @@ export default function VideoView() {
         pn: params.pn
       })
     },200)
+
+
     let _option = option;
     _option.title = "";
     const rect = Taro.getMenuButtonBoundingClientRect();
@@ -189,22 +191,18 @@ export default function VideoView() {
       timerPlay = null;
     };
   }, [controls]);
+
   const refreshVideoInfo = (params) => {
     if (params?.pn) {
       let param = params;
-        // getMemberInfo().then((res)=>{
-        //   if(!param?.clickid) {
-        //     param.clickid = new Date().getTime()+res.data.id;
-        //   }
-          SetStorage('pn', param?.pn).then(()=>{
-            SetStorage('pn_data', param).then(()=>{
-              setLoading(true)
-              setParams(param)
-              console.log(param, 'param')
-              getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) }, 54);
-            });
+        SetStorage('pn', param?.pn).then(()=>{
+          SetStorage('pn_data', param).then(()=>{
+            setLoading(true)
+            setParams(param)
+            console.log(param, 'param')
+            getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) }, 54);
           });
-        // })
+        });
         getWalletTmpProducts({
           v_id: params.id,
           pn: params.pn,
@@ -218,6 +216,7 @@ export default function VideoView() {
     }
   }
   const getVideoList = (params, num) => {
+    console.log(params, num, 'params')
     getVideoIndex(params).then((res) => {
       const {info, list} = res.data;
 
@@ -296,11 +295,16 @@ export default function VideoView() {
               THide();
               TShow("购买成功");
               console.log("购买成功")
-
               refreshVideoInfo({...params, id: info.id, current: currInfo.id, index: params.index});
+              getMemberInfo().then((res) => {
+                let pn = res.data?.pn;
+                getPayListData({
+                  v_id: dataInfo.id,
+                  pn: pn
+                })
+              })
               return;
             } else {
-              console.log(234234)
               TShow(res.msg);
             }
             THide();
@@ -321,8 +325,7 @@ export default function VideoView() {
         });
         setCurrentInfo(currInfo);
         setControls(true)
-        setIndex(params?.index||0);
-        setIndex(ind);
+        setIndex(ind||0);
         setTimFun(() => {
           setLoading(false)
         },1000)
@@ -389,23 +392,38 @@ export default function VideoView() {
     THideT()
     TShow("积分不足", "none", 1000);
     SetStorageSync("nowVal", info?.id);
-    if(payData?.product_list.length>0){
-      SetStorageSync("currentHand", info?.id);
-      setIsShowModal(true);
-      THide();
-    } else {
-      THide();
+    if(pns){
+      setLoading(false)
+      TShow("积分不足", "none", 1000);
       Taro.navigateTo({
-        url: "../mine/wallet/recharge/index?is_pay="+(info?.spend_score ||dataInfo?.spend_score),
+        url: "../mine/wallet/recharge/index?v_id="+dataInfo.id+"&type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
       });
+    } else {
+      if(payData?.product_list.length>0 && payData?.is_template){
+        SetStorageSync("currentHand", info?.id);
+        setIsShowModal(true);
+        THide();
+      } else if(payData?.product_list.length<=0 && payData?.is_template){
+        setTimeout(()=>{
+          THideT()
+          TShow("支付模板未配置", "none", 1000);
+          setLoading(true)
+          getVideoList({ v_id: dataInfo.id, current:dataInfo.history_sub_id,pn_data:pnData}, 4);
+        },1000)
+      } else {
+        THide();
+        setLoading(false)
+        TShow("积分不足", "none", 1000);
+        Taro.navigateTo({
+          url: "../mine/wallet/recharge/index?v_id="+dataInfo.id+"&is_pay="+(info?.spend_score ||dataInfo?.spend_score),
+        });
+      }
     }
   };
   const openLayout = () => {
-    noTimeout(()=> {
       let info = pageList.find((item) => item.title === current.page);
       setCurrent({...current, b_list: info.list});
       setShow(true);
-    })
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
@@ -445,10 +463,16 @@ export default function VideoView() {
             THide();
             TShow("购买成功");
             refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: ind})
+            getMemberInfo().then((res) => {
+              let pn = res.data?.pn;
+              getPayListData({
+                v_id: dataInfo.id,
+                pn: pn
+              })
+            })
             return;
           } else {
             THide();
-            console.log(234234)
             TShow(res.msg);
           }
         });
@@ -576,7 +600,10 @@ export default function VideoView() {
           THide();
           THideT();
           times = times + 1;
-          if (times >= 3) {
+          if (times >= 6) {
+            setLoading(true);
+            getVideoList({ v_id: dataInfo.id,pn_data:pnData}, 8);
+            setIsShowModal(false);
             clearInterval(timer);
             timer = null;
             TShow(res.msg);
@@ -584,6 +611,7 @@ export default function VideoView() {
           return;
         }
         THide();
+        THideT();
         TShow("充值成功");
         console.log("充值成功")
         // 在这里实现后续操作
@@ -898,15 +926,15 @@ export default function VideoView() {
           <View className="pay_modal_view_list_item_title_main">
             <Text className="pay_modal_view_list_item_title_main_price">{item.price}</Text>元
           </View>
-          {/*{*/}
-          {/*  item.type == "2" ?*/}
-          {/*    <View className="pay_modal_view_list_item_title_text">*/}
-          {/*      {item.name}*/}
-          {/*      <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>*/}
-          {/*    </View>*/}
-          {/*    :*/}
+          {
+            item.type == "1" ?
+              <View className="pay_modal_view_list_item_title_text">
+                {item.name}
+                <Text className="pay_modal_view_list_item_title_text_price">{item.score}</Text>
+              </View>
+              :
               <View className="pay_modal_view_list_item_title_text">{item.name}</View>
-          {/*}*/}
+          }
         </View>
         <View className="pay_modal_view_list_item_desc">
           {item.intro}
