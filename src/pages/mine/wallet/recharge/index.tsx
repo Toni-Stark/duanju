@@ -481,7 +481,7 @@ export default function Search() {
               {inList.length > 0 ? '确认支付' : '暂不支持'}
 
             </View>: null}
-        </View>:<View className="no_ios">IOS暂不支持</View>
+        </View>:<View className="no_ios">由于相关规范，ios功能暂不可用</View>
       }
     </View>
   );
