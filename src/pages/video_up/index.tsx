@@ -275,8 +275,7 @@ export default function VideoView() {
         });
         setCurrentInfo(currInfo);
         setControls(true)
-        setIndex(params?.index||0);
-        setIndex(ind);
+        setIndex(ind||0);
         setTimFun(() => {
           setLoading(false)
         },1000)
