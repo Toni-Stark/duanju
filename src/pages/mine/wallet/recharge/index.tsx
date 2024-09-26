@@ -42,8 +42,10 @@ export default function Search() {
   const [payData, setPayData] = useState(undefined);
   const [pnInt, setPnInt] = useState(undefined);
   const [para, setPara] = useState(undefined);
-
+  const [isIos, setIsIos] = useState(false);
+  const [loading, setLoading] = useState(false);
   useLoad(() => {
+    setIsIos( Taro.getSystemInfoSync().platform.indexOf('ios')>=0 || Taro.getSystemInfoSync().platform.indexOf('ipad')>=0 )
     TLoading("加载中...")
     const params = router.params;
     let _option = option;
@@ -106,6 +108,7 @@ export default function Search() {
           setOption({ ...option, bar: result.data.product_list[0].id });
           THide()
         }
+        setLoading(true)
       })
       // } else {
       //   getWalletProducts().then((result) => {
@@ -444,40 +447,42 @@ export default function Search() {
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
-        text={inList.length>0?"充值":"信息"}
+        text={inList.length>0 && !isIos?"充值":"信息"}
       />
-      <View className="index_content">
-        {inList.length>0?<View className="index_content_banner">
-          <View>创作不易，感谢您的支持</View>
-          {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
-        </View>:null}
-        {/*用户账户*/}
-        {currentContext}
-        {/*列表*/}
-        {coinContext}
-        {currentPayList}
-        {/*支付方式列表*/}
-        {payContext}
-        {inList.length>0 || payData?.product_list.length>0?
-            <View className="index_content_desc">
-              <View className="title">充值须知</View>
-              <View className="desc">
-                <View>1、一经充值不予退换；</View>
-                <View>
-                  2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；
+      {
+        !isIos? <View className="index_content">
+            {inList.length>0?<View className="index_content_banner">
+              <View>创作不易，感谢您的支持</View>
+              {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
+            </View>:null}
+            {/*用户账户*/}
+            {currentContext}
+            {/*列表*/}
+            {coinContext}
+            {currentPayList}
+            {/*支付方式列表*/}
+            {payContext}
+            {inList.length>0 || payData?.product_list.length>0?
+              <View className="index_content_desc">
+                <View className="title">充值须知</View>
+                <View className="desc">
+                  <View>1、一经充值不予退换；</View>
+                  <View>
+                    2、未满18周岁未成年需在监护人的指导、同意下，进行充值操作；
+                  </View>
+                  <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
+                  {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
                 </View>
-                <View>3、赠送为平台同等金额兑换比例的{commonSetting.coinName}，不是现金；</View>
-                {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
               </View>
-            </View>
-        :null}
-        { !payData?.is_template ? <View className={inList && inList.length > 0 ? "index_content_btn" : "index_content_btn_gray"}
-               onClick={()=>{noTimeout(()=>{payOrder()})}}
-        >
-          {inList.length > 0 ? '确认支付' : '暂不支持'}
+              :null}
+            { !payData?.is_template && loading ? <View className={inList && inList.length > 0 ? "index_content_btn" : "index_content_btn_gray"}
+                                            onClick={()=>{noTimeout(()=>{payOrder()})}}
+            >
+              {inList.length > 0 ? '确认支付' : '暂不支持'}
 
-        </View>: null}
-      </View>
+            </View>: null}
+        </View>:<View className="no_ios">IOS暂不支持</View>
+      }
     </View>
   );
 }
