@@ -1,4 +1,4 @@
-import { View, Image } from "@tarojs/components";
+import { View, Image, Text } from "@tarojs/components";
 import Taro, { useLoad, useRouter } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
@@ -105,25 +105,18 @@ export default function Search() {
       setPnInt(pn);
       getWalletProducts(params).then((result) => {
         if (result.data.is_template) {
-          if (Taro.getSystemInfoSync().platform.indexOf('ios') < 0 && Taro.getSystemInfoSync().platform.indexOf('ipad') < 0) {
-            setPayData(result.data)
-          }
+          setPayData(result.data)
           THide()
+          setLoading(true)
         } else {
-          if (Taro.getSystemInfoSync().platform.indexOf('ios') < 0 && Taro.getSystemInfoSync().platform.indexOf('ipad') < 0) {
-            setInList(result.data.product_list);
-          }
+          setInList(result.data.product_list);
           setOption({...option, bar: result.data.product_list[0].id});
           THide()
+          setLoading(true)
         }
-        setLoading(true)
       })
     })
-    // getWalletProducts().then((res) => {
-    //   setInList(res.data.product_list);
-    //   setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
-    //   Taro.hideToast()
-    // });
+    setLoading(true)
   };
 
   const checkType = (e) => {
@@ -174,9 +167,9 @@ export default function Search() {
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
         if(ENV) {
-          payApiStatusTiktok({product_id: option.bar})
+          console.log(23424324)
         } else {
-          payApiStatus({ product_id: option.bar });
+          payApiStatus({ product_id: option.bar, v_id:para?.v_id });
         }
       });
     });
@@ -369,7 +362,8 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList?.length<=0) return null;
+    if(inList.length<=0 && (!payData || payData?.product_list.length<=0)) return null;
+
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -483,7 +477,11 @@ export default function Search() {
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
-        payApiStatus({product_id: item.id, v_id:para?.v_id})
+        if(ENV) {
+          payApiStatusTiktok({product_id: item.id, v_id:para?.v_id})
+        } else {
+          payApiStatus({ product_id: item.id, v_id:para?.v_id });
+        }
       })
     })
   }
@@ -574,12 +572,14 @@ export default function Search() {
               </View>
             </View>
             :null}
-          <View className={inList&&inList?.length>0?"index_content_btn":"index_content_btn_gray"}
-                onClick={()=>noTimeout(payOrder)}
-          >
-            {inList?.length>0?'确认支付':'暂不支持'}
+          {
+            !pnInt ? <View className={inList&&inList?.length>0?"index_content_btn":"index_content_btn_gray"}
+                           onClick={()=>noTimeout(payOrder)}
+            >
+              {inList?.length>0?'确认支付':'暂不支持'}
+            </View> : null
+          }
 
-          </View>
         </View>
       </View>
     );

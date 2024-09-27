@@ -292,23 +292,6 @@ export default function Index() {
       setShowNew(false)
     })
   };
-  const naviToVideoUpSystem = (albumId, episodeId = "1") => {
-    if (tt.canIUse('PlayletExtension')) {
-      //跳转至绑定短剧的页面
-      Taro.navigateTo({
-        url: `../video_new/index?tt_album_id=${albumId}&tt_episode_id=${episodeId}`,
-      });
-    } else {
-      noTimeout(()=> {
-        if (!albumId) return;
-        Taro.navigateTo({
-          url: "../video_up/index?id=" + albumId,
-        });
-        setShowNew(false)
-      })
-      // ... 跳转至开发者自有播放页
-    }
-  };
 
   const currentSwiper = useMemo(() => {
     if (bannerList.length <= 0) {
