@@ -399,11 +399,11 @@ export default function VideoView() {
         url: "../mine/wallet/recharge/index?v_id="+dataInfo.id+"&type=1&is_pay="+(info?.spend_score ||dataInfo.spend_score),
       });
     } else {
-      if(payData?.product_list.length>0 && payData?.is_template){
+      if(payData?.product_list?.length>0 && payData?.is_template){
         SetStorageSync("currentHand", info?.id);
         setIsShowModal(true);
         THide();
-      } else if(payData?.product_list.length<=0 && payData?.is_template){
+      } else if(payData?.product_list?.length<=0 && payData?.is_template){
         setTimeout(()=>{
           THideT()
           TShow("支付模板未配置", "none", 1000);
@@ -953,10 +953,10 @@ export default function VideoView() {
           </View>
           <View className="pay_modal_view_list">
             {
-              payData?.product_list.map((item, index)=> payList(item, index))
+              payData?.product_list?.map((item, index)=> payList(item, index))
             }
             {
-              payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">暂无充值内容</View>:null
+              payData?.product_list?.length<=0?<View className="pay_modal_view_list_pav">暂无充值内容</View>:null
             }
           </View>
           <View className="pay_modal_view_desc">充值代表接受 <Text className="pay_modal_view_desc_link" onClick={naviPayTo}>《充值规则协议》</Text>和<Text className="pay_modal_view_desc_link" onClick={naviMemberTo}>《会员服务协议》</Text></View>

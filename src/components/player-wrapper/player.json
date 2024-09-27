@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "player": "/native-components/components/player/player"
+  }
+}

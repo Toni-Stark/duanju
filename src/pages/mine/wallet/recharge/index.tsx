@@ -526,15 +526,15 @@ export default function Search() {
   }
 
   const currentPayList = useMemo(()=>{
-    if (!pnInt && payData?.product_list.length<=0) return;
+    if (!pnInt && payData?.product_list?.length<=0) return;
     return (
       <View className="pay_modal_view">
         <View className="pay_modal_view_list">
           {
-            payData?.product_list.map((item, index)=> payList(item, index))
+            payData?.product_list?.map((item, index)=> payList(item, index))
           }
           {
-            payData?.product_list.length<=0?<View className="pay_modal_view_list_pav">无支付模板</View>:null
+            payData?.product_list?.length<=0?<View className="pay_modal_view_list_pav">无支付模板</View>:null
           }
         </View>
       </View>

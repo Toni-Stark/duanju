@@ -4,21 +4,21 @@ const config = {
   tt: {
     dev: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "https://niubojc.com/api/OUsfvUNWzIADyGmH/",
+      BASE_URL: "https://www.videoshare.pctop.cc/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     test: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "https://niubojc.com/api/OUsfvUNWzIADyGmH/",
+      BASE_URL: "https://www.videoshare.pctop.cc/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
     },
     prod: {
       appid: "tta19ad7273eae33dd01",
-      BASE_URL: "https://niubojc.com/api/OUsfvUNWzIADyGmH/",
+      BASE_URL: "https://www.videoshare.pctop.cc/api/aokdaIh/",
       // BASE_URL: "https://video.weiyantj.cn/api/LHGFgM3UNjEzUvP0/",
       WEB_VIEW: "https://niubojc.com/api/"
       // WEB_VIEW: "https://video.weiyantj.cn/api/"
