@@ -369,7 +369,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList.length<=0) return null;
+    if(inList?.length<=0) return null;
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -391,7 +391,7 @@ export default function Search() {
   const coinContext = useMemo(() => {
     return (
       <View className="index_content_list">
-        {inList.map((res) => {
+        {inList?.map((res) => {
           let item: any = { ...res };
           let cName = "item";
           if (item.intro) {
@@ -440,7 +440,7 @@ export default function Search() {
   }, [inList, option])
   const payContext = useMemo(()=>{
     if(ENV) return;
-    if(inList.length<=0) return null;
+    if(inList?.length<=0) return null;
     return (
       <View className="index_content_label">
         {list.map((item) => {
@@ -540,27 +540,28 @@ export default function Search() {
       </View>
     )
   }, [payData, pnInt])
-  return (
-    <View className="index">
-      {!ENV?
-      <HeaderView
-        barHeight={option.barHeight}
-        height={option.statusBarHeight}
-        text={inList.length>0?"充值":"信息"}
-      />:null}
-      <View className="index_content">
-        {inList.length>0?<View className="index_content_banner">
-          <View>创作不易，感谢您的支持</View>
-          {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
-        </View>:null}
-        {/*用户账户*/}
-        {currentContext}
-        {/*列表*/}
-        {coinContext}
-        {currentPayList}
-        {/*支付方式列表*/}
-        {payContext}
-        {inList.length>0?
+  if(loading){
+    return (
+      <View className="index">
+        {!ENV?
+          <HeaderView
+            barHeight={option.barHeight}
+            height={option.statusBarHeight}
+            text={inList?.length>0?"充值":"信息"}
+          />:null}
+        <View className="index_content">
+          {inList?.length>0?<View className="index_content_banner">
+            <View>创作不易，感谢您的支持</View>
+            {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
+          </View>:null}
+          {/*用户账户*/}
+          {currentContext}
+          {/*列表*/}
+          {coinContext}
+          {currentPayList}
+          {/*支付方式列表*/}
+          {payContext}
+          {inList?.length>0?
             <View className="index_content_desc">
               <View className="title">充值须知</View>
               <View className="desc">
@@ -572,14 +573,20 @@ export default function Search() {
                 {/*<View>4、遇到问题可在“我的”页面联系客服</View>*/}
               </View>
             </View>
-        :null}
-        <View className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
-          onClick={()=>noTimeout(payOrder)}
-        >
-          {inList.length>0?'确认支付':'暂不支持'}
+            :null}
+          <View className={inList&&inList?.length>0?"index_content_btn":"index_content_btn_gray"}
+                onClick={()=>noTimeout(payOrder)}
+          >
+            {inList?.length>0?'确认支付':'暂不支持'}
 
+          </View>
         </View>
       </View>
+    );
+  }
+  return (
+    <View className="index">
+
     </View>
   );
 }
