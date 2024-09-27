@@ -1,9 +1,22 @@
 {
   "miniprogramRoot": "./",
   "projectname": "app_template",
-  "appid": "testAppId",
+  "appid": "ttd8c0ae7d47f7595601",
   "setting": {
     "es6": false,
     "minified": false
+  },
+  "condition": {
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        {
+          "name": "pages/video_new/index",
+          "query": "seq=1&tt_album_id=7375368855327326732&tt_episode_id=7375368855327343116",
+          "id": 0,
+          "pathName": "pages/video_new/index"
+        }
+      ]
+    }
   }
 }

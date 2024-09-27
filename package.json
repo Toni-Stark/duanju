@@ -18,6 +18,7 @@
     "build:qq": "taro build --type qq",
     "build:jd": "taro build --type jd",
     "build:quickapp": "taro build --type quickapp",
+    "build:com:tt": "taro build native-components --type tt",
     "dev:weapp": "npm run build:weapp -- --watch",
     "dev:swan": "npm run build:swan -- --watch",
     "dev:alipay": "npm run build:alipay -- --watch",
@@ -27,6 +28,7 @@
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
     "dev:quickapp": "npm run build:quickapp -- --watch",
+    "dev:com:tt": "npm run build:com:tt -- --watch",
     "test": "jest"
   },
   "browserslist": [
@@ -54,7 +56,8 @@
     "@tarojs/taro": "3.6.19",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "taro-ui": "^3.1.1"
+    "taro-ui": "^3.1.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",

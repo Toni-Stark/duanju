@@ -42,6 +42,8 @@ export default defineAppConfig({
   ],
   window:window,
   permission:permission,
+  // NOTE 需要编译成native的组件，并且需要配套的wrapper组件接受props（参考components/player-wrapper）
+  components: ["components/player/player",'components/charge/charge'],
   tabBar: {
     custom: false,
     list: [
@@ -75,4 +77,6 @@ export default defineAppConfig({
     backgroundColor: "#1e212a", // 背景颜色
     borderStyle: "black", // 边框样式
   },
+  // @ts-ignore
+  usingProvide:true,
 });

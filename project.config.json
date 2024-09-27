@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "./dist",
-  "projectname": "app_template",
+  "projectname": "taro-react-component",
   "description": "追剧小程序",
   "appid": "touristappid",
   "setting": {

@@ -4,9 +4,12 @@ const TerserPlugin = require("terser-webpack-plugin");
 import devConfig from "./dev";
 import prodConfig from "./prod";
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig(async (merge, { command, mode }) => {
+export default defineConfig(async (merge, {
+  command, mode }) => {
+  const args = process.argv.slice(2);
+  const isBuildNativeComponents = args[1] === "native-components";
   const baseConfig: UserConfigExport = {
-    projectName: "app_template",
+    projectName: "taro-react",
     date: "2023-11-13",
     designWidth: 750,
     deviceRatio: {
@@ -16,7 +19,7 @@ export default defineConfig(async (merge, { command, mode }) => {
       828: 1.81 / 2,
     },
     sourceRoot: "src",
-    outputRoot: "dist",
+    outputRoot: isBuildNativeComponents ? "dist/native-components" : "dist",
     plugins: [
       [
         "@tarojs/plugin-inject",
@@ -38,16 +41,16 @@ export default defineConfig(async (merge, { command, mode }) => {
           },
         },
       ],
-      [
-        'douyin-mp-plugin', {
-          version: '1.0.0', // 插件版本号，请根据实际情况填写
-          provider: 'douyin' // 必填，指定为抖音小程序
-        }
-      ]
     ],
     defineConstants: {},
     copy: {
-      patterns: [],
+      // NOTE 行业sdk的package.json
+      patterns: isBuildNativeComponents ? [] : [
+        {
+          from: "douyin.package.json",
+          to: "dist/package.json",
+        },
+      ],
       options: {},
     },
     framework: "react",
@@ -90,7 +93,15 @@ export default defineConfig(async (merge, { command, mode }) => {
         },
       },
       webpackChain(chain) {
-        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
+        chain.resolve
+          .plugin("tsconfig-paths")
+          .use(TsconfigPathsPlugin)
+          .end()
+          .end()
+          .output.set(
+          "chunkLoadingGlobal",
+          // 特殊处理native-components的chunkLoadingGlobal防止两个taro冲突（native-components构建出的taro和直接构建的taro里面方法不同）
+          isBuildNativeComponents ? "webpackJsonp2" : "webpackJsonp");
       },
     },
     h5: {

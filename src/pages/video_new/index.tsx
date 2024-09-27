@@ -1,113 +1,48 @@
-import { View} from "@tarojs/components";
-import Taro, {useDidShow, useRouter} from "@tarojs/taro";
-import "taro-ui/dist/style/components/loading.scss";
-import "taro-ui/dist/style/components/float-layout.scss";
-import "./index.less";
-import { useState} from "react";
+import { useDidShow ,useReady ,useLoad} from "@tarojs/taro";
+// @ts-ignore
+const { PlayletExtension ,getPlayletManager} = tt;
 
-import {
-  getMemberInfo,
-  getVideoIndex,
-  getWalletProducts,
-} from "@/common/interface";
-import {GetStorageSync, SetStorage, SetStorageSync} from "@/store/storage";
-
-export default function VideoView() {
-  const router = useRouter();
-  const [option, setOption] = useState({
-    statusBarHeight: 0,
-    barHeight: 0,
-    active: 1,
-    more: false,
-    refresh: false,
-    title: "",
-    type: "",
+export default  PlayletExtension((props)=>{
+  const pm = getPlayletManager();
+  useLoad((res)=>{
+    console.log('页面完成Load pm options111', pm,res);
+    pm.setConfig({
+      shareParam: { // 分享数据
+        title: '测试小程序测试短剧', // 这是要转发的小程序标题
+        desc: '这是默认的转发文案，用户可以直接发送，也可以在发布器内修改',
+        path: `page/shortDramaMarket/playlet-plugin/index?tt_album_id=${res.albumId}&tt_episode_id=${res.episodeId}`, // ?后面的参数会在转发页面打开时传入onLoad方法
+        imageUrl: 'https://n.sinaimg.cn/sinakd20220105s/289/w945h944/20220105/d698-6b9d8808d51527dc9656b35e12b486ae.jpg', // 支持本地或远程图片，默认是小程序 icon
+        templateId: '这是开发者后台设置的分享素材模板id'
+      }
+    });
+    pm.setConfig({
+      activityInfo: [{
+        icon: 'https://img95.699pic.com/xsj/0c/1m/7e.jpg%21/fw/700/watermark/url/L3hzai93YXRlcl9kZXRhaWwyLnBuZw/align/southeast',
+        title: '开辅助',
+      }]
+    });
+    pm.setCatalog({
+      freeList: [{
+        start_episode_no: 1,
+        end_episode_no: 1
+      }],
+      // unlockList: [
+      //   {
+      //     start_episode_no: 16,
+      //     end_episode_no: 20
+      //   },
+      // ],
+      lockList: [{
+        start_episode_no: 2,
+        end_episode_no: 2
+      },
+      ],
+    });
   });
-  const [payData, setPayData] = useState(undefined);
-
-
+  useReady(()=>{
+    console.log(pm,'pm ready')
+  });
   useDidShow(() => {
-
-    const params: any = router.params;
-    if(!params?.pn){
-      getMemberInfo().then((res) => {
-        let pn = res.data?.pn;
-        if(pn){
-          params.pn = pn
-        }
-        rootVideoInfo(params);
-      })
-    } else {
-      rootVideoInfo(params);
-    }
-
-    let envs = GetStorageSync('ENV') == "TT";
-    if(envs) {
-      Taro.setNavigationBarColor({
-        frontColor: '#ffffff',
-        backgroundColor: '#1e212a',
-      })
-    } else {
-      let _option = option;
-      _option.title = "";
-      const rect = Taro.getMenuButtonBoundingClientRect();
-      _option.barHeight = rect.height;
-      _option.statusBarHeight = rect.top;
-      setOption({ ..._option });
-    }
+    console.log("show");
   });
-
-  const rootVideoInfo = (params) => {
-    if (params?.iv) {
-      let sn = decodeURIComponent(params.iv);
-      SetStorageSync("sn", sn);
-    }
-    SetStorage('pn_data', params).then(()=>{
-      console.log(params,'params')
-      if (params?.pn) {
-        SetStorage('pn', params?.pn).then(()=>{
-          getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 1);
-        });
-      } else {
-        getVideoList({ v_id: params.id, pn_data: JSON.stringify(params) }, 2);
-      }
-    });
-    setTimeout(()=>{
-      getPayListData({
-        v_id: params.id,
-        pn: params.pn
-      })
-    },200)
-
-
-    let _option = option;
-    _option.title = "";
-    const rect = Taro.getMenuButtonBoundingClientRect();
-    _option.barHeight = rect.height;
-    _option.statusBarHeight = rect.top;
-    setOption({ ..._option });
-  }
-
-  const getPayListData = (params) => {
-    getWalletProducts(params).then((res)=>{
-      if(res.data.is_template){
-        setPayData(res.data)
-      }
-    })
-  }
-
-  const getVideoList = (params, num) => {
-    console.log(params, num, 'params')
-    getVideoIndex(params).then((res) => {
-      const {info, list} = res.data;
-
-    });
-  }
-
-  return (
-    <View className="index">
-      {/* 视频列表选择框 */}
-
-    </View>
-  );
-}
+});
