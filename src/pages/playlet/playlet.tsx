@@ -2,10 +2,10 @@ import { useDidShow ,useReady ,useLoad} from "@tarojs/taro";
 // @ts-ignore
 const { PlayletExtension ,getPlayletManager} = tt;
 
-export default  PlayletExtension((props)=>{
+export default  PlayletExtension(()=>{
   const pm = getPlayletManager();
   useLoad((res)=>{
-    console.log('页面完成Load pm options111', pm,res);
+    console.log('页面完成Load pm options', pm,res);
     pm.setConfig({
       shareParam: { // 分享数据
         title: '测试小程序测试短剧', // 这是要转发的小程序标题
@@ -24,7 +24,7 @@ export default  PlayletExtension((props)=>{
     pm.setCatalog({
       freeList: [{
         start_episode_no: 1,
-        end_episode_no: 1
+        end_episode_no: 2
       }],
       // unlockList: [
       //   {
@@ -32,11 +32,15 @@ export default  PlayletExtension((props)=>{
       //     end_episode_no: 20
       //   },
       // ],
-      lockList: [{
-        start_episode_no: 2,
-        end_episode_no: 2
-      },
-      ],
+      // lockList: [{
+      //     start_episode_no: 11,
+      //     end_episode_no: 15
+      //   },
+      //   {
+      //     start_episode_no: 21,
+      //     end_episode_no: 76
+      //   },
+      // ],
     });
   });
   useReady(()=>{

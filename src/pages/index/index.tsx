@@ -296,7 +296,7 @@ export default function Index() {
     if (tt.canIUse('PlayletExtension')) {
       //跳转至绑定短剧的页面
       Taro.navigateTo({
-        url: `../video_new/index?tt_album_id=7418886688392348175&tt_episode_id=7418886693673796130`,
+        url: `../playlet/playlet?tt_album_id=7418886688392348175&tt_episode_id=7418886693673796130`,
       });
     } else {
       noTimeout(()=> {

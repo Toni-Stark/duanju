@@ -6,8 +6,6 @@ import prodConfig from "./prod";
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig(async (merge, {
   command, mode }) => {
-  const args = process.argv.slice(2);
-  const isBuildNativeComponents = args[1] === "native-components";
   const baseConfig: UserConfigExport = {
     projectName: "taro-react",
     date: "2023-11-13",
@@ -19,7 +17,7 @@ export default defineConfig(async (merge, {
       828: 1.81 / 2,
     },
     sourceRoot: "src",
-    outputRoot: isBuildNativeComponents ? "dist/native-components" : "dist",
+    outputRoot: "dist",
     plugins: [
       [
         "@tarojs/plugin-inject",
@@ -45,7 +43,7 @@ export default defineConfig(async (merge, {
     defineConstants: {},
     copy: {
       // NOTE 行业sdk的package.json
-      patterns: isBuildNativeComponents ? [] : [
+      patterns: [
         {
           from: "douyin.package.json",
           to: "dist/package.json",
@@ -59,7 +57,7 @@ export default defineConfig(async (merge, {
       enable: false, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
     },
     optimization: {
-      minimize: true, // 启用代码压缩
+      minimize: false, // 启用代码压缩
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -93,15 +91,7 @@ export default defineConfig(async (merge, {
         },
       },
       webpackChain(chain) {
-        chain.resolve
-          .plugin("tsconfig-paths")
-          .use(TsconfigPathsPlugin)
-          .end()
-          .end()
-          .output.set(
-          "chunkLoadingGlobal",
-          // 特殊处理native-components的chunkLoadingGlobal防止两个taro冲突（native-components构建出的taro和直接构建的taro里面方法不同）
-          isBuildNativeComponents ? "webpackJsonp2" : "webpackJsonp");
+        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin).end();
       },
     },
     h5: {

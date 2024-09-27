@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "charge": "/native-components/components/charge/charge"
-  }
-}
