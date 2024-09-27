@@ -327,7 +327,7 @@ export default function Index() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  naviToVideoUpSystem(item.video_id)
+                  naviToVideoUp(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
                 </View>
@@ -351,12 +351,12 @@ export default function Index() {
       return (
         <>
           <SelfVideo id={headerVideo?.id} url={headerVideo?.url} height={575} img={headerVideo?.img} callback={(key)=>{
-            naviToVideoUpSystem(key)
+            naviToVideoUp(key)
           }} />
           <View className="components-video-shadow" />
           <View
             className="components-video-card"
-            onClick={() => naviToVideoUpSystem(headerVideo?.id)}
+            onClick={() => naviToVideoUp(headerVideo?.id)}
           >
             <Image
               className="components-video-card-image"
@@ -433,7 +433,7 @@ export default function Index() {
                     className="scroll-list-item"
                     onClick={() => {
                       // naviToVideo(item.id);
-                      naviToVideoUpSystem(item?.id)
+                      naviToVideoUp(item?.id)
                     }}
                   >
                     <Image
@@ -545,7 +545,7 @@ export default function Index() {
         </View>
         <FloatView
           show={showNew}
-          naviVideo={(id)=>{naviToVideoUpSystem(id)}}
+          naviVideo={(id)=>{naviToVideoUp(id)}}
           clickFun={()=>{setShowNew(false)}}
           img={message?.img}
           text={message?.video_name}

@@ -38,12 +38,6 @@ export default defineConfig(async (merge, { command, mode }) => {
           },
         },
       ],
-      [
-        'douyin-mp-plugin', {
-          version: '1.0.0', // 插件版本号，请根据实际情况填写
-          provider: 'douyin' // 必填，指定为抖音小程序
-        }
-      ]
     ],
     defineConstants: {},
     copy: {
