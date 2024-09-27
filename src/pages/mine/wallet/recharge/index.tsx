@@ -91,7 +91,7 @@ export default function Search() {
     currentMemberInfo(false);
     getWalletProducts().then((res) => {
       setInList(res.data.product_list);
-      setOption({ ...option, bar: res.data.product_list.length>0?res.data.product_list[0].id:option.bar });
+      setOption({ ...option, bar: res.data.product_list?.length>0?res.data.product_list[0].id:option.bar });
       Taro.hideToast()
     });
   };
@@ -338,7 +338,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList.length<=0) return null;
+    if(inList?.length<=0) return null;
     return (
       <View className="index_content_icon">
         <View className="index_content_icon_text">
@@ -360,7 +360,7 @@ export default function Search() {
   const coinContext = useMemo(() => {
     return (
       <View className="index_content_list">
-        {inList.map((res) => {
+        {inList?.map((res) => {
           let item: any = { ...res };
           let cName = "item";
           if (item.intro) {
@@ -409,7 +409,7 @@ export default function Search() {
   }, [inList, option])
   const payContext = useMemo(()=>{
     if(ENV) return;
-    if(inList.length<=0) return null;
+    if(inList?.length<=0) return null;
     return (
       <View className="index_content_label">
         {list.map((item) => {
@@ -441,10 +441,10 @@ export default function Search() {
       <HeaderView
         barHeight={option.barHeight}
         height={option.statusBarHeight}
-        text={inList.length>0?"充值":"信息"}
+        text={inList?.length>0?"充值":"信息"}
       />:null}
       <View className="index_content">
-        {inList.length>0?<View className="index_content_banner">
+        {inList?.length>0?<View className="index_content_banner">
           <View>创作不易，感谢您的支持</View>
           {option.is_pay?<View>解锁当前剧集需要{option.is_pay}{commonSetting.coinName}</View>:null}
         </View>:null}
@@ -454,7 +454,7 @@ export default function Search() {
         {coinContext}
         {/*支付方式列表*/}
         {payContext}
-        {inList.length>0?
+        {inList?.length>0?
             <View className="index_content_desc">
               <View className="title">充值须知</View>
               <View className="desc">
@@ -467,10 +467,10 @@ export default function Search() {
               </View>
             </View>
         :null}
-        <View className={inList&&inList.length>0?"index_content_btn":"index_content_btn_gray"}
+        <View className={inList&&inList?.length>0?"index_content_btn":"index_content_btn_gray"}
           onClick={()=>noTimeout(payOrder)}
         >
-          {inList.length>0?'确认支付':'暂不支持'}
+          {inList?.length>0?'确认支付':'暂不支持'}
 
         </View>
       </View>
