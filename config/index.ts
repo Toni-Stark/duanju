@@ -36,6 +36,25 @@ export default defineConfig(async (merge, {
               // 也没有详细测试去掉会不会有影响，建议保留
               onerror: "eh",
             },
+            // // 添加自定义组件
+            VideoPlayer: {
+              "album-id": "",
+              "episode-id": "",
+              "cloud-type": "",
+              "three-party-cloud":'',
+              "test":'',
+              "autoplay": '',
+              "object-fit": '',
+              "poster": '',
+              "bindplay": '',
+              "bindpause": '',
+              "bindended": '',
+              "loop":'',
+              "version": ""
+            },
+          },
+          componentsMap: {
+            VideoPlayer: "video-player",
           },
         },
       ],

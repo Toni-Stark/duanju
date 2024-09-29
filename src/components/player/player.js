@@ -21,20 +21,6 @@ Component({
     pm.onEnded((e) => {
       console.error("触发播放到末尾onEnded回调",e)
     })
-    // pm.onError((e) => {
-    //   console.error('触发onError回调,请确认2', e)
-    //   tt.showModal({
-    //     title: '触发onError回调,请确认',
-    //     content: JSON.stringify(e),
-    //     showCancel: false
-    //   });
-    //   console.log("触发onError回调:", JSON.stringify(e, null, 2))
-    // })
-    // 播放进度变化时
-    // pm.onTimeUpdate((e) => {
-    //   // 播放进度变化时触发，返回当前播放时间点及视频总时长，单位：秒(s)。event.detail = { currentTime, duration }。
-    //   console.log("触发播放进度变化onTimeUpdate回调:", JSON.stringify(e, null, 2))
-    // })
     pm.onWaiting((e) => {
       console.log("触发视频出现缓冲onWaiting回调:", JSON.stringify(e, null, 2))
     })
@@ -62,7 +48,7 @@ Component({
     pm.setRecommendConfig({
     entryType: 1,
     switchStatus: true,
-    data: 
+    data:
     {
         albumId: "7349101834553786889",
         seq: 1,

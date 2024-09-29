@@ -34,6 +34,7 @@ export default defineAppConfig({
     "pages/hot/cate/index",
     "pages/hot/theater/index",
     "pages/video_up/index",
+    "pages/video_de/index",
     "pages/playlet/playlet",
     "pages/mine/system/user/index",
     "pages/mine/system/pro/index",

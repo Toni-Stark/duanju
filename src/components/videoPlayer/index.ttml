@@ -1,0 +1,22 @@
+<block>
+    <video-player
+        bindtimeupdate="timeUpdateHandler"
+        bindgetsource="getSourceHandler"
+        enable-dark-water-mark="{{true}}"
+        cloud-type="{{1}}"
+        version="1"
+        album-id="{{data.aid}}"
+        episode-id="{{data.eid}}"
+        id="{{data.id}}"
+        autoplay="{{autoplay}}"
+        style="width:100%; height:100%;z-index: 1;"
+        object-fit="contain"
+        show-fullscreen-btn="{{false}}"
+        show-play-btn="{{false}}"
+        vslide-gesture-in-fullscreen="{{false}}"
+        controls="{{false}}"
+        bindended="nextVideo"
+        binderror="error"
+        poster="{{data.cover}}"
+    >
+</block>
