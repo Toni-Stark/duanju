@@ -4,6 +4,7 @@ import "./index.less";
 import {memo} from "react";
 
 export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataInfo,startPlay,setControls,onEnded,stopPlay}) => {
+  // let bool = index === ind && currentInfo?.url;
   let bool = index === ind && currentInfo?.url;
   return (
     <>
@@ -37,9 +38,10 @@ export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataI
           style={`width:100%;height:100%;opacity: ${bool ? 1 : 0}, zIndex:500`}
           object-fit="cover"
           autoplay={true}
-          albumId='7418886688392348175'
-          episodeId="7418886693673976354"
-          cloudType="2"
+          id={dataInfo.id}
+          albumId={dataInfo.albumId}
+          episodeId={currentInfo.episodeId}
+          cloudType="1"
           bindplay={startPlay}
           bindpause={stopPlay}
           bindended={onEnded}
