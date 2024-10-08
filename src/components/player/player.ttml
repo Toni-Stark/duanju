@@ -1,4 +1,0 @@
-<view class="box">
-    <text>{{title}}</text>
-    <button bindtap="log">打log</button>
-</view>

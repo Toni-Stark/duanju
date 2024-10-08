@@ -3,7 +3,6 @@ import Taro, { useDidShow } from "@tarojs/taro";
 import "taro-ui/dist/style/components/loading.scss";
 import "./index.less";
 import {useMemo, useState} from "react";
-import header from "../../static/source/header.png";
 import mon from "../../static/icon/mon.png";
 import code from "../../static/icon/code.png";
 import kefu from "../../static/icon/kefu.png";
@@ -251,29 +250,46 @@ export default function Mine() {
   }, [list, option,ENV])
 
   return (
-    <View className="index">
-      <View className="index_body">
-        <View className="index_body_header">
-          <Image
-            mode="widthFix"
-            onClick={naviToInfo}
-            className="index_body_header_img"
-            src={header}
-          />
-        </View>
-        <View className="index_body_content">
-          <View className="content-wel">
-            {/* 用户名信息 */}
-            {headerContent}
-            {/* 账户信息 */}
-            {userContent}
-            {/* 账户信息 */}
-            {coinContent}
-            {/* 导航信息 */}
-            {naviContent}
-          </View>
-        </View>
-      </View>
+    <View className="index23123">
+      {/*<View className="index_body">*/}
+      {/*  <View className="index_body_header">*/}
+      {/*    <Image*/}
+      {/*      mode="widthFix"*/}
+      {/*      onClick={naviToInfo}*/}
+      {/*      className="index_body_header_img"*/}
+      {/*      src={header}*/}
+      {/*    />*/}
+      {/*  </View>*/}
+      {/*  <View className="index_body_content">*/}
+      {/*    <View className="content-wel">*/}
+      {/*      /!* 用户名信息 *!/*/}
+      {/*      {headerContent}*/}
+      {/*      /!* 账户信息 *!/*/}
+      {/*      {userContent}*/}
+      {/*      /!* 账户信息 *!/*/}
+      {/*      {coinContent}*/}
+      {/*      /!* 导航信息 *!/*/}
+      {/*      {naviContent}*/}
+      {/*    </View>*/}
+      {/*  </View>*/}
+      {/*</View>*/}
+      <video-player
+        style={`width:100%;height:100%;opacity:1, zIndex:500`}
+        // object-fit="cover"
+        // autoplay={true}
+        // albumId={dataInfo.drama_id}
+        albumId="7418886688392348175"
+        // // episodeId={currentInfo.task_id}
+        episodeId="7418886693673910818"
+        cloudType="1"
+        // bindplay={startPlay}
+        // bindpause={stopPlay}
+        // bindended={onEnded}
+        // poster={ENV?null:dataInfo?.img}
+        // version="1"
+        // loop={false}
+        test="test" ></video-player>
     </View>
   );
 }
+
