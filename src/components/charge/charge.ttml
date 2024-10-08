@@ -20,7 +20,6 @@
                 display: flex;justify-content: center;align-items:center;" bindtap="payThis">
 
                 <text>支付解锁当前集</text>
-
             </view>
             <view style="border-style:solid; border-radius: 15rpx;border-color: rgb(135, 140, 135);
                 border-width: 1rpx;width: 48%;height: 240rpx;

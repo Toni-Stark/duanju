@@ -53,9 +53,9 @@ export default defineConfig(async (merge, {
               "version": ""
             },
           },
-          // componentsMap: {
-          //   VideoPlayer: "video-player",
-          // },
+          componentsMap: {
+            VideoPlayer: "video-player",
+          },
         },
       ],
     ],

@@ -295,6 +295,9 @@ export default function Index() {
   const naviToVideoUpSystem = (albumId, episodeId = "1") => {
     if (tt.canIUse('PlayletExtension')) {
       //跳转至绑定短剧的页面
+      // Taro.navigateTo({
+      //   url: `../playlet/playlet?seq=1&tt_album_id=7419982094979301938&tt_episode_id=7419982110981636654353`,
+      // });
       Taro.navigateTo({
         url: `../video_de/index?id=${albumId}`,
       });
