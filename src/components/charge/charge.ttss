@@ -1,5 +1,0 @@
-.video-footer {
-    background-color: rgb(255, 255, 255);
-    height: 1000rpx;
-    width: 100%;
-}

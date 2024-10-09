@@ -33,7 +33,6 @@ import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/s
 import {noTimeout, setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
 import {CurrentViewVideo} from "@/components/detailVideo";
-
 let timePlay = 0;
 let timerPlay = null;
 let loadTime = null;
