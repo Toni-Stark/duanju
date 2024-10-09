@@ -96,7 +96,11 @@ export default function Code() {
                 if(ENV){
                   TShow("抖音权限申请中，暂时无法使用");
                 } else {
-                  TShow("微信权限申请中，暂时无法使用");
+                  if(err.errMsg.indexOf("cancel")>=0){
+                    TShow("取消保存");
+                  } else {
+                    TShow("微信权限申请中，暂时无法使用");
+                  }
                 }
               },
             });

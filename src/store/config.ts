@@ -27,19 +27,19 @@ const config = {
   },
   wx: {
     dev: {
-      appid: "wx4fa1b29d25262470",
-      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
-      WEB_VIEW: "https://video.weiyantj.cn/api/"
+      appid: "wx00068c582abf3769",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
     test: {
-      appid: "wx4fa1b29d25262470",
-      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
-      WEB_VIEW: "https://video.weiyantj.cn/api/"
+      appid: "wx00068c582abf3769",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
     prod: {
-      appid: "wx4fa1b29d25262470",
-      BASE_URL: "https://video.weiyantj.cn/api/7jj5DfGG/",
-      WEB_VIEW: "https://video.weiyantj.cn/api/"
+      appid: "wx00068c582abf3769",
+      BASE_URL: "https://niubojc.com/api/bSEjdA13/",
+      WEB_VIEW: "https://niubojc.com/api/"
     },
   },
 };
