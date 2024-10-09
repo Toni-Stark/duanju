@@ -52,6 +52,7 @@ export default defineConfig(async (merge, {
               "call": '',
               "error": '',
               "loop":'',
+              "poster-size":"",
               "version": ""
             },
           },

@@ -1,15 +1,14 @@
 import {Image, Video, View} from "@tarojs/components";
 
 import "./index.less";
-import {memo} from "react";
+import {memo, useMemo} from "react";
 import CurrentVideoPlayer from "@/components/newPlayer";
 
 export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataInfo,startPlay,setControls,onEnded,stopPlay}) => {
-  // let bool = index === ind && currentInfo?.url;
   let bool = index === ind && currentInfo?.url;
-  return (
-    <>
-      {bool ?
+  const useVideo = useMemo(()=>{
+    if(!bool)return null;
+    return (
         <CurrentVideoPlayer
           albumId={dataInfo.drama_id}
           episodeId={currentInfo.task_id}
@@ -22,10 +21,13 @@ export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataI
           onEnded={onEnded}
           onPlay={startPlay}
         />
-        : null}
-      { !bool
-        ?
-        <Image className="center_video_img" mode={"aspectFill"} src={dataInfo?.img} style={{opacity: bool ? 0 : 1, zIndex: bool ? 0 : 10000}}/>
+    )
+  }, [bool,dataInfo,currentInfo,onEnded,startPlay])
+  return (
+    <>
+      {useVideo}
+      { !bool?
+        <Image className="center_video_img" mode={"aspectFill"} src={dataInfo?.img} style={{opacity: bool ? 0 : 1}}/>
         :!controls?
           <View className="center_video_view" onClick={()=>{
             setControls(true)

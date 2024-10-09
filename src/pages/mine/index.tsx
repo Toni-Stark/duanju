@@ -12,8 +12,6 @@ import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
-import VideoPlayer from "@/components/newPlayer";
-import CurrentVideoPlayer from "@/components/newPlayer";
 
 export default function Mine() {
   const [option, setOption] = useState({

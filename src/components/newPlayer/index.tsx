@@ -7,9 +7,6 @@ const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnd
     // 在这里处理错误，比如显示提示信息
     onError(detail)
   };
-  const handleVideoEnd = (event) => {
-    console.log(event,'handleVideoEnd')
-  }
   const handleVideoSource = (event) => {
     console.log(event,'handleVideoSource')
   }
@@ -47,7 +44,8 @@ const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnd
         onPlay={handleVideoPlay}
         onGetsource={handleVideoSource}
         version={1}
-        poster={img}
+        posterSize="fill"
+        // poster={img}
         url={url}
       />
     </View>

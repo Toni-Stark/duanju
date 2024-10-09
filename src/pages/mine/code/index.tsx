@@ -29,7 +29,6 @@ export default function Code() {
     }
     return {
       title: '放牛娃短剧',
-      imageUrl: 'https://fanyi-cdn.cdn.bcebos.com/static/cat/asset/logo.2481f256.png',
       path: '/pages/index/index?iv='+userInfo.sn,
     }
   })

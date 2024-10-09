@@ -110,7 +110,9 @@ export default function Search() {
           setLoading(true)
         } else {
           setInList(result.data.product_list);
-          setOption({...option, bar: result.data.product_list[0].id});
+          if(result.data.product_list.length>0){
+            setOption({...option, bar: result.data.product_list[0].id});
+          }
           THide()
           setLoading(true)
         }
@@ -161,13 +163,11 @@ export default function Search() {
       return;
     }
     TShow("支付中", "loading", 10000);
-
     getCheckLogin().then((result) => {
       let {token} = result;
       SetStorageSync("allJson", result);
       SetStorage("token", token).then(() => {
         if(ENV) {
-          console.log(23424324)
         } else {
           payApiStatus({ product_id: option.bar, v_id:para?.v_id });
         }
@@ -362,7 +362,7 @@ export default function Search() {
     return 0;
   };
   const currentContext = useMemo(() => {
-    if(inList.length<=0 && (!payData || payData?.product_list.length<=0)) return null;
+    if(inList?.length<=0 && payData?.product_list?.length<=0) return null;
 
     return (
       <View className="index_content_icon">
