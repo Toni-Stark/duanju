@@ -12,6 +12,8 @@ import emo from "../../static/icon/e_mo.png";
 import { getMemberInfo, getMemberSign } from "@/common/interface";
 import {commonSetting} from "@/store/config";
 import {noTimeout} from "@/common/tools";
+import VideoPlayer from "@/components/newPlayer";
+import CurrentVideoPlayer from "@/components/newPlayer";
 
 export default function Mine() {
   const [option, setOption] = useState({
@@ -65,7 +67,6 @@ export default function Mine() {
         loading: true,
       }
       setOption({...obj});
-      console.log(obj)
     });
 
     Taro.setNavigationBarTitle({
@@ -249,6 +250,19 @@ export default function Mine() {
       </View>
     )
   }, [list, option,ENV])
+
+  const getSourceHandler = (e) => {
+    console.log(e,'111')
+  }
+  const nextVideo=(e) =>{
+    console.log(e,'222')
+  }
+  const timeUpdateHandler=(e) =>{
+    console.log(e,'333')
+  }
+  const error = (e) =>{
+    console.log('error', e)
+  }
 
   return (
     <View className="index">

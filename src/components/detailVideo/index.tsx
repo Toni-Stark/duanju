@@ -2,6 +2,7 @@ import {Image, Video, View} from "@tarojs/components";
 
 import "./index.less";
 import {memo} from "react";
+import CurrentVideoPlayer from "@/components/newPlayer";
 
 export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataInfo,startPlay,setControls,onEnded,stopPlay}) => {
   // let bool = index === ind && currentInfo?.url;
@@ -34,23 +35,35 @@ export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataI
         //   loop={false}
         //   objectFit="cover"
         // />
-        <video-player
-          style={`width:100%;height:100%;opacity: ${bool ? 1 : 0}, zIndex:500`}
-          object-fit="cover"
-          autoplay={true}
+        // <video-player
+        //   style={`width:100%;height:100%;opacity: ${bool ? 1 : 0}, zIndex:500`}
+        //   object-fit="cover"
+        //   autoplay={true}
+        //   id={dataInfo.id}
+        //   // albumId={dataInfo.drama_id}
+        //   // episodeId={currentInfo.task_id}
+        //   albumId="7419982094979301938"
+        //   episodeId="7419982110981636671"
+        //   cloudType="1"
+        //   bindplay={startPlay}
+        //   bindpause={stopPlay}
+        //   bindended={onEnded}
+        //   poster={ENV?null:dataInfo?.img}
+        //   version="1"
+        //   loop={false}
+        //   test="test" />
+        <CurrentVideoPlayer
+          albumId={dataInfo.drama_id}
+          episodeId={currentInfo.task_id}
           id={dataInfo.id}
-          // albumId={dataInfo.drama_id}
-          // episodeId={currentInfo.task_id}
-          albumId="7419982094979301938"
-          episodeId="7419982110981636671"
-          cloudType="1"
-          bindplay={startPlay}
-          bindpause={stopPlay}
-          bindended={onEnded}
-          poster={ENV?null:dataInfo?.img}
-          version="1"
-          loop={false}
-          test="test" />
+          img={dataInfo.img}
+          url={currentInfo?.url}
+          onError={(e)=>{
+            console.log('视频播放出错:', e);
+          }}
+          onEnded={onEnded}
+          onPlay={startPlay}
+        />
         : null}
       { !bool
         ?

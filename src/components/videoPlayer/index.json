@@ -1,5 +1,8 @@
 {
   "component": true,
-  "usingComponents": {},
+  "usingComponents": {
+    "video-player":"ext://industry/video-player"
+  },
   "component2": true
 }
+

@@ -49,12 +49,14 @@ export default defineConfig(async (merge, {
               "bindplay": '',
               "bindpause": '',
               "bindended": '',
+              "call": '',
+              "error": '',
               "loop":'',
               "version": ""
             },
           },
           componentsMap: {
-            VideoPlayer: "video-player",
+            VideoPlayer: "video_player",
           },
         },
       ],
