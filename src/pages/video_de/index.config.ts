@@ -1,5 +1,6 @@
 export default definePageConfig({
-  navigationBarTitleText: "  ",
+  navigationBarTitleText: "   ",
+  enableShareAppMessage: true,
   usingComponents: {
     "video_player":"ext://industry/video-player"
   }

@@ -283,14 +283,25 @@ export default function Index() {
       });
     })
   };
-  const naviToVideoUp = (id) => {
-    noTimeout(()=> {
-      if (!id) return;
+  const naviToVideoUpSystem = (id, episodeId = "1") => {
+    if (tt.canIUse('PlayletExtension')) {
+      //跳转至绑定短剧的页面
+      // Taro.navigateTo({
+      //   url: `../playlet/playlet?seq=1&tt_album_id=7419982094979301938&tt_episode_id=7419982110981636654353`,
+      // });
       Taro.navigateTo({
-        url: "../video_up/index?id=" + id,
+        url: `../video_de/index?id=${id}`,
       });
-      setShowNew(false)
-    })
+    } else {
+      noTimeout(()=> {
+        if (!id) return;
+        Taro.navigateTo({
+          url: "../video_up/index?id=" + id,
+        });
+        setShowNew(false)
+      })
+      // ... 跳转至开发者自有播放页
+    }
   };
 
   const currentSwiper = useMemo(() => {
@@ -310,7 +321,7 @@ export default function Index() {
             return (
               <SwiperItem>
                 <View className="swiper-view-views-item" onClick={()=>{
-                  naviToVideoUp(item.video_id)
+                  naviToVideoUpSystem(item.video_id)
                 }}>
                   <Image className="img" src={item.img} />
                 </View>
@@ -334,12 +345,12 @@ export default function Index() {
       return (
         <>
           <SelfVideo id={headerVideo?.id} url={headerVideo?.url} height={575} img={headerVideo?.img} callback={(key)=>{
-            naviToVideoUp(key)
+            naviToVideoUpSystem(key)
           }} />
           <View className="components-video-shadow" />
           <View
             className="components-video-card"
-            onClick={() => naviToVideoUp(headerVideo?.id)}
+            onClick={() => naviToVideoUpSystem(headerVideo?.id)}
           >
             <Image
               className="components-video-card-image"
@@ -416,7 +427,7 @@ export default function Index() {
                     className="scroll-list-item"
                     onClick={() => {
                       // naviToVideo(item.id);
-                      naviToVideoUp(item?.id)
+                      naviToVideoUpSystem(item?.id)
                     }}
                   >
                     <Image
@@ -528,7 +539,7 @@ export default function Index() {
         </View>
         <FloatView
           show={showNew}
-          naviVideo={(id)=>{naviToVideoUp(id)}}
+          naviVideo={(id)=>{naviToVideoUpSystem(id)}}
           clickFun={()=>{setShowNew(false)}}
           img={message?.img}
           text={message?.video_name}

@@ -206,3 +206,102 @@
     }
   }
 }
+
+.pay_modal_view {
+  padding: 10Px;
+  box-sizing: border-box;
+  &_list {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    &_item {
+      width: 49%;
+      border-radius: 4Px;
+      overflow: hidden;
+      margin: 5Px 0;
+      position: relative;
+      &_title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #101010;
+        font-size: 14Px;
+        height: 90Px;
+        border-radius: 4Px 4Px 0 0;
+        background-color: #fcf8ea;
+        &_main {
+          display: flex;
+          align-items: flex-end;
+          &_price {
+            font-size: 24Px;
+            line-height: 1;
+            margin-right: 2Px;
+          }
+        }
+        &_text {
+          color: #505559;
+          font-size: 12Px;
+          &_price {
+            color: #8C7411;
+          }
+        }
+      }
+      &_desc {
+        color: #8C7411;
+        font-size: 14Px;
+        height: 30Px;
+        line-height: 30Px;
+        text-align: center;
+        border-radius: 0 0 4Px 4Px;
+        background-color: #fbf2cc;
+      }
+      .vip_image {
+        display: none;
+      }
+    }
+    .all_shop {
+      .pay_modal_view_list_item_title {
+        background-color: #fcf8ea;
+      }
+      .pay_modal_view_list_item_desc {
+        background-color: #fbf2cc;
+        color: #b59519;
+      }
+    }
+    .def_shop {
+      .pay_modal_view_list_item_desc {
+        background: #605e54;
+        color: #ffffff;
+      }
+    }
+    .vip_shop {
+      .vip_image {
+        display: flex;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 36Px;
+      }
+    }
+    &_pav {
+      min-height: 80Px;
+      font-size: 14Px;
+      color: #505559;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+.no_ios {
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17Px;
+  color: #8c8c8c;
+}

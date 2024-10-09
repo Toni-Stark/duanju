@@ -2,6 +2,7 @@ import { Video, View } from "@tarojs/components";
 
 import "./index.less";
 import Taro from "@tarojs/taro";
+import {noTimeout} from "@/common/tools";
 
 type Props = {
   height: any;
@@ -12,9 +13,18 @@ export const IndexVideo = (props: Props) => {
   const { data, height, id } = props;
 
   const naviToVideoUp = (id) => {
-    Taro.navigateTo({
-      url: "../video_up/index?id=" + id,
-    });
+    if (tt.canIUse('PlayletExtension')) {
+      Taro.navigateTo({
+        url: `../video_de/index?id=${id}`,
+      });
+    } else {
+      noTimeout(()=> {
+        if (!id) return;
+        Taro.navigateTo({
+          url: "../video_up/index?id=" + id,
+        });
+      })
+    }
   };
   return (
     <View className="mini-view-large" onClick={() => naviToVideoUp(data.id)}>

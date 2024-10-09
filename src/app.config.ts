@@ -34,6 +34,7 @@ export default defineAppConfig({
     "pages/hot/cate/index",
     "pages/hot/theater/index",
     "pages/video_up/index",
+    "pages/video_de/index",
     "pages/mine/system/user/index",
     "pages/mine/system/pro/index",
     "pages/mine/system/pay/index",
@@ -41,6 +42,7 @@ export default defineAppConfig({
   ],
   window:window,
   permission:permission,
+  // NOTE 需要编译成native的组件，并且需要配套的wrapper组件接受props（参考components/player-wrapper）
   tabBar: {
     custom: false,
     list: [
@@ -74,4 +76,5 @@ export default defineAppConfig({
     backgroundColor: "#1e212a", // 背景颜色
     borderStyle: "black", // 边框样式
   },
+
 });

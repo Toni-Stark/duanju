@@ -1,9 +1,22 @@
 {
   "miniprogramRoot": "./",
-  "projectname": "app_template",
-  "appid": "testAppId",
+  "projectname": "taro-react",
+  "appid": "ttd8c0ae7d47f7595601",
   "setting": {
     "es6": false,
     "minified": false
+  },
+  "condition": {
+    "miniprogram": {
+      "current": 0,
+      "list": [
+        {
+          "name": "pages/video_de/index",
+          "query": "id=39",
+          "id": 0,
+          "pathName": "pages/video_de/index"
+        }
+      ]
+    }
   }
 }

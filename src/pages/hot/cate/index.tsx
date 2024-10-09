@@ -104,11 +104,18 @@ export default function Search() {
     getDataList(option.active, 1);
   };
   const naviToVideoUp = (id) => {
-    noTimeout(()=> {
+    if (tt.canIUse('PlayletExtension')) {
       Taro.navigateTo({
-        url: "../../video_up/index?id=" + id,
+        url: `../../video_de/index?id=${id}`,
       });
-    })
+    } else {
+      noTimeout(()=> {
+        if (!id) return;
+        Taro.navigateTo({
+          url: "../../video_up/index?id=" + id,
+        });
+      })
+    }
   };
 
   const currentNoneView = useMemo(()=>{

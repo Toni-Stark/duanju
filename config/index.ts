@@ -4,9 +4,10 @@ const TerserPlugin = require("terser-webpack-plugin");
 import devConfig from "./dev";
 import prodConfig from "./prod";
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
-export default defineConfig(async (merge, { command, mode }) => {
+export default defineConfig(async (merge, {
+  command, mode }) => {
   const baseConfig: UserConfigExport = {
-    projectName: "app_template",
+    projectName: "taro-react",
     date: "2023-11-13",
     designWidth: 750,
     deviceRatio: {
@@ -35,13 +36,40 @@ export default defineConfig(async (merge, { command, mode }) => {
               // 也没有详细测试去掉会不会有影响，建议保留
               onerror: "eh",
             },
+            // // 添加自定义组件
+            VideoPlayer: {
+              "album-id": "",
+              "episode-id": "",
+              "cloud-type": "",
+              "three-party-cloud":'',
+              "test":'',
+              "autoplay": '',
+              "object-fit": '',
+              "poster": '',
+              "bindplay": '',
+              "bindpause": '',
+              "bindended": '',
+              "call": '',
+              "error": '',
+              "loop":'',
+              "version": ""
+            },
+          },
+          componentsMap: {
+            VideoPlayer: "video_player",
           },
         },
       ],
     ],
     defineConstants: {},
     copy: {
-      patterns: [],
+      // NOTE 行业sdk的package.json
+      patterns: [
+        {
+          from: "douyin.package.json",
+          to: "dist/package.json",
+        },
+      ],
       options: {},
     },
     framework: "react",
@@ -50,7 +78,7 @@ export default defineConfig(async (merge, { command, mode }) => {
       enable: false, // Webpack 持久化缓存配置，建议开启。默认配置请参考：https://docs.taro.zone/docs/config-detail#cache
     },
     optimization: {
-      minimize: true, // 启用代码压缩
+      minimize: false, // 启用代码压缩
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -84,7 +112,7 @@ export default defineConfig(async (merge, { command, mode }) => {
         },
       },
       webpackChain(chain) {
-        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin);
+        chain.resolve.plugin("tsconfig-paths").use(TsconfigPathsPlugin).end();
       },
     },
     h5: {
