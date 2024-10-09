@@ -1,5 +1,6 @@
 import { View } from '@tarojs/components';
 import {useEffect} from "react";
+import Taro from "@tarojs/taro";
 
 const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnded}) => {
   const handleVideoError = (event) => {
@@ -23,7 +24,7 @@ const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnd
   }
   useEffect(()=>{
     setTimeout(()=>{
-      let videoContext = tt.createVideoContext("123456");
+      let videoContext = Taro.createVideoContext("123456");
       console.log('videoContext', videoContext);
       videoContext.play();
     },500)

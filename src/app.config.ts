@@ -1,4 +1,4 @@
-console.log(process.env, 'process')
+console.log(process.env, 'processssssssssssssssssssssssssssssssss')
 let env = process.env.npm_lifecycle_event.indexOf('build:tt')>=0;
 let window = env?{}:{
   navigationStyle: "custom",
@@ -41,7 +41,6 @@ export default defineAppConfig({
   ],
   window:window,
   permission:permission,
-  // NOTE 需要编译成native的组件，并且需要配套的wrapper组件接受props（参考components/player-wrapper）
   tabBar: {
     custom: false,
     list: [

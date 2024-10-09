@@ -253,7 +253,7 @@ export default function Mine() {
   return (
     <View className="index">
       <View className="index_body">
-        <View className="index_body_header">
+        <View className="index_body_header" style={{paddingTop:ENV? 65:95}}>
           <Image
             mode="widthFix"
             onClick={naviToInfo}

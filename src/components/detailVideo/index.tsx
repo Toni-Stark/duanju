@@ -8,7 +8,8 @@ export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataI
   let bool = index === ind && currentInfo?.url;
   const useVideo = useMemo(()=>{
     if(!bool)return null;
-    return (
+    if(ENV){
+      return (
         <CurrentVideoPlayer
           albumId={dataInfo.drama_id}
           episodeId={currentInfo.task_id}
@@ -21,6 +22,34 @@ export const CurrentViewVideo = memo(({ind, index,controls,currentInfo,ENV,dataI
           onEnded={onEnded}
           onPlay={startPlay}
         />
+      )
+    }
+    return (
+      <Video
+        className="center_video_large"
+        src={currentInfo?.url}
+        poster={ENV?null:dataInfo?.img}
+        style={{opacity: bool ? 1 : 0, zIndex:500}}
+        initialTime={0}
+        controls={true}
+        onControlsToggle={()=>{console.log(234234324)}}
+        onPlay={startPlay}
+        onPause={stopPlay}
+        onEnded={onEnded}
+        showPlayBtn={controls}
+        showBottomProgress={controls}
+        vslideGesture={false}
+        showFullscreenBtn={false}
+        pageGesture={false}
+        enableProgressGesture={false}
+        vslideGestureInFullscreen={false}
+        autoplay={true}
+        enablePlayGesture
+        showCenterPlayBtn
+        playBtnPosition="center"
+        loop={false}
+        objectFit="cover"
+      />
     )
   }, [bool,dataInfo,currentInfo,onEnded,startPlay])
   return (
