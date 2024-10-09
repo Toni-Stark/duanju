@@ -57,6 +57,7 @@ export default function List() {
   const [ENV, setENV] = useState(false);
 
   useDidShow(()=>{
+
     setENV(GetStorageSync('ENV') == "TT")
     if(GetStorageSync('ENV') == "TT") {
       Taro.setNavigationBarTitle({
@@ -192,18 +193,14 @@ export default function List() {
   };
 
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
-      Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
-      });
-    } else {
-      noTimeout(()=> {
+
+    noTimeout(()=> {
+
         if (!id) return;
         Taro.navigateTo({
           url: "../video_up/index?id=" + id,
         });
-      })
-    }
+    })
   };
 
   const currentHeader = useMemo(() => {
@@ -219,6 +216,7 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
+              console.log(headerInfo,'head1')
               naviToVideoUp(headerInfo?.video_id);
             }}
           >
@@ -229,8 +227,9 @@ export default function List() {
               height={option.screenWidth}
               img={headerInfo?.video_img}
               callback={(key)=>{
-              naviToVideoUp(key)
-            }} />
+                // naviToVideoUp(key)
+              }}
+            />
             <View className="components-video-large-content">
               <View className="large-content-main">
                 <View className="large-content-main-title">

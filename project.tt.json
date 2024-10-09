@@ -11,10 +11,10 @@
       "current": 0,
       "list": [
         {
-          "name": "pages/video_de/index",
+          "name": "pages/video_up/index",
           "query": "id=39",
           "id": 0,
-          "pathName": "pages/video_de/index"
+          "pathName": "pages/video_up/index"
         }
       ]
     }

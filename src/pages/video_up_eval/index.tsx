@@ -33,6 +33,7 @@ import {GetStorageSync, RemoveStorageSync, SetStorage, SetStorageSync} from "@/s
 import {noTimeout, setTimFun} from "@/common/tools";
 import {commonSetting} from "@/store/config";
 import {CurrentViewVideo} from "@/components/detailVideo";
+
 let timePlay = 0;
 let timerPlay = null;
 let loadTime = null;
@@ -78,6 +79,7 @@ export default function VideoView() {
   const [loading, setLoading] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
   const [params, setParams] = useState(undefined);
+  const [root, setRoot] = useState(0);
   const [ENV, setENV] = useState(false);
   const [controls, setControls] = useState(false);
   const [pnData, setPnData] = useState(undefined);
@@ -90,7 +92,7 @@ export default function VideoView() {
     }
     return {
       title: dataInfo.name,
-      path: "/pages/video_de/index?id="+dataInfo.id+"&iv="+userInfo.sn,
+      path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
     };
   });
   useDidShow(() => {
@@ -193,20 +195,20 @@ export default function VideoView() {
   const refreshVideoInfo = (params) => {
     if (params?.pn) {
       let param = params;
-      SetStorage('pn', param?.pn).then(()=>{
-        SetStorage('pn_data', param).then(()=>{
-          setLoading(true)
-          setParams(param)
-          console.log(param, 'param')
-          getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) }, 54);
+        SetStorage('pn', param?.pn).then(()=>{
+          SetStorage('pn_data', param).then(()=>{
+            setLoading(true)
+            setParams(param)
+            console.log(param, 'param')
+            getVideoList({ ...param,v_id: param.id, pn_data: JSON.stringify(param) }, 54);
+          });
         });
-      });
-      getWalletTmpProducts({
-        v_id: params.id,
-        pn: params.pn,
-      }).then((res)=>{
-        setPayData(res.data)
-      })
+        getWalletTmpProducts({
+          v_id: params.id,
+          pn: params.pn,
+        }).then((res)=>{
+          setPayData(res.data)
+        })
     } else {
       setLoading(true)
       console.log("刷新页面")
@@ -357,18 +359,18 @@ export default function VideoView() {
 
 
   const clickItemValue = (index, value) => {
-    let list: any = fivList;
-    let bool = value == 1 ? 2 : 1;
-    if (value) {
-      list[index].check = bool;
-      if (value == 1) {
-        list[index].value = Number(list[index].value) + 1;
-      } else {
-        list[index].value = Number(list[index].value) - 1;
+      let list: any = fivList;
+      let bool = value == 1 ? 2 : 1;
+      if (value) {
+        list[index].check = bool;
+        if (value == 1) {
+          list[index].value = Number(list[index].value) + 1;
+        } else {
+          list[index].value = Number(list[index].value) - 1;
+        }
+        setFivList([...list]);
       }
-      setFivList([...list]);
-    }
-    currentVideoFavorite(index, bool);
+      currentVideoFavorite(index, bool);
   };
   const shareView = () => {
     noTimeout(()=> {
@@ -419,9 +421,9 @@ export default function VideoView() {
     }
   };
   const openLayout = () => {
-    let info = pageList.find((item) => item.title === current.page);
-    setCurrent({...current, b_list: info.list});
-    setShow(true);
+      let info = pageList.find((item) => item.title === current.page);
+      setCurrent({...current, b_list: info.list});
+      setShow(true);
   };
   const chooseCurrent = (val) => {
     let info = allList.find((item) => item.id === val);
@@ -505,10 +507,8 @@ export default function VideoView() {
     }, 1000);
   };
   const stopPlay = () => {
-    console.log(123)
   };
   const onEnded = () => {
-    console.log(234)
     if(index >= allList.length) return;
     let info = allList[index+1];
     refreshVideoInfo({...params, id: dataInfo.id, current: info.id, index: index+1 });
@@ -920,7 +920,7 @@ export default function VideoView() {
     }
     return (
       <View className={cla} key={index} onClick={()=>{
-        chooseOne(item)
+          chooseOne(item)
       }}>
         <View className="pay_modal_view_list_item_title">
           <View className="pay_modal_view_list_item_title_main">

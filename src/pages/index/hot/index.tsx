@@ -98,18 +98,14 @@ export default function Hot() {
     getDataList(1);
   };
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
-      Taro.navigateTo({
-        url: `../../video_de/index?id=${id}`,
-      });
-    } else {
-      noTimeout(()=> {
+    noTimeout(()=> {
+
         if (!id) return;
         Taro.navigateTo({
           url: "../../video_up/index?id=" + id,
         });
-      })
-    }
+    })
+
   };
   return (
     <View className="index">

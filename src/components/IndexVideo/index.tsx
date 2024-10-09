@@ -13,18 +13,12 @@ export const IndexVideo = (props: Props) => {
   const { data, height, id } = props;
 
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
+    noTimeout(()=> {
+      if (!id) return;
       Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
+        url: "../video_up/index?id=" + id,
       });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
-        Taro.navigateTo({
-          url: "../video_up/index?id=" + id,
-        });
-      })
-    }
+    })
   };
   return (
     <View className="mini-view-large" onClick={() => naviToVideoUp(data.id)}>

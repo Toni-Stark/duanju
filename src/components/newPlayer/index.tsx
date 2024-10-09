@@ -29,7 +29,7 @@ const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnd
       let videoContext = tt.createVideoContext("123456");
       console.log('videoContext', videoContext);
       videoContext.play();
-    },2000)
+    },500)
   },[])
 
   return (
