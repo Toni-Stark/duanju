@@ -125,7 +125,7 @@ export default function Cate() {
     })
   };
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
+    if (ENV && tt.canIUse('PlayletExtension')) {
       Taro.navigateTo({
         url: `../../video_de/index?id=${id}`,
       });

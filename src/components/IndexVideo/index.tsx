@@ -3,6 +3,7 @@ import { Video, View } from "@tarojs/components";
 import "./index.less";
 import Taro from "@tarojs/taro";
 import {noTimeout} from "@/common/tools";
+import {GetStorageSync} from "@/store/storage";
 
 type Props = {
   height: any;
@@ -13,7 +14,7 @@ export const IndexVideo = (props: Props) => {
   const { data, height, id } = props;
 
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
+    if (GetStorageSync('ENV') == "TT" && tt.canIUse('PlayletExtension')) {
       Taro.navigateTo({
         url: `../video_de/index?id=${id}`,
       });

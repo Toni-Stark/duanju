@@ -98,8 +98,9 @@ export default function List() {
           }
           setStaticInfo({p: params.p, list: list, count: list.length});
           setNewData(list);
+          console.log(headerInfo, list)
           if(!headerInfo && list.length>0){
-            setHeaderInfo({
+            setHeaderInfo({...headerInfo,
               video_url: list[0].video_url,
               video_img: list[0].video_img,
               video_id: list[0].video_id,
@@ -124,7 +125,7 @@ export default function List() {
     getIndexRecommend().then((result) => {
       let data = result.data[0];
       if(!headerInfo){
-        setHeaderInfo({
+        setHeaderInfo({...headerInfo,
           video_url: data.url,
           video_img: data.img,
           video_id: data.video_id,
@@ -191,19 +192,21 @@ export default function List() {
     getTabList()
   };
 
-  const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
-      Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
-      });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
+  const naviToVideoUp = (id,num) => {
+    console.log(headerInfo,num)
+    noTimeout(()=> {
+      console.log(id,ENV, Taro.canIUse("PlayletExtension"))
+      if (ENV && Taro.canIUse('PlayletExtension')) {
         Taro.navigateTo({
-          url: "../video_up/index?id=" + id,
+          url: `../video_de/index?id=${id}`,
         });
-      })
-    }
+      } else {
+          if (!id) return;
+          Taro.navigateTo({
+            url: "../video_up/index?id=" + id,
+          });
+      }
+    })
   };
 
   const currentHeader = useMemo(() => {
@@ -219,7 +222,7 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
-              naviToVideoUp(headerInfo?.video_id);
+              naviToVideoUp(headerInfo?.video_id,2);
             }}
           >
             <SelfVideo
@@ -229,8 +232,8 @@ export default function List() {
               height={option.screenWidth}
               img={headerInfo?.video_img}
               callback={(key)=>{
-              naviToVideoUp(key)
-            }} />
+                naviToVideoUp(key,22)
+              }} />
             <View className="components-video-large-content">
               <View className="large-content-main">
                 <View className="large-content-main-title">
