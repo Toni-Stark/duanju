@@ -90,6 +90,7 @@ export default function VideoView() {
     }
     return {
       title: dataInfo.name,
+      imageUrl: dataInfo.img,
       path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
     };
   });

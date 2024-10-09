@@ -44,8 +44,10 @@ export default function Search() {
   const [pnInt, setPnInt] = useState(undefined);
   const [para, setPara] = useState(undefined);
   const [loading, setLoading] = useState(false);
+  const [isIos, setIsIos] = useState(false);
 
   useLoad(() => {
+    setIsIos( Taro.getSystemInfoSync().platform.indexOf('ios')>=0 || Taro.getSystemInfoSync().platform.indexOf('ipad')>=0 )
     TLoading("加载中...")
     const params = router.params;
     let _option = option;
@@ -105,13 +107,17 @@ export default function Search() {
       setPnInt(pn);
       getWalletProducts(params).then((result) => {
         if (result.data.is_template) {
-          setPayData(result.data)
           THide()
+          if(Taro.getSystemInfoSync().platform.indexOf('ios')<0 && Taro.getSystemInfoSync().platform.indexOf('ipad')<0 ){
+            setPayData(result.data)
+          }
           setLoading(true)
         } else {
-          setInList(result.data.product_list);
           if(result.data.product_list.length>0){
             setOption({...option, bar: result.data.product_list[0].id});
+          }
+          if(Taro.getSystemInfoSync().platform.indexOf('ios')<0 && Taro.getSystemInfoSync().platform.indexOf('ipad')<0 ){
+            setInList(result.data.product_list);
           }
           THide()
           setLoading(true)
@@ -547,6 +553,8 @@ export default function Search() {
             height={option.statusBarHeight}
             text={inList?.length>0?"充值":"信息"}
           />:null}
+        {
+          !isIos?
         <View className="index_content">
           {inList?.length>0?<View className="index_content_banner">
             <View>创作不易，感谢您的支持</View>
@@ -581,6 +589,8 @@ export default function Search() {
           }
 
         </View>
+            :<View className="no_ios">IOS暂不支持</View>
+        }
       </View>
     );
   }
