@@ -19,18 +19,12 @@ export const IndexCard = (props: Props) => {
     });
   };
   const naviToVideoUp = (id) => {
-    if (tt.canIUse('PlayletExtension')) {
+    noTimeout(()=> {
+      if (!id) return;
       Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
+        url: `../video_up/index?id=${id}`,
       });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
-        Taro.navigateTo({
-          url: "../video_up/index?id=" + id,
-        });
-      })
-    }
+    })
   };
   if (!data?.video_list || data?.video_list <= 0) {
     return null;

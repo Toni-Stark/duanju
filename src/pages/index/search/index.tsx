@@ -125,18 +125,12 @@ export default function Cate() {
     })
   };
   const naviToVideoUp = (id) => {
-    if (ENV && tt.canIUse('PlayletExtension')) {
+    noTimeout(()=> {
+      if (!id) return;
       Taro.navigateTo({
-        url: `../../video_de/index?id=${id}`,
+        url: `../video_up/index?id=${id}`,
       });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
-        Taro.navigateTo({
-          url: "../../video_up/index?id=" + id,
-        });
-      })
-    }
+    })
   };
   const currentContext = useMemo(() => {
     if (loading) {

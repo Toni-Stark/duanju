@@ -192,20 +192,12 @@ export default function List() {
     getTabList()
   };
 
-  const naviToVideoUp = (id,num) => {
-    console.log(headerInfo,num)
+  const naviToVideoUp = (id) => {
     noTimeout(()=> {
-      console.log(id,ENV, Taro.canIUse("PlayletExtension"))
-      if (ENV && Taro.canIUse('PlayletExtension')) {
-        Taro.navigateTo({
-          url: `../video_de/index?id=${id}`,
-        });
-      } else {
-          if (!id) return;
-          Taro.navigateTo({
-            url: "../video_up/index?id=" + id,
-          });
-      }
+      if (!id) return;
+      Taro.navigateTo({
+        url: `../video_up/index?id=${id}`,
+      });
     })
   };
 
@@ -222,7 +214,8 @@ export default function List() {
           <View
             className="components-video-large"
             onClick={() => {
-              naviToVideoUp(headerInfo?.video_id,2);
+              console.log(headerInfo,'2223')
+              naviToVideoUp(headerInfo?.video_id);
             }}
           >
             <SelfVideo
@@ -232,7 +225,6 @@ export default function List() {
               height={option.screenWidth}
               img={headerInfo?.video_img}
               callback={(key)=>{
-                naviToVideoUp(key,22)
               }} />
             <View className="components-video-large-content">
               <View className="large-content-main">

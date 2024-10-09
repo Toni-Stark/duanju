@@ -1,5 +1,6 @@
 import { View } from '@tarojs/components';
 import {useEffect} from "react";
+import {Env} from "@tarojs/components/dist/types/stencil-public-runtime";
 
 const CurrentVideoPlayer = ({albumId,episodeId,id,img,url,onError, onPlay, onEnded}) => {
   const handleVideoError = (event) => {

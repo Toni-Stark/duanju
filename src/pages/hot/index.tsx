@@ -153,18 +153,12 @@ export default function Hot() {
   };
 
   const naviToVideoUp = (id) => {
-    if (ENV && tt.canIUse('PlayletExtension')) {
+    noTimeout(()=> {
+      if (!id) return;
       Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
+        url: `../video_up/index?id=${id}`,
       });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
-        Taro.navigateTo({
-          url: "../video_up/index?id=" + id,
-        });
-      })
-    }
+    })
   };
   const naviToCateOne = (type, title) => {
     noTimeout(()=> {

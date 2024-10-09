@@ -284,20 +284,13 @@ export default function Index() {
     })
   };
   const naviToVideoUpSystem = (id, episodeId = "1") => {
-    if (ENV && tt.canIUse('PlayletExtension')) {
+    noTimeout(()=> {
+      if (!id) return;
       Taro.navigateTo({
-        url: `../video_de/index?id=${id}`,
+        url: `../video_up/index?id=${id}`,
       });
-    } else {
-      noTimeout(()=> {
-        if (!id) return;
-        Taro.navigateTo({
-          url: "../video_up/index?id=" + id,
-        });
-        setShowNew(false)
-      })
-      // ... 跳转至开发者自有播放页
-    }
+      setShowNew(false)
+    })
   };
 
   const currentSwiper = useMemo(() => {

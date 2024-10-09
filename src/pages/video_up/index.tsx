@@ -92,11 +92,24 @@ export default function VideoView() {
     }
     return {
       title: dataInfo.name,
-      path: "/pages/video_de/index?id="+dataInfo.id+"&iv="+userInfo.sn,
+      path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
     };
   });
   useDidShow(() => {
     console.log(isShowModal, 'isShowModal')
+    let envs = GetStorageSync('ENV') == "TT";
+    setENV(envs)
+    if(envs){
+      if(!Taro.canIUse('video-player')){
+        TShow('请升级抖音到最新版本').then(()=>{
+          Taro.navigateBack({
+            fail:function (){
+              Taro.switchTab({url:"pages/index/index"})
+            }
+          })
+        })
+      }
+    }
     if(isShowModal){
       setIsShowModal(false);
       return;
@@ -114,9 +127,6 @@ export default function VideoView() {
     } else {
       rootVideoInfo(params);
     }
-
-    let envs = GetStorageSync('ENV') == "TT";
-    setENV(envs)
     if(envs) {
       Taro.setNavigationBarColor({
         frontColor: '#ffffff',
