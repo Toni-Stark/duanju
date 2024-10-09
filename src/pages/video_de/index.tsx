@@ -79,7 +79,6 @@ export default function VideoView() {
   const [loading, setLoading] = useState(false);
   const [isShowModal, setIsShowModal] = useState(false);
   const [params, setParams] = useState(undefined);
-  const [root, setRoot] = useState(0);
   const [ENV, setENV] = useState(false);
   const [controls, setControls] = useState(false);
   const [pnData, setPnData] = useState(undefined);
@@ -92,7 +91,7 @@ export default function VideoView() {
     }
     return {
       title: dataInfo.name,
-      path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
+      path: "/pages/video_de/index?id="+dataInfo.id+"&iv="+userInfo.sn,
     };
   });
   useDidShow(() => {

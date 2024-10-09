@@ -92,7 +92,7 @@ export default function VideoView() {
     }
     return {
       title: dataInfo.name,
-      path: "/pages/video_up/index?id="+dataInfo.id+"&iv="+userInfo.sn,
+      path: "/pages/video_de/index?id="+dataInfo.id+"&iv="+userInfo.sn,
     };
   });
   useDidShow(() => {
